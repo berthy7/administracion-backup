@@ -68,6 +68,12 @@ class Personal(Serializable, Base):
             aux += self.nombre
 
 
+        if aux['fechanacimiento'] == 'None':
+            aux['fechanacimiento'] = None
+        else:
+            aux['fechanacimiento'] = self.fechanacimiento.strftime('%d/%m/%Y')
+
+
         return aux
 
 
