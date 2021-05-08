@@ -10,5 +10,6 @@ docs/
 *.pkg
 *.pyz
 *.manifest
+*.ini
 venv/
 env/
