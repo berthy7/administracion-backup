@@ -13,5 +13,4 @@ docs/
 *.ini
 venv/
 env/
-servidor/common/resources/images/foto_documentos/
-servidor/common/resources/images/foto_personal/
+
