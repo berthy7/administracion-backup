@@ -336,6 +336,14 @@ function edit_item(e) {
         $('#descripcion').val(self.descripcion)
         $('#fkpersonal').val(self.fkpersonal)
         $('#fkpersonal').selectpicker('refresh')
+        
+        if (self.personal.foto) {
+            console.log("entro")
+            document.getElementById("imagen_show_img-foto").src =self.personal.foto;
+        } else {
+            console.log("nulo")
+            document.getElementById("imagen_show_img-foto").src = "/resources/images/no_photo.png";
+        }
 
         for (i in self.detalle) {
             $('#id_detalle'+self.detalle[i].fkmaterialDetalle).val(self.detalle[i].id)
