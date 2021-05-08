@@ -260,7 +260,7 @@ class PersonalManager(SuperManager):
                                                    "<tr style='font-size: 12px; border: 0px; '>" \
                                                    "<td colspan='5' style='border-right: 1px solid grey ' scope='colgroup'align='left'><strong>Fecha Nacimiento: </strong></td>" \
                                                    "<td colspan='12' scope='colgroup'align='left'><font>" + str(
-                    persona.fechanacimiento.strftime('%d/%m/%Y')) + "</font></td>" \
+                    persona.fechanacimiento) + "</font></td>" \
                                                                     "</tr>" \
                                                                     "<tr style='font-size: 12px; border: 0px; '>" \
                                                                     "<td colspan='5' style='border-right: 1px solid grey ' scope='colgroup'align='left'><strong>Licencia Vehiculo: </strong></td>" \
