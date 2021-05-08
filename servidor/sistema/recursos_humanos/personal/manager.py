@@ -111,7 +111,7 @@ class PersonalManager(SuperManager):
 
         if persona.documentos[0].ci:
             foto1x = "<tr>" \
-                     "<td width='100%' colspan='20' align='center' ><strong>CEDULAR DE IDENTIDAD</strong><img src='" + \
+                     "<td width='100%' colspan='20' align='center' ><strong>CEDULAR DE IDENTIDAD</strong><img src='servidor/common" + \
                      persona.documentos[0].ci + "' width='auto' height='500'></td>" \
                                                 "</tr>"
         else:
@@ -121,7 +121,7 @@ class PersonalManager(SuperManager):
 
         if persona.documentos[0].libretamilitar:
             foto2x = "<tr>" \
-                     "<td width='100%' colspan='20' align='center' ><strong>LIBRETA DE SERVICIO MILITAR</strong><img src='" + \
+                     "<td width='100%' colspan='20' align='center' ><strong>LIBRETA DE SERVICIO MILITAR</strong><img src='servidor/common" + \
                      persona.documentos[0].libretamilitar + "' width='auto' height='500'></td>" \
                                                             "</tr>"
         else:
@@ -131,7 +131,7 @@ class PersonalManager(SuperManager):
 
         if persona.documentos[0].titulobachiller:
             foto3x = "<tr>" \
-                     "<td width='100%' colspan='20' align='center' ><strong>TITULO DE BACHILLER</strong><img src='" + \
+                     "<td width='100%' colspan='20' align='center' ><strong>TITULO DE BACHILLER</strong><img src='servidor/common" + \
                      persona.documentos[0].titulobachiller + "' width='auto' height='500'></td>" \
                                                              "</tr>"
         else:
@@ -141,7 +141,7 @@ class PersonalManager(SuperManager):
 
         if persona.documentos[0].titulotecnico:
             foto4x = "<tr>" \
-                     "<td width='100%' colspan='20' align='center' ><strong>TITULO TECNICO</strong><img src='" + \
+                     "<td width='100%' colspan='20' align='center' ><strong>TITULO TECNICO</strong><img src='servidor/common" + \
                      persona.documentos[0].titulotecnico + "' width='auto' height='500'></td>" \
                                                            "</tr>"
         else:
@@ -151,7 +151,7 @@ class PersonalManager(SuperManager):
 
         if persona.documentos[0].titulolicenciatura:
             foto5x = "<tr>" \
-                     "<td width='100%' colspan='20' align='center' ><strong>TITULO DE LICENCIATURA</strong><img src='" + \
+                     "<td width='100%' colspan='20' align='center' ><strong>TITULO DE LICENCIATURA</strong><img src='servidor/common" + \
                      persona.documentos[0].titulolicenciatura + "' width='auto' height='500'></td>" \
                                                                 "</tr>"
         else:
@@ -161,7 +161,7 @@ class PersonalManager(SuperManager):
 
         if persona.documentos[0].flcn:
             foto6x = "<tr>" \
-                     "<td width='100%' colspan='20' align='center' ><strong>FLCN</strong><img src='" + \
+                     "<td width='100%' colspan='20' align='center' ><strong>FLCN</strong><img src='servidor/common" + \
                      persona.documentos[0].flcn + "' width='auto' height='500'></td>" \
                                                   "</tr>"
         else:
@@ -171,7 +171,7 @@ class PersonalManager(SuperManager):
 
         if persona.documentos[0].flcc:
             foto7x = "<tr>" \
-                     "<td width='100%' colspan='20' align='center' ><strong>FELCC</strong><img src='/common" + \
+                     "<td width='100%' colspan='20' align='center' ><strong>FELCC</strong><img src='servidor/common" + \
                      persona.documentos[0].flcc + "' width='auto' height='500'></td>" \
                                                   "</tr>"
         else:
@@ -181,7 +181,7 @@ class PersonalManager(SuperManager):
 
         if persona.documentos[0].luzagua:
             foto8x = "<tr>" \
-                     "<td width='100%' colspan='20' align='center' ><strong>LUZ O AGUA</strong><img src='" + \
+                     "<td width='100%' colspan='20' align='center' ><strong>LUZ O AGUA</strong><img src='servidor/common" + \
                      persona.documentos[0].luzagua + "' width='auto' height='500'></td>" \
                                                      "</tr>"
         else:
@@ -191,7 +191,7 @@ class PersonalManager(SuperManager):
 
         if persona.documentos[0].certificadonacimiento:
             foto9x = "<tr>" \
-                     "<td width='100%' colspan='20' align='center' ><strong>CERTIFICADO DE NACIMIENTO</strong><img src='" + \
+                     "<td width='100%' colspan='20' align='center' ><strong>CERTIFICADO DE NACIMIENTO</strong><img src='servidor/common" + \
                      persona.documentos[0].certificadonacimiento + "' width='auto' height='500'></td>" \
                                                                    "</tr>"
         else:
@@ -201,7 +201,7 @@ class PersonalManager(SuperManager):
 
         if persona.documentos[0].flcv:
             foto10x = "<tr>" \
-                      "<td width='100%' colspan='20' align='center' ><strong>FLCV</strong><img src='" + \
+                      "<td width='100%' colspan='20' align='center' ><strong>FLCV</strong><img src='servidor/common" + \
                       persona.documentos[0].flcv + "' width='auto' height='500'></td>" \
                                                    "</tr>"
         else:
@@ -211,7 +211,7 @@ class PersonalManager(SuperManager):
 
         if persona.documentos[0].otros:
             foto11x = "<tr>" \
-                      "<td width='100%' colspan='20' align='center' ><strong>OTROS</strong><img src='" + \
+                      "<td width='100%' colspan='20' align='center' ><strong>OTROS</strong><img src='servidor/common" + \
                       persona.documentos[0].otros + "' width='auto' height='500'></td>" \
                                                     "</tr>"
         else:
