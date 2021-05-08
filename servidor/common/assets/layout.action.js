@@ -26,6 +26,7 @@ $(document).ready(function () {
 });
 
 function  salir(logo1) {
+    console.log("salisalir")
     Swal.fire({
         title: "¿Desea cerrar sesión?",
         imageUrl: logo1,

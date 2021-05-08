@@ -38,7 +38,8 @@ class AsistenciaManager(SuperManager):
 
         for item in datos:
             is_active = item.estado
-            disable = 'disabled' if 'asistencia_update' not in privilegios else ''
+            # disable = 'disabled' if 'asistencia_update' not in privilegios else ''
+            disable = ''
             estado = 'Activo' if is_active else 'Inactivo'
             check = 'checked' if is_active else ''
             delete = 'asistencia_delete' in privilegios

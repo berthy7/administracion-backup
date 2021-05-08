@@ -19,6 +19,7 @@ from servidor.sistema.recursos_humanos.cargo.controller import CargoController
 from servidor.sistema.almacen.asignacion.controller import AsignacionController
 from servidor.sistema.almacen.material.controller import MaterialController
 from servidor.sistema.almacen.stock.controller import StockController
+from servidor.sistema.almacen.tipomaterial.controller import TipoMaterialController
 
 from servidor.sistema.operador.asistencia.controller import AsistenciaController
 from servidor.sistema.operador.cliente.controller import ClienteController
@@ -75,6 +76,7 @@ def get_handlers():
     handlers.extend(get_routes(AsignacionController))
     handlers.extend(get_routes(MaterialController))
     handlers.extend(get_routes(StockController))
+    handlers.extend(get_routes(TipoMaterialController))
 
     # Operador
     handlers.extend(get_routes(AsistenciaController))

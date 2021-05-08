@@ -6,7 +6,6 @@ $(document).ready( function () {
 });
 validationKeyup("modal")
 
-
 function load_table(data_tb) {
     var tabla = $(id_table).DataTable({
         destroy: true,
@@ -16,11 +15,7 @@ function load_table(data_tb) {
         scroller:       true,
         columns: [
             { title: "ID", data: "id" },
-            { title: "Fecha", data: "fechar" },
             { title: "Nombre", data: "nombre" },
-            { title: "Codigo", data: "codigo" },
-            { title: "Cliente", data: "cliente" },
-            { title: "Ausencia", data: "ausencia" },
             { title: "Estado", data: "estado",
                 render: function(data, type, row) {
                     return '\
@@ -56,7 +51,7 @@ function load_table(data_tb) {
                 extend: 'excelHtml5',
                 className: 'btn btn-sm cb-btn-teal',
                 exportOptions: {
-                    columns: [ 0, 1,2,3,4,5 ]
+                    columns: [ 0, 1 ]
                 },
                 sheetName: 'Logs',
             },
@@ -64,14 +59,14 @@ function load_table(data_tb) {
                 extend: 'csvHtml5',
                 className: 'btn btn-sm cb-btn-info',
                 exportOptions: {
-                    columns: [ 0, 1,2,3,4,5 ]
+                    columns: [ 0, 1 ]
                 },
             },
             {
                 extend: 'pdfHtml5',
                 className: 'btn btn-sm cb-btn-red',
                 exportOptions: {
-                    columns: [ 0, 1,2,3,4,5 ]
+                    columns: [ 0, 1 ]
                 },
             }
         ],
@@ -89,7 +84,7 @@ function clean_data() {
 function reload_table() {
     $.ajax({
         method: "POST",
-        url: 'asistencia_list',
+        url: 'tipomaterial_list',
         dataType: 'json',
         data: {_xsrf: getCookie("_xsrf")},
         async: false,
@@ -102,57 +97,7 @@ function reload_table() {
     });
 }
 
-$('#new_detalle').click(function () {
-    append_input_detalle('')
-})
-
-function get_detalle() {
-    objeto = []
-    objeto_inputs = $('.detalle')
-    cant_ = 0
-    console.log(objeto_inputs)
-
-    for (i = 0; i < objeto_inputs.length; i += 7) {
-        h0 = objeto_inputs[i].value
-        h1 = objeto_inputs[i + 2].value
-        h2 = objeto_inputs[i + 4].value
-        h3 = objeto_inputs[i + 6].value
-
-
-        objeto.push((function add_(h0, h1, h2,h3) {
-
-            if (h0 ==''){
-                return {
-                    'fkpersonal': h1,
-                    'fkcliente': h2,
-                    'fktipoausencia': h3
-
-                }
-
-            }else{
-                return {
-                'id':h0,
-                'fkpersonal': h1,
-                'fkcliente': h2,
-                'fktipoausencia': h3
-                }
-            }
-
-
-        })(
-            h0,
-            h1,
-            h2,
-            h3))
-    }
-
-    return objeto
-}
-
 $('#new').click(function() {
-    $('#detalle_div').empty()
-    append_input_detalle('')
-
     clean_data()
     verif_inputs('')
     validationInputSelects("modal")
@@ -167,10 +112,10 @@ $('#insert').on('click', function() {
 
     if (!notvalid) {
         objeto = JSON.stringify({
-            'detalle': get_detalle()
+            'nombre': $('#nombre').val()
         })
 
-        ajax_call('asistencia_insert', {
+        ajax_call('tipomaterial_insert', {
             object: objeto,
             _xsrf: getCookie("_xsrf")
         }, null, function (response) {
@@ -195,7 +140,7 @@ function edit_item(e) {
         'id': parseInt(JSON.parse($(e).attr('data-json')))
     })
 
-    ajax_call_get('asistencia_update',{
+    ajax_call_get('tipomaterial_update',{
         _xsrf: getCookie("_xsrf"),
         object: obj
     },function(response){
@@ -203,20 +148,6 @@ function edit_item(e) {
 
         $('#id').val(self.id)
         $('#nombre').val(self.nombre)
-        $(fktipo).val(self.fktipo)
-        $(fktipo).selectpicker('render')
-        $('#detalle_div').empty()
-        for (i in self.detalle) {
-
-            append_input_detalle(self.detalle[i].id)
-            $('#id_detalle'+self.detalle[i].id).val(self.detalle[i].id)
-            $('#fkcolor'+self.detalle[i].id).val(self.detalle[i].fkcolor)
-            $('#fkcolor'+self.detalle[i].id).selectpicker('render')
-            $('#fktalla'+self.detalle[i].id).val(self.detalle[i].fktalla)
-            $('#fktalla'+self.detalle[i].id).selectpicker('render')
-            $('#cantidad'+self.detalle[i].id).val(self.detalle[i].cantidad)
-
-        }
 
         clean_form()
         verif_inputs('')
@@ -233,12 +164,10 @@ $('#update').click(function() {
     if (!notvalid) {
         objeto = JSON.stringify({
             'id': $('#id').val(),
-            'nombre': $('#nombre').val(),
-            'fktipo': $('#fktipo').val(),
-            'detalle': get_detalle()
+            'nombre': $('#nombre').val()
         })
 
-        ajax_call('asistencia_update', {
+        ajax_call('tipomaterial_update', {
             _xsrf: getCookie("_xsrf"),
             object: objeto
         }, null, function(response) {
@@ -262,11 +191,11 @@ function set_enable(e) {
     b = $(e).prop('checked')
 
     if (!b) {
-        cb_title = "¿Está seguro de que desea dar de baja la asistencia?"
+        cb_title = "¿Está seguro de que desea dar de baja la tipomaterial?"
         cb_text = ""
         cb_type = "warning"
     } else {
-        cb_title ="¿Está seguro de que desea dar de alta la asistencia?"
+        cb_title ="¿Está seguro de que desea dar de alta la tipomaterial?"
         cb_text = ""
         cb_type = "info"
     }
@@ -293,7 +222,7 @@ function set_enable(e) {
                 estado: b
             })
 
-            ajax_call('asistencia_state', {
+            ajax_call('tipomaterial_state', {
                 object: objeto, _xsrf: getCookie("_xsrf")}, null,
                 function (response) {
                     self = JSON.parse(response)
@@ -313,7 +242,7 @@ function set_enable(e) {
 function delete_item(e) {
     Swal.fire({
         icon: "warning",
-        title: "¿Está seguro de que desea eliminar permanentemente la asistencia?",
+        title: "¿Está seguro de que desea eliminar permanentemente la tipomaterial?",
         text: "",
         showCancelButton: true,
         allowOutsideClick: false,
@@ -327,7 +256,7 @@ function delete_item(e) {
                 'id': parseInt(JSON.parse($(e).attr('data-json')))
             })
 
-            ajax_call('asistencia_delete', {
+            ajax_call('tipomaterial_delete', {
                 object: objeto,_xsrf: getCookie("_xsrf")}, null,
                 function (response) {
                     self = JSON.parse(response);

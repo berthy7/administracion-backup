@@ -60,7 +60,7 @@ function load_table(data_tb) {
                 extend: 'excelHtml5',
                 className: 'btn btn-sm cb-btn-teal',
                 exportOptions: {
-                    columns: [ 0, 1 ]
+                    columns: [ 0, 1,2 ]
                 },
                 sheetName: 'Logs',
             },
@@ -68,14 +68,14 @@ function load_table(data_tb) {
                 extend: 'csvHtml5',
                 className: 'btn btn-sm cb-btn-info',
                 exportOptions: {
-                    columns: [ 0, 1 ]
+                    columns: [ 0, 1,2 ]
                 },
             },
             {
                 extend: 'pdfHtml5',
                 className: 'btn btn-sm cb-btn-red',
                 exportOptions: {
-                    columns: [ 0, 1 ]
+                    columns: [ 0, 1,2 ]
                 },
             }
         ],

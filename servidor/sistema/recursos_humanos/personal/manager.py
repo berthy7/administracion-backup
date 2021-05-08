@@ -396,7 +396,8 @@ class PersonalManager(SuperManager):
 
         for item in datos:
             is_active = item.estado
-            disable = 'disabled' if 'personal_update' not in privilegios else ''
+            # disable = 'disabled' if 'personal_update' not in privilegios else ''
+            disable = ''
             estado = 'Activo' if is_active else 'Inactivo'
             check = 'checked' if is_active else ''
             delete = 'personal_delete' in privilegios

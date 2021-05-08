@@ -22,6 +22,7 @@ from servidor.sistema.recursos_humanos.cargo.script import insertions as cargo_i
 from servidor.sistema.almacen.asignacion.script import insertions as asignacion_insertions
 from servidor.sistema.almacen.material.script import insertions as material_insertions
 from servidor.sistema.almacen.stock.script import insertions as stock_insertions
+from servidor.sistema.almacen.tipomaterial.script import insertions as tipomaterial_insertions
 
 from servidor.sistema.operador.asistencia.script import insertions as asistencia_insertions
 from servidor.sistema.operador.cliente.script import insertions as cliente_insertions
@@ -55,6 +56,7 @@ def main():
     asignacion_insertions()
     stock_insertions()
     material_insertions()
+    tipomaterial_insertions()
 
     asistencia_insertions()
     cliente_insertions()
