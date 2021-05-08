@@ -447,7 +447,7 @@ class PersonalManager(SuperManager):
 
         objeto = PersonalManager(self.db).entity(**diccionary)
         fecha = BitacoraManager(self.db).fecha_actual()
-        objeto.fechanacimiento = datetime.strptime(objeto.fechanacimiento, '%Y-%m-%d')
+        objeto.fechanacimiento = datetime.strptime(objeto.fechanacimiento, '%d/%m/%Y')
 
 
         a = super().update(objeto)
