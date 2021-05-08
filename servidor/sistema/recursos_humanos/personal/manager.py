@@ -233,7 +233,7 @@ class PersonalManager(SuperManager):
         html += "" \
                 "<table style='padding: 4px; border: 0px solid grey' width='100%'>" \
                 "<tr style='font-size: 12px; border: 0px; '>" \
-                "<td colspan='5' style='border-right: 0px solid grey ' scope='colgroup'align='left'><img src='/servidor/common" + logoempresa + "' width='auto' height='75'></td>" \
+                "<td colspan='5' style='border-right: 0px solid grey ' scope='colgroup'align='left'><img src='servidor/common" + logoempresa + "' width='auto' height='75'></td>" \
                 "<td colspan='12' scope='colgroup'align='left'><font></font></td>" \
                 "<td colspan='5' style='border-left: 0px solid grey ' scope='colgroup'align='center'><img src='" + str(persona.foto) + "' width='auto' height='75'></td>" \
               "</tr>" \
