@@ -1,0 +1,106 @@
+<div class="modal fade" id="modal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="largeModalLabel">Stock</h4>
+            </div>
+            <div class="modal-body">
+            <form>
+                <div class="form-group form-float">
+                    <div class="form-line">
+                        {% module xsrf_form_html() %}
+                        <input type="hidden" id="id" name="id" class="item-form">
+                    </div>
+                </div>
+                <div class="row clearfix">
+                    <div class="col-sm-6">
+                        <div class="form-group form-float">
+                            <div class="form-line">
+                                <input type="text" id="nroboleta" name="nroboleta" class="form-control item-form" required>
+                                <label class="form-label">Nr° Boleta</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row clearfix">
+                    <div class="col-sm-12">
+                        <div class="form-group form-float">
+                            <div class="form-line">
+                                <input type="text" id="observacion" name="Observacion" class="form-control item-form">
+                                <label class="form-label">Observacion</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label  class="form-label">Materiales</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row clearfix">
+                    <div class="col-xs-12 ol-sm-12 col-md-12 col-lg-12">
+                        <div class="panel-group" id="accordion_parent" role="tablist" aria-multiselectable="true">
+
+                            {% for materiales in materiales_detalle %}
+                                <div class="panel panel-col-black">
+                                    <div class="panel-heading" role="tab" id="heading{{materiales.id}}">
+                                        <h4 class="panel-title">
+                                            <a role="button" data-toggle="collapse" data-parent="#accordion_parent" href="#collapse{{materiales.id}}" aria-expanded="true" aria-controls="collapseOne_12">
+                                                {{materiales.nombre}}
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapse{{materiales.id}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading{{materiales.id}}">
+                                        <div class="panel-body" id="cuerpo_{{materiales.id}}">
+
+                                                <table id="data_table_{{materiales.id}}" class="table results">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>ID Material</th>
+                                                            <th>Color</th>
+                                                            <th>Talla</th>
+                                                            <th>Cantidad</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="table_content_{{materiales.id}}">
+                                                        {% for _detalle in materiales.detalle %}
+
+                                                            <tr>
+                                                                <td hidden>
+                                                                    <input id="id_detalle{{_detalle.id}}"  class="form-control detalle txta-own" >
+                                                                </td>
+                                                                <td hidden>
+                                                                    <input id="fkmaterialDetalle{{_detalle.id}}" value="{{_detalle.id}}"  class="form-control detalle txta-own" >
+                                                                </td>
+                                                                <td>{{_detalle.id}}</td>
+                                                                <td>{{_detalle.color.nombre}}</td>
+
+                                                                <td>{{_detalle.talla.nombre}}</td>
+                                                                <td>
+                                                                    <input id="cantidad{{_detalle.id}}" type="number" class="form-control detalle _cantidad txta-own">
+                                                                </td>
+                                                            </tr>
+                                                        {% end%}
+                                                    </tbody>
+                                                </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% end %}
+
+                        </div>
+                    </div>
+                </div>
+            </form>
+            </div>
+            <div class="modal-footer">
+                <button id="insert" type="button" class="btn btn-primary waves-effect">Guardar</button>
+                <button id="update" type="button" class="btn btn-primary waves-effect">Guardar</button>
+                <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>

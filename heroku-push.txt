@@ -1,0 +1,11 @@
+E:
+cd C:\Proyectos\proyecto_backup_
+
+heroku login
+git init
+
+heroku git:remote -a administracion-backup
+
+git add .
+git commit -am "actualizacion"
+git push heroku master

@@ -1,0 +1,644 @@
+<div class="modal fade" id="modal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <form id="form_submit" class="new" enctype="multipart/form-data" novalidate>
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="largeModalLabel">Personal</h4>
+                </div>
+                <div class="modal-body">
+                        {% module xsrf_form_html() %}
+                        <ul class="nav nav-tabs tab-nav-right" id="myTab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="tab-personal" data-toggle="tab" href="#body-personal" role="tab"
+                                aria-controls="profile" aria-selected="true">Datos personales</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="tab-administrativos" data-toggle="tab" href="#body-administrativos" role="tab"
+                                    aria-controls="profile" aria-selected="false">Datos Rerenciales</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="tab-estudios" data-toggle="tab" href="#body-estudios" role="tab"
+                                aria-controls="profile" aria-selected="false">Estudios Realizados</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="tab-documentos" data-toggle="tab" href="#body-documentos" role="tab"
+                                aria-controls="profile" aria-selected="false">Documentos</a>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content">
+                            <div class="tab-pane fade body" id="body-personal" role="tabpanel" aria-labelledby="tab-personal">
+                                <div id="personal_form_body" class="box-body">
+                                    <div id="id_div" class="form-group">
+                                        <div class="form-line">
+                                            {% module xsrf_form_html() %}
+                                            <input id="id" type="text" class="form-control" disabled="disabled">
+                                            <label for="id" class="form-label">Personal ID</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="row clearfix">
+                                        <div class="col-sm-4">
+                                            <label>Ap. Paterno</label>
+                                                <div class="form-line">
+                                                    <input id="apellidop" name="Ap. Paterno" type="text" class="form-control item-form" required >
+                                                </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label >Ap. Materno</label>
+                                                <div class="form-line">
+                                                    <input type="text" id="apellidom" name="apellidom" class="form-control item-form" required>
+                                                </div>
+                                        </div>
+
+                                        <div class="col-sm-2">
+
+                                        </div>
+                                    </div>
+                                    </br>
+
+                                    <div class="row clearfix">
+                                        <div class="col-sm-4">
+                                            <label>Nombres</label>
+                                                <div class="form-line">
+                                                    <input id="nombre" name="Nombre" type="text" class="form-control item-form" required >
+                                                </div>
+                                        </div>
+                                        <div class="col-sm-4">
+
+                                        </div>
+                                    </div>
+                                    </br>
+                                    <div class="row clearfix">
+                                         <div class="col-sm-4">
+                                            <label>DNI</label>
+                                                <div class="form-line">
+                                                    <input id="dni" name="DNI" type="text" class="form-control item-form" required>
+                                                </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label  class="form-label">Expedido</label>
+                                                <select id="fkexpedido" name="fkexpedido" class="form-control show-tick item-form" required>
+                                                    {% for e in expedidos %}
+                                                        <option value="{{ e.id }}">{{ e.nombre }}</option>
+                                                    {% end %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+
+                                        </div>
+                                    </div>
+                                    </br>
+                                    <div class="row clearfix">
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label  class="form-label">Nacionalidad</label>
+                                                <select id="fknacionalidad" name="fknacionalidad" class="form-control show-tick item-form" required>
+                                                    {% for e in nacionalidades %}
+                                                        <option value="{{ e.id }}">{{ e.nombre }}</option>
+                                                    {% end %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label>Fecha de Nacimiento</label>
+                                            <div class="form-line success">
+                                                <input id="fechanacimiento" name="Fecha de Nacimiento" type="text" class="form-control date">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-1">
+                                            <label>Edad</label>
+                                            <div class="form-line">
+                                                <input id="edad" name="Edad" type="text" class="form-control item-form" disabled>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    </br>
+                                    <div class="row clearfix">
+                                        <div class="col-sm-2">
+                                            <label>Licencia vehiculo</label>
+                                                <div class="form-line">
+                                                    <input id="licenciavehiculo" name="Licencia vehiculo" type="text" class="form-control item-form">
+                                                </div>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <label>Categoria</label>
+                                             <select id="fkcategoriavehiculo" class="form-control" >
+                                                {% for categ in categorias %}
+                                                    <option value="{{categ.id}}">{{categ.nombre}}</option>
+                                                {% end %}
+                                             </select>
+
+
+                                        </div>
+
+                                        <div class="col-sm-2">
+                                            <label>Licencia motocicleta</label>
+                                                <div class="form-line">
+                                                    <input id="licenciamotocicleta" name="Licencia motocicleta" type="text" class="form-control item-form">
+                                                </div>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <label>Categoria</label>
+                                             <select id="fkcategoriamotocicleta" class="form-control" >
+                                                {% for categ in categorias %}
+                                                    <option value="{{categ.id}}">{{categ.nombre}}</option>
+                                                {% end %}
+                                             </select>
+
+
+                                        </div>
+
+                                    </div>
+                                    </br>
+                                    <div class="row clearfix">
+                                        <div class="col-sm-8">
+                                            <label>Domicilio</label>
+                                                <div class="form-line">
+                                                    <input id="domicilio" name="Domicilio" type="text" class="form-control item-form" required >
+                                                </div>
+                                        </div>
+                                        <div class="col-sm-4">
+
+                                        </div>
+                                    </div>
+                                    </br>
+                                    <div class="row clearfix">
+                                        <div class="col-sm-3">
+                                            <label>Nro Celular</label>
+                                                <div class="form-line">
+                                                    <input id="telefono" name="Nro Celular" type="text" class="form-control item-form">
+                                                </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label  class="form-label">Estado civil</label>
+                                                <select id="fkcivil" name="fkcivil" class="form-control show-tick item-form" required>
+                                                    {% for e in estados_civiles %}
+                                                        <option value="{{ e.id }}">{{ e.nombre }}</option>
+                                                    {% end %}
+                                                </select>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                    <div class="row clearfix">
+
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label  class="form-label">Cargos</label>
+                                                <select id="fkcargo" name="fkcargo" class="form-control show-tick item-form" required>
+                                                    {% for e in cargos %}
+                                                        <option value="{{ e.id }}">{{ e.nombre }}</option>
+                                                    {% end %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    </br>
+
+                                </div>
+                            </div>
+                            <div class="tab-pane fade body" id="body-administrativos" role="tabpanel" aria-labelledby="tab-administrativos">
+                               <div class="bordesdiv ">
+                                    <div id="administrativos_form_body" class="box-body">
+                                        </br>
+                                        <div class="row clearfix">
+                                            <div class="col-md-1">
+
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <div class="modal-header header-own">
+                                                    <h4 class="modal-title">Familiar</h4>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-1">
+                                                <div class="form-group">
+                                                    <button id="new_familiar" type="button" class="btn btn-primary waves-effect" title="Agregar">Agregar </button>
+                                                </div>
+                                           </div>
+                                        </div>
+
+                                        <div class="row clearfix">
+                                            <div class="col-md-1">
+
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <label class="form-label">Nombre</label>
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <label class="form-label">Nro Celular</label>
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <label class="form-label">Parentesco</label>
+                                            </div>
+
+                                        </div>
+                                        <div class="row clearfix">
+                                             <div id="familiar" class="box-body">
+                                                <div id="familiar_div" class="clearfix">
+
+                                                </div>
+                                             </div>
+                                       </div>
+                                        </br>
+                                    </div>
+                                </div>
+                                 </br>
+                                <div class="bordesdiv ">
+                                    <div id="laboral_form_body" class="box-body">
+                                        </br>
+                                        <div class="row clearfix">
+                                            <div class="col-md-1">
+
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <div class="modal-header header-own">
+                                                    <h4 class="modal-title">Experiencia laboral</h4>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-1">
+                                                <div class="form-group">
+                                                    <button id="new_laboral" type="button" class="btn btn-primary waves-effect" title="Agregar">Agregar</button>
+                                                </div>
+                                           </div>
+                                        </div>
+
+                                        <div class="row clearfix">
+                                             <div id="laboral" class="box-body">
+                                                <div id="laboral_div" class="clearfix">
+
+                                                </div>
+                                             </div>
+                                       </div>
+                                        </br>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade body" id="body-estudios" role="tabpanel" aria-labelledby="tab-estudios">
+                               <div class="bordesdiv ">
+                                    <div id="estudios_form_body" class="box-body">
+                                        </br>
+
+                                        <div class="row clearfix">
+                                            <input id="id_adminitrativo" type="hidden" >
+                                            <div class="col-sm-4">
+
+                                                 <label>Servicio militar</label>
+                                                 <select id="serviciomilitar" class="form-control" >
+
+                                                    <option value="Si">Si</option>
+                                                    <option value="No">No</option>
+
+                                                 </select>
+                                            </div>
+                                            <div id="div_servicio_militar" >
+                                                <div class="col-sm-4">
+                                                <label>Nº de libreta</label>
+                                                    <div class="form-line">
+                                                        <input id="nrolibreta" name="Ap. Materno" type="number" class="form-control item-form">
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <div class="form-group">
+                                                        <label  class="form-label">Expedido en:</label>
+                                                        <select id="fkregimiento" name="fkregimiento" class="form-control show-tick item-form" required>
+                                                            {% for e in regimientos %}
+                                                                <option value="{{ e.id }}">{{ e.nombre }}</option>
+                                                            {% end %}
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                           </div>
+
+                                        </div>
+
+                                        </br>
+                                    </div>
+                                </div>
+                                 </br>
+                               <div class="bordesdiv ">
+                                    <div id="estudio_form_body" class="box-body">
+                                        </br>
+                                        <div class="row clearfix">
+                                            <div class="col-md-1">
+
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div class="modal-header header-own">
+                                                    <h4 class="modal-title">Estudios realizados</h4>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-1">
+                                                <div class="form-group">
+                                                    <button id="new_estudio" type="button" class="btn btn-primary waves-effect" title="Agregar">Agregar</button>
+                                                </div>
+                                           </div>
+                                        </div>
+
+                                        <div class="row clearfix">
+                                            <div class="col-md-1">
+
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <label class="form-label">Institucion</label>
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <label class="form-label">Grado</label>
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <label class="form-label">Año Egreso</label>
+                                            </div>
+
+                                        </div>
+                                        <div class="row clearfix">
+                                             <div id="estudio" class="box-body">
+                                                <div id="estudio_div" class="clearfix">
+
+                                                </div>
+                                             </div>
+                                       </div>
+                                        </br>
+                                    </div>
+                                </div>
+                                 </br>
+                                <div class="bordesdiv ">
+                                    <div id="complementos_form_body" class="box-body">
+                                        </br>
+                                        <div class="row clearfix">
+                                            <div class="col-md-1">
+
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <div class="modal-header header-own">
+                                                    <h4 class="modal-title">Complementos</h4>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-1">
+                                                <div class="form-group">
+                                                    <button id="new_complemento" type="button" class="btn btn-primary waves-effect" title="Agregar">Agregar</button>
+                                                </div>
+                                           </div>
+                                        </div>
+
+                                        <div class="row clearfix">
+                                            <div class="col-md-1">
+
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <label class="form-label">Estudio Complementario</label>
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <label class="form-label">Grado</label>
+                                            </div>
+
+                                        </div>
+                                        <div class="row clearfix">
+                                             <div id="complemento" class="box-body">
+                                                <div id="complemento_div" class="clearfix">
+
+                                                </div>
+                                             </div>
+                                       </div>
+                                        </br>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade body" id="body-documentos" role="tabpanel" aria-labelledby="tab-documentos">
+                                <div id="documentos_form_body" class="box-body">
+                                    <div class="row clearfix">
+                                        <input id="id_documentos" type="hidden" >
+                                        <div class="nfoto">
+                                            <div class="col-sm-3">
+                                                <div class="row m-b-20">
+                                                    <div class="text-center">
+                                                     <img id='imagen_show_img-ci' src='/resources/images/sinImagen.jpg' width='100px' >
+                                                        </br>
+                                                    </br>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label class="form-label">Cedula de identidad</label>
+                                            <input id="ci" name="ci" type="file" class="form-control item-form fotos" width='300px' />
+                                                </br>
+                                                </br>
+                                        </div>
+                                        <div class="nfoto">
+                                            <div class="col-sm-3">
+                                                <div class="row m-b-20">
+                                                    <div class="text-center">
+                                                     <img id='imagen_show_img-flcn' src='/resources/images/sinImagen.jpg' width='100px' >
+                                                        </br>
+                                                    </br>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label class="form-label">FLCN</label>
+                                            <input id="flcn" name="flcn" type="file" class="form-control item-form fotos" width='300px' />
+                                                </br>
+                                                </br>
+                                        </div>
+
+                                    </div>
+                                    <div class="row clearfix">
+                                        <div class="nfoto">
+                                            <div class="col-sm-4">
+                                                <div class="row m-b-20">
+                                                    <div class="text-center">
+                                                     <img id='imagen_show_img-libretamilitar' src='/resources/images/sinImagen.jpg' width='100px' >
+                                                        </br>
+                                                    </br>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label class="form-label">Libreta de Servicio Militar</label>
+                                            <input id="libretamilitar" name="libretamilitar" type="file" class="form-control item-form fotos" width='300px' />
+                                                </br>
+                                                </br>
+                                        </div>
+                                        <div class="nfoto">
+                                            <div class="col-sm-3">
+                                                <div class="row m-b-20">
+                                                    <div class="text-center">
+                                                     <img id='imagen_show_img-flcc' src='/resources/images/sinImagen.jpg' width='100px' >
+                                                        </br>
+                                                    </br>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label class="form-label">FLCC</label>
+                                            <input id="flcc" name="flcc" type="file" class="form-control item-form fotos" width='300px' />
+                                                </br>
+                                                </br>
+                                        </div>
+
+                                    </div>
+                                    <div class="row clearfix">
+                                        <div class="nfoto">
+                                            <div class="col-sm-3">
+                                                <div class="row m-b-20">
+                                                    <div class="text-center">
+                                                     <img id='imagen_show_img-titulobachiller' src='/resources/images/sinImagen.jpg' width='100px' >
+                                                        </br>
+                                                    </br>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label class="form-label">Titulo de Bachiller</label>
+                                            <input id="titulobachiller" name="titulobachiller" type="file" class="form-control item-form fotos" width='300px' />
+                                                </br>
+                                                </br>
+                                        </div>
+                                        <div class="nfoto">
+                                            <div class="col-sm-3">
+                                                <div class="row m-b-20">
+                                                    <div class="text-center">
+                                                     <img id='imagen_show_img-luzagua' src='/resources/images/sinImagen.jpg' width='100px' >
+                                                        </br>
+                                                    </br>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label class="form-label">Luz o Agua</label>
+                                            <input id="luzagua" name="luzagua" type="file" class="form-control item-form fotos" width='300px' />
+                                                </br>
+                                                </br>
+                                        </div>
+
+                                    </div>
+                                    <div class="row clearfix">
+                                        <div class="nfoto">
+                                            <div class="col-sm-3">
+                                                <div class="row m-b-20">
+                                                    <div class="text-center">
+                                                     <img id='imagen_show_img-titulotecnico' src='/resources/images/sinImagen.jpg' width='100px' >
+                                                        </br>
+                                                    </br>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label class="form-label">Titulo Técnico</label>
+                                            <input id="titulotecnico" name="titulotecnico" type="file" class="form-control item-form fotos" width='300px' />
+                                                </br>
+                                                </br>
+                                        </div>
+                                        <div class="nfoto">
+                                            <div class="col-sm-3">
+                                                <div class="row m-b-20">
+                                                    <div class="text-center">
+                                                     <img id='imagen_show_img-certificadonacimiento' src='/resources/images/sinImagen.jpg' width='100px' >
+                                                        </br>
+                                                    </br>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label class="form-label">Certificado de Nacimiento</label>
+                                            <input id="certificadonacimiento" name="certificadonacimiento" type="file" class="form-control item-form fotos" width='300px' />
+                                                </br>
+                                                </br>
+                                        </div>
+
+                                    </div>
+                                    <div class="row clearfix">
+                                        <div class="nfoto">
+                                            <div class="col-sm-3">
+                                                <div class="row m-b-20">
+                                                    <div class="text-center">
+                                                     <img id='imagen_show_img-titulolicenciatura' src='/resources/images/sinImagen.jpg' width='100px' >
+                                                        </br>
+                                                    </br>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label class="form-label">Titulo Licenciatura</label>
+                                            <input id="titulolicenciatura" name="titulolicenciatura" type="file" class="form-control item-form fotos" width='300px' />
+                                                </br>
+                                                </br>
+                                        </div>
+                                        <div class="nfoto">
+                                            <div class="col-sm-3">
+                                                <div class="row m-b-20">
+                                                    <div class="text-center">
+                                                     <img id='imagen_show_img-flcv' src='/resources/images/sinImagen.jpg' width='100px' >
+                                                        </br>
+                                                    </br>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label class="form-label">FLCV</label>
+                                            <input id="flcv" name="flcv" type="file" class="form-control item-form fotos" width='300px' />
+                                                </br>
+                                                </br>
+                                        </div>
+
+                                    </div>
+                                    <div class="row clearfix">
+                                        <div class="col-sm-3">
+                                        </div>
+                                        <div class="nfoto">
+                                            <div class="col-sm-3">
+                                                <div class="row m-b-20">
+                                                    <div class="text-center">
+                                                     <img id='imagen_show_img-otros' src='/resources/images/sinImagen.jpg' width='100px' >
+                                                        </br>
+                                                    </br>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label class="form-label">Otros</label>
+                                            <input id="otros" name="otros" type="file" class="form-control item-form fotos" width='300px' />
+                                                </br>
+                                                </br>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                <div class="modal-footer">
+                    <button id="insert" type="button" class="btn btn-primary waves-effect">Guardar</button>
+                    <button id="update" type="button" class="btn btn-primary waves-effect">Guardar</button>
+                    <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">Cerrar</button>
+                    <button id="siguiente1" type="button" class="btn btn-primary  waves-effect">Siguiente<i class="material-icons">arrow_forward</i></button>
+                    <button id="siguiente2" type="button" class="btn btn-primary  waves-effect">Siguiente<i class="material-icons">arrow_forward</i></button>
+                    <button id="siguiente3" type="button" class="btn btn-primary  waves-effect">Siguiente<i class="material-icons">arrow_forward</i></button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>

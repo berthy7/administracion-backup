@@ -1,0 +1,274 @@
+{% extends ../../../../common/views/layout.html %}
+
+{% block header %}
+    {% set user = usuario %}
+    <link rel="stylesheet" href="/recursos_humanos/personal/assets/personal.style.css">
+{% end %}
+
+{% block content %}
+    {% if 'personal_insert' in privileges or 'personal_update' in privileges %}
+        {% include _form.html %}
+    {% end %}
+
+    <div class="row clearfix">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="card">
+                <div class="header">
+                    <span class="text-uppercase">Personal</span>
+
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <ol class="breadcrumb" style="float: right">
+                            <li><a href="/">Inicio</a></li>
+                            <li><a href="javascript:void(0);">Recursos Humanos</a></li>
+                            <li class="active"><span class="text-info">Personal</span></li>
+                        </ol>
+                    </div>
+                </div>
+                <div class="body">
+                    {% if 'personal_insert' in privileges %}
+                    <div class="row">
+                        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                            <button id="new" type="button" class="btn btn-primary waves-effect" data-toggle="modal" data-target="#modal" title="Nuevo">
+                                <i class="material-icons">add</i>
+                            </button>
+                        </div>
+                    </div>
+                    {% end %}
+
+                    <table id="data_table" class="table table-bordered table-striped table-hover"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% end %}
+
+{% block footer %}
+    <script src="/resources/static/js/functions.js"></script>
+    <script src="/recursos_humanos/personal/assets/personal.action.js"></script>
+    <script>
+        function append_input_familiar(id_in) {
+
+    $('#familiar_div').append(
+    '<div class="row">\
+        <div class="col-sm-1 hidden">\
+            <div class="input-group">\
+            <input  id="id_familiar'+id_in+'" class="form-control familiar readonly txta-own">\
+            </div>\
+        </div>\
+        <div class="col-md-1">\
+        </div>\
+        <div class="col-sm-3">\
+            <div class="form-line">\
+                <input id="nombre'+id_in+'" data-id="'+id_in+'"  class="form-control familiar  txta-own">\
+            </div>\
+        </div>\
+        <div class="col-sm-2">\
+            <div  class="form-line">\
+                <input id="celular'+id_in+'" data-id="'+id_in+'"  class="form-control familiar  txta-own">\
+            </div>\
+        </div>\
+        <div class="col-md-2">\
+             <select id="fkparentesco'+id_in+'" class="form-control select_parentesco familiar" >\
+                {% for paren in parentescos %}\
+                    <option value="{{paren.id}}">{{paren.nombre}}</option>\
+                {% end %}\
+             </select>\
+        </div>\
+        <div class="col-sm-2">\
+            <button type="button" class="btn bg-red waves-effect white-own clear_familiar" title="Eliminar">\
+                <i class="material-icons">clear</i>\
+            </button>\
+        </div>\
+    </div>'
+)
+
+    $('.clear_familiar').last().click(function () {
+        $(this).parent().parent().remove()
+    })
+
+
+
+    $('.select_parentesco').selectpicker({
+        size: 10,
+        liveSearch: true,
+        liveSearchPlaceholder: 'Buscar',
+        title: 'Seleccione'
+    })
+
+}
+
+    function append_input_laboral(id_in) {
+
+        $('#laboral_div').append(
+        '<div class="row">\
+            <div class="col-sm-1 hidden">\
+                <div class="input-group">\
+                <input  id="id_laboral'+id_in+'" class="form-control laboral readonly txta-own">\
+                </div>\
+            </div>\
+            <div class="col-md-1">\
+            </div>\
+            <div class="col-sm-3">\
+                <div class="form-line">\
+                <label class="form-label">Institucion</label>\
+                    <input id="institucion'+id_in+'" data-id="'+id_in+'"  class="form-control laboral  txta-own">\
+                </div>\
+            </div>\
+            <div class="col-sm-2">\
+                <div  class="form-line">\
+                <label class="form-label">Duracion</label>\
+                    <input id="duracion'+id_in+'" data-id="'+id_in+'"  class="form-control laboral  txta-own">\
+                </div>\
+            </div>\
+            <div class="col-md-2">\
+                <label class="form-label">Motivo de retiro</label>\
+                 <select id="fkretiro'+id_in+'" class="form-control laboral select_retiro" >\
+                    {% for reti in retiros %}\
+                        <option value="{{reti.id}}">{{reti.nombre}}</option>\
+                    {% end %}\
+                 </select>\
+            </div>\
+            <div class="col-sm-3">\
+                <div class="form-line">\
+                    <label class="form-label">Cargo</label>\
+                    <input id="cargo'+id_in+'" data-id="'+id_in+'"  class="form-control laboral  txta-own">\
+                </div>\
+            </div>\
+            <div class="col-sm-4">\
+            </div>\
+            <div class="col-sm-2">\
+                <div  class="form-line">\
+                    <label class="form-label">Telefono</label>\
+                    <input id="telefono'+id_in+'" data-id="'+id_in+'"  class="form-control laboral  txta-own">\
+                </div>\
+            </div>\
+            <div class="col-sm-2">\
+                <div  class="form-line">\
+                    <label class="form-label">Nombre referencia</label>\
+                    <input id="referencia'+id_in+'" data-id="'+id_in+'"  class="form-control laboral  txta-own">\
+                </div>\
+            </div>\
+            <div class="col-sm-2">\
+                <button type="button" class="btn bg-red waves-effect white-own clear_laboral" title="Eliminar">\
+                    <i class="material-icons">clear</i>\
+                </button>\
+            </div>\
+        </div>'
+    )
+
+        $('.clear_laboral').last().click(function () {
+            $(this).parent().parent().remove()
+        })
+
+
+
+        $('.select_retiro').selectpicker({
+            size: 10,
+            liveSearch: true,
+            liveSearchPlaceholder: 'Buscar',
+            title: 'Seleccione'
+        })
+
+    }
+
+    function append_input_estudio(id_in) {
+
+        $('#estudio_div').append(
+        '<div class="row">\
+            <div class="col-sm-1 hidden">\
+                <div class="input-group">\
+                <input  id="id_estudio'+id_in+'" class="form-control estudio readonly txta-own">\
+                </div>\
+            </div>\
+            <div class="col-md-1">\
+            </div>\
+            <div class="col-sm-3">\
+                <div class="form-line">\
+                    <input id="instituciones'+id_in+'" data-id="'+id_in+'"  class="form-control estudio  txta-own">\
+                </div>\
+            </div>\
+            <div class="col-md-2">\
+                 <select id="fkgrado_estudio'+id_in+'" class="form-control grados estudio" >\
+                    {% for gra in grados %}\
+                        <option value="{{gra.id}}">{{gra.nombre}}</option>\
+                    {% end %}\
+                 </select>\
+            </div>\
+            <div class="col-sm-2">\
+                <div class="form-line">\
+                    <input id="egreso'+id_in+'" data-id="'+id_in+'"  class="form-control estudio  txta-own">\
+                </div>\
+            </div>\
+            <div class="col-sm-2">\
+                <button type="button" class="btn bg-red waves-effect white-own clear_estudio" title="Eliminar">\
+                    <i class="material-icons">clear</i>\
+                </button>\
+            </div>\
+        </div>'
+    )
+
+        $('.clear_estudio').last().click(function () {
+            $(this).parent().parent().remove()
+        })
+
+
+
+            $('.grados').selectpicker({
+                size: 10,
+                liveSearch: true,
+                liveSearchPlaceholder: 'Buscar',
+                title: 'Seleccione'
+            })
+
+
+    }
+
+    function append_input_complemento(id_in) {
+
+        $('#complemento_div').append(
+        '<div class="row">\
+            <div class="col-sm-1 hidden">\
+                <div class="input-group">\
+                <input  id="id_complemento'+id_in+'" class="form-control complemento readonly txta-own">\
+                </div>\
+            </div>\
+            <div class="col-md-1">\
+            </div>\
+            <div class="col-sm-3">\
+                <div class="form-line">\
+                    <input id="estudio'+id_in+'" data-id="'+id_in+'"  class="form-control complemento  txta-own">\
+                </div>\
+            </div>\
+            <div class="col-md-2">\
+                 <select id="fkgrado_complemento'+id_in+'" class="form-control grados complemento" >\
+                    {% for gra in grados %}\
+                        <option value="{{gra.id}}">{{gra.nombre}}</option>\
+                    {% end %}\
+                 </select>\
+            </div>\
+            <div class="col-sm-2">\
+                <button type="button" class="btn bg-red waves-effect white-own clear_complemento" title="Eliminar">\
+                    <i class="material-icons">clear</i>\
+                </button>\
+            </div>\
+        </div>'
+    )
+
+        $('.clear_complemento').last().click(function () {
+            $(this).parent().parent().remove()
+        })
+
+
+
+            $('.grados').selectpicker({
+                size: 10,
+                liveSearch: true,
+                liveSearchPlaceholder: 'Buscar',
+                title: 'Seleccione'
+            })
+
+
+    }
+
+    </script>
+{% end %}
