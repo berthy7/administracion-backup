@@ -51,6 +51,7 @@ class AsistenciaManager(SuperManager):
             diccionario['delete'] = delete
             diccionario['fechar'] = item.fechar.strftime('%d/%m/%Y %H:%M')
             diccionario['nombre'] = item.personal.fullname
+            diccionario['codigo'] = item.cliente.dia if item.fkcliente else ''
             diccionario['cliente'] = item.cliente.nombre if item.fkcliente else ''
             diccionario['ausencia'] = item.tipoausencia.nombre if item.fktipoausencia else ''
 

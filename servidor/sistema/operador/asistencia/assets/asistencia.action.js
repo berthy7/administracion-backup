@@ -19,6 +19,7 @@ function load_table(data_tb) {
             { title: "Fecha", data: "fechar" },
             { title: "Nombre", data: "nombre" },
             { title: "Cliente", data: "cliente" },
+            { title: "Codigo", data: "codigo" },
             { title: "Ausencia", data: "ausencia" },
             { title: "Estado", data: "estado",
                 render: function(data, type, row) {
