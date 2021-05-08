@@ -51,6 +51,21 @@ class Personal(Serializable, Base):
     complementos = relationship("Complementos", cascade="save-update, merge, delete, delete-orphan")
     documentos = relationship("Documentos", cascade="save-update, merge, delete, delete-orphan")
 
+
+    def get_dict(self, way=None):
+        aux = super().get_dict(way)
+
+        if aux['fechar'] == 'None':
+            aux['fechar'] = None
+        else:
+            aux['fechar'] = self.fechar.strftime('%d/%m/%Y')
+
+        if aux['fechanacimiento'] == 'None':
+            aux['fechanacimiento'] = None
+        else:
+            aux['fechanacimiento'] = self.fechanacimiento.strftime('%d/%m/%Y')
+
+        return aux
     @hybrid_property
     def fullname(self):
         aux = ""
@@ -66,12 +81,6 @@ class Personal(Serializable, Base):
 
         if self.nombre is not None:
             aux += self.nombre
-
-
-        if self.fechanacimiento == 'None':
-            self.fechanacimiento = None
-        else:
-            self.fechanacimiento = self.fechanacimiento.strftime('%d/%m/%Y')
 
 
         return aux

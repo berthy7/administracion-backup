@@ -824,163 +824,167 @@ function edit_item(e) {
     },function(response){
         var self = response.response;
 
-            $('#id').val(self.id)
-            $('#nombre').val(self.nombre)
-            $('#apellidop').val(self.apellidop)
-            $('#apellidom').val(self.apellidom)
-            $('#sexo').val(self.sexo)
-            $('#sexo').selectpicker('refresh')
-            $('#dni').val(self.ci)
-            $('#edad').val(self.edad)
-            $('#correo').val(self.correo)
-            $('#fkexpedido').val(self.fkexpedido)
-            $('#fkexpedido').selectpicker('refresh')
-            $('#fechanacimiento').val(self.fechanacimiento)
-            $('#telefono').val(self.telefono)
-            $('#fknacionalidad').val(self.fknacionalidad)
-            $('#fknacionalidad').selectpicker('refresh')
-            $('#licenciavehiculo').val(self.licenciavehiculo)
-            $('#fkcategoriavehiculo').val(self.fkcategoriavehiculo)
-            $('#fkcategoriavehiculo').selectpicker('refresh')
-            $('#fkcargo').val(self.fkcargo)
-            $('#fkcargo').selectpicker('refresh')
+        $('#id').val(self.id)
+        $('#nombre').val(self.nombre)
+        $('#apellidop').val(self.apellidop)
+        $('#apellidom').val(self.apellidom)
+        $('#sexo').val(self.sexo)
+        $('#sexo').selectpicker('refresh')
+        $('#dni').val(self.ci)
+        $('#edad').val(self.edad)
+        $('#correo').val(self.correo)
+        $('#fkexpedido').val(self.fkexpedido)
+        $('#fkexpedido').selectpicker('refresh')
+        $('#fechanacimiento').val(self.fechanacimiento)
+        $('#telefono').val(self.telefono)
+        $('#fknacionalidad').val(self.fknacionalidad)
+        $('#fknacionalidad').selectpicker('refresh')
+        $('#licenciavehiculo').val(self.licenciavehiculo)
+        $('#fkcategoriavehiculo').val(self.fkcategoriavehiculo)
+        $('#fkcategoriavehiculo').selectpicker('refresh')
+        $('#fkcargo').val(self.fkcargo)
+        $('#fkcargo').selectpicker('refresh')
 
-            $('#licenciamotocicleta').val(self.licenciamotocicleta)
-            $('#fkcategoriamotocicleta').val(self.fkcategoriamotocicleta)
-            $('#fkcategoriamotocicleta').selectpicker('refresh')
+        $('#licenciamotocicleta').val(self.licenciamotocicleta)
+        $('#fkcategoriamotocicleta').val(self.fkcategoriamotocicleta)
+        $('#fkcategoriamotocicleta').selectpicker('refresh')
 
-            $('#domicilio').val(self.domicilio)
-            $('#fkcivil').val(self.fkcivil)
-            $('#fkcivil').selectpicker('refresh')
+        $('#domicilio').val(self.domicilio)
+        $('#fkcivil').val(self.fkcivil)
+        $('#fkcivil').selectpicker('refresh')
 
-            $('#serviciomilitar').val(self.administrativos[0].serviciomilitar)
-            $('#nrolibreta').val(self.administrativos[0].nrolibreta)
-            $('#fkregimiento').val(self.administrativos[0].fkregimiento)
+        $('.fotos').fileinput('clear');
+        
+
+        $('#administrativos_div').empty()
+        $('#estudio_div').empty()
+        $('#complemento_div').empty()
+
+        for (adm in self.administrativos) {
+
+            $('#serviciomilitar').val(self.administrativos[adm]['serviciomilitar'])
+            $('#nrolibreta').val(self.administrativos[adm]['nrolibreta'])
+            $('#fkregimiento').val(self.administrativos[adm]['fkregimiento'])
             $('#fkregimiento').selectpicker('refresh')
 
-            $('.fotos').fileinput('clear');
-
-            console.log(self)
-
-            $('#administrativos_div').empty()
-            $('#estudio_div').empty()
-            $('#complemento_div').empty()
-
-            for (fami in self.familiares) {
-
-                append_input_familiar(self.familiares[fami]['id'])
-                $('#id_familiar' + self.familiares[fami]['id']).val(self.familiares[fami]['id'])
-                $('#nombre' + self.familiares[fami]['id']).val(self.familiares[fami]['nombre'])
-                $('#celular' + self.familiares[fami]['id']).val(self.familiares[fami]['celular'])
-                $('#fkparentesco' + self.familiares[fami]['id']).val(self.familiares[fami]['fkparentesco'])
-                $('#fkparentesco' + self.familiares[fami]['id']).selectpicker('refresh')
-
-            }
-
-            for (expe in self.experiencias) {
-                console.log(self.experiencias[expe]['institucion'])
-                append_input_laboral(self.experiencias[expe]['id'])
-                $('#id_laboral' + self.experiencias[expe]['id']).val(self.experiencias[expe]['id'])
-                $('#institucion' + self.experiencias[expe]['id']).val(self.experiencias[expe]['institucion'])
-                $('#duracion' + self.experiencias[expe]['id']).val(self.experiencias[expe]['duracion'])
-                $('#fkretiro' + self.experiencias[expe]['id']).val(self.experiencias[expe]['fkretiro'])
-                $('#fkretiro' + self.experiencias[expe]['id']).selectpicker('refresh')
-                $('#cargo' + self.experiencias[expe]['id']).val(self.experiencias[expe]['cargo'])
-                $('#telefono' + self.experiencias[expe]['id']).val(self.experiencias[expe]['telefono'])
-                $('#referencia' + self.experiencias[expe]['id']).val(self.experiencias[expe]['referencia'])
+        }
 
 
-            }
+        for (fami in self.familiares) {
 
-            for (estu in self.estudios) {
+            append_input_familiar(self.familiares[fami]['id'])
+            $('#id_familiar' + self.familiares[fami]['id']).val(self.familiares[fami]['id'])
+            $('#nombre' + self.familiares[fami]['id']).val(self.familiares[fami]['nombre'])
+            $('#celular' + self.familiares[fami]['id']).val(self.familiares[fami]['celular'])
+            $('#fkparentesco' + self.familiares[fami]['id']).val(self.familiares[fami]['fkparentesco'])
+            $('#fkparentesco' + self.familiares[fami]['id']).selectpicker('refresh')
 
-                append_input_estudio(self.estudios[estu]['id'])
-                $('#id_estudio' + self.estudios[estu]['id']).val(self.estudios[estu]['id'])
-                $('#instituciones' + self.estudios[estu]['id']).val(self.estudios[estu]['institucion'])
-                $('#fkgrado_estudio' + self.estudios[estu]['id']).val(self.estudios[estu]['fkgrado'])
-                $('#fkgrado_estudio' + self.estudios[estu]['id']).selectpicker('refresh')
-                $('#egreso' + self.estudios[estu]['id']).val(self.estudios[estu]['egreso'])
+        }
+
+        for (expe in self.experiencias) {
+            console.log(self.experiencias[expe]['institucion'])
+            append_input_laboral(self.experiencias[expe]['id'])
+            $('#id_laboral' + self.experiencias[expe]['id']).val(self.experiencias[expe]['id'])
+            $('#institucion' + self.experiencias[expe]['id']).val(self.experiencias[expe]['institucion'])
+            $('#duracion' + self.experiencias[expe]['id']).val(self.experiencias[expe]['duracion'])
+            $('#fkretiro' + self.experiencias[expe]['id']).val(self.experiencias[expe]['fkretiro'])
+            $('#fkretiro' + self.experiencias[expe]['id']).selectpicker('refresh')
+            $('#cargo' + self.experiencias[expe]['id']).val(self.experiencias[expe]['cargo'])
+            $('#telefono' + self.experiencias[expe]['id']).val(self.experiencias[expe]['telefono'])
+            $('#referencia' + self.experiencias[expe]['id']).val(self.experiencias[expe]['referencia'])
 
 
-            }
+        }
 
-            for (comple in self.complementos) {
+        for (estu in self.estudios) {
 
-                append_input_complemento(self.complementos[comple]['id'])
-                $('#id_complemento' + self.complementos[comple]['id']).val(self.complementos[comple]['id'])
-                $('#estudio' + self.complementos[comple]['id']).val(self.complementos[comple]['estudio'])
-                $('#fkgrado_complemento' + self.complementos[comple]['id']).val(self.complementos[comple]['fkgrado'])
-                $('#fkgrado_complemento' + self.complementos[comple]['id']).selectpicker('refresh')
+            append_input_estudio(self.estudios[estu]['id'])
+            $('#id_estudio' + self.estudios[estu]['id']).val(self.estudios[estu]['id'])
+            $('#instituciones' + self.estudios[estu]['id']).val(self.estudios[estu]['institucion'])
+            $('#fkgrado_estudio' + self.estudios[estu]['id']).val(self.estudios[estu]['fkgrado'])
+            $('#fkgrado_estudio' + self.estudios[estu]['id']).selectpicker('refresh')
+            $('#egreso' + self.estudios[estu]['id']).val(self.estudios[estu]['egreso'])
 
-            }
 
-            $('#id_documentos').val(self.documentos[0].id)
+        }
 
-            if (self.documentos[0].ci != "None" && self.documentos[0].ci != "") {
-                document.getElementById("imagen_show_img-ci").src = self.documentos[0].ci;
-            } else {
-                document.getElementById("imagen_show_img-ci").src = "/resources/images/sinImagen.jpg";
-            }
+        for (comple in self.complementos) {
 
-            if (self.documentos[0].libretamilitar != "None" && self.documentos[0].libretamilitar != "") {
-                document.getElementById("imagen_show_img-libretamilitar").src = self.documentos[0].libretamilitar;
-            } else {
-                document.getElementById("imagen_show_img-libretamilitar").src = "/resources/images/sinImagen.jpg";
-            }
+            append_input_complemento(self.complementos[comple]['id'])
+            $('#id_complemento' + self.complementos[comple]['id']).val(self.complementos[comple]['id'])
+            $('#estudio' + self.complementos[comple]['id']).val(self.complementos[comple]['estudio'])
+            $('#fkgrado_complemento' + self.complementos[comple]['id']).val(self.complementos[comple]['fkgrado'])
+            $('#fkgrado_complemento' + self.complementos[comple]['id']).selectpicker('refresh')
 
-                    if (self.documentos[0].titulobachiller != "None" && self.documentos[0].titulobachiller != "") {
-                document.getElementById("imagen_show_img-titulobachiller").src = self.documentos[0].titulobachiller;
-            } else {
-                document.getElementById("imagen_show_img-titulobachiller").src = "/resources/images/sinImagen.jpg";
-            }
+        }
 
-                    if (self.documentos[0].titulotecnico != "None" && self.documentos[0].titulotecnico != "") {
-                document.getElementById("imagen_show_img-titulotecnico").src = self.documentos[0].titulotecnico;
-            } else {
-                document.getElementById("imagen_show_img-titulotecnico").src = "/resources/images/sinImagen.jpg";
-            }
+        $('#id_documentos').val(self.documentos[0].id)
 
-                    if (self.documentos[0].titulolicenciatura != "None" && self.documentos[0].titulolicenciatura != "") {
-                document.getElementById("imagen_show_img-titulolicenciatura").src = self.documentos[0].titulolicenciatura;
-            } else {
-                document.getElementById("imagen_show_img-titulolicenciatura").src = "/resources/images/sinImagen.jpg";
-            }
+        if (self.documentos[0].ci != "None" && self.documentos[0].ci != "") {
+            document.getElementById("imagen_show_img-ci").src = self.documentos[0].ci;
+        } else {
+            document.getElementById("imagen_show_img-ci").src = "/resources/images/sinImagen.jpg";
+        }
 
-                    if (self.documentos[0].flcn != "None" && self.documentos[0].flcn != "") {
-                document.getElementById("imagen_show_img-flcn").src = self.documentos[0].flcn;
-            } else {
-                document.getElementById("imagen_show_img-flcn").src = "/resources/images/sinImagen.jpg";
-            }
+        if (self.documentos[0].libretamilitar != "None" && self.documentos[0].libretamilitar != "") {
+            document.getElementById("imagen_show_img-libretamilitar").src = self.documentos[0].libretamilitar;
+        } else {
+            document.getElementById("imagen_show_img-libretamilitar").src = "/resources/images/sinImagen.jpg";
+        }
 
-                    if (self.documentos[0].flcc != "None" && self.documentos[0].flcc != "") {
-                document.getElementById("imagen_show_img-flcc").src = self.documentos[0].flcc;
-            } else {
-                document.getElementById("imagen_show_img-flcc").src = "/resources/images/sinImagen.jpg";
-            }
+                if (self.documentos[0].titulobachiller != "None" && self.documentos[0].titulobachiller != "") {
+            document.getElementById("imagen_show_img-titulobachiller").src = self.documentos[0].titulobachiller;
+        } else {
+            document.getElementById("imagen_show_img-titulobachiller").src = "/resources/images/sinImagen.jpg";
+        }
 
-                    if (self.documentos[0].flcv != "None" && self.documentos[0].flcv != "") {
-                document.getElementById("imagen_show_img-flcv").src = self.documentos[0].flcv;
-            } else {
-                document.getElementById("imagen_show_img-flcv").src = "/resources/images/sinImagen.jpg";
-            }
+                if (self.documentos[0].titulotecnico != "None" && self.documentos[0].titulotecnico != "") {
+            document.getElementById("imagen_show_img-titulotecnico").src = self.documentos[0].titulotecnico;
+        } else {
+            document.getElementById("imagen_show_img-titulotecnico").src = "/resources/images/sinImagen.jpg";
+        }
 
-                    if (self.documentos[0].luzagua != "None" && self.documentos[0].luzagua != "") {
-                document.getElementById("imagen_show_img-luzagua").src = self.documentos[0].luzagua;
-            } else {
-                document.getElementById("imagen_show_img-luzagua").src = "/resources/images/sinImagen.jpg";
-            }
+                if (self.documentos[0].titulolicenciatura != "None" && self.documentos[0].titulolicenciatura != "") {
+            document.getElementById("imagen_show_img-titulolicenciatura").src = self.documentos[0].titulolicenciatura;
+        } else {
+            document.getElementById("imagen_show_img-titulolicenciatura").src = "/resources/images/sinImagen.jpg";
+        }
 
-                    if (self.documentos[0].certificadonacimiento != "None" && self.documentos[0].certificadonacimiento != "") {
-                document.getElementById("imagen_show_img-certificadonacimiento").src = self.documentos[0].certificadonacimiento;
-            } else {
-                document.getElementById("imagen_show_img-certificadonacimiento").src = "/resources/images/sinImagen.jpg";
-            }
+                if (self.documentos[0].flcn != "None" && self.documentos[0].flcn != "") {
+            document.getElementById("imagen_show_img-flcn").src = self.documentos[0].flcn;
+        } else {
+            document.getElementById("imagen_show_img-flcn").src = "/resources/images/sinImagen.jpg";
+        }
 
-                    if (self.documentos[0].otros != "None" && self.documentos[0].otros != "") {
-                document.getElementById("imagen_show_img-otros").src = self.documentos[0].otros;
-            } else {
-                document.getElementById("imagen_show_img-otros").src = "/resources/images/sinImagen.jpg";
-            }
+                if (self.documentos[0].flcc != "None" && self.documentos[0].flcc != "") {
+            document.getElementById("imagen_show_img-flcc").src = self.documentos[0].flcc;
+        } else {
+            document.getElementById("imagen_show_img-flcc").src = "/resources/images/sinImagen.jpg";
+        }
+
+                if (self.documentos[0].flcv != "None" && self.documentos[0].flcv != "") {
+            document.getElementById("imagen_show_img-flcv").src = self.documentos[0].flcv;
+        } else {
+            document.getElementById("imagen_show_img-flcv").src = "/resources/images/sinImagen.jpg";
+        }
+
+                if (self.documentos[0].luzagua != "None" && self.documentos[0].luzagua != "") {
+            document.getElementById("imagen_show_img-luzagua").src = self.documentos[0].luzagua;
+        } else {
+            document.getElementById("imagen_show_img-luzagua").src = "/resources/images/sinImagen.jpg";
+        }
+
+                if (self.documentos[0].certificadonacimiento != "None" && self.documentos[0].certificadonacimiento != "") {
+            document.getElementById("imagen_show_img-certificadonacimiento").src = self.documentos[0].certificadonacimiento;
+        } else {
+            document.getElementById("imagen_show_img-certificadonacimiento").src = "/resources/images/sinImagen.jpg";
+        }
+
+                if (self.documentos[0].otros != "None" && self.documentos[0].otros != "") {
+            document.getElementById("imagen_show_img-otros").src = self.documentos[0].otros;
+        } else {
+            document.getElementById("imagen_show_img-otros").src = "/resources/images/sinImagen.jpg";
+        }
 
         clean_form()
         verif_inputs('')

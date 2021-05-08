@@ -401,16 +401,13 @@ class PersonalManager(SuperManager):
             check = 'checked' if is_active else ''
             delete = 'personal_delete' in privilegios
 
-            diccionario = item.get_dict()
-            diccionario['estado'] = estado
-            diccionario['check'] = check
-            diccionario['disable'] = disable
-            diccionario['delete'] = delete
-            diccionario['fechar'] = item.fechar.strftime('%d/%m/%Y')
-            diccionario['fullname'] = item.fullname
-            diccionario['cargo'] = item.cargo.nombre
-
-            list.append(diccionario)
+            list.append(dict(id=item.id,
+                 fechar=item.fechar.strftime('%d/%m/%Y'),
+                 fullname=item.fullname,
+                 cargo=item.cargo.nombre,
+                 estado=estado,check=check,
+                 disable=disable,
+                 delete=delete))
 
         return list
 
