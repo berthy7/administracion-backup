@@ -6,14 +6,13 @@ from sqlalchemy.orm import relationship
 
 
 class Material(Serializable, Base):
-    way = {'tipo': {},'detalle': {}}
+    way = {'tipo': {},'detalle': {'materialdetallestock': {}}}
 
     __tablename__ = 'almacen_material'
 
     id = Column(BigInteger, primary_key=True)
     fktipo = Column(BigInteger, ForeignKey("almacen_material_tipo.id"), nullable=True)
     nombre = Column(String(100), nullable=False)
-    cantidad = Column(BigInteger, nullable=True, default=0)
     estado = Column(Boolean, default=True)
     enabled = Column(Boolean, default=True)
 
@@ -21,7 +20,7 @@ class Material(Serializable, Base):
     tipo = relationship('MaterialTipo')
 
 class MaterialDetalle(Serializable, Base):
-    way = {'material': {}, 'talla': {}, 'color': {}}
+    way = {'material': {},'materialdetallestock': {}, 'talla': {}, 'color': {}}
 
     __tablename__ = 'almacen_material_Detalle'
 
@@ -38,6 +37,7 @@ class MaterialDetalle(Serializable, Base):
     material = relationship('Material')
     talla = relationship('MaterialTalla')
     color = relationship('MaterialColor')
+    materialdetallestock = relationship('MaterialAlmacenStock')
 
 class MaterialTipo(Serializable, Base):
     way = {}
@@ -65,6 +65,35 @@ class MaterialColor(Serializable, Base):
     way = {}
 
     __tablename__ = 'almacen_material_color'
+
+    id = Column(BigInteger, primary_key=True)
+    nombre = Column(String(50), nullable=False)
+
+    estado = Column(Boolean, default=True)
+    enabled = Column(Boolean, default=True)
+
+
+class MaterialAlmacenStock(Serializable, Base):
+    way = {'material': {}, 'almacen': {}}
+
+    __tablename__ = 'almacen_material_almacenstock'
+
+    id = Column(BigInteger, primary_key=True)
+    fkdetallematerial = Column(BigInteger, ForeignKey("almacen_material_Detalle.id"), nullable=True)
+    fkalmacen = Column(BigInteger, ForeignKey("almacen_material_almacen.id"), nullable=True)
+    cantidad = Column(BigInteger, nullable=True, default=0)
+
+    estado = Column(Boolean, default=True)
+    enabled = Column(Boolean, default=True)
+
+    material = relationship('MaterialDetalle')
+    almacen = relationship('MaterialAlmacen')
+
+
+class MaterialAlmacen(Serializable, Base):
+    way = {}
+
+    __tablename__ = 'almacen_material_almacen'
 
     id = Column(BigInteger, primary_key=True)
     nombre = Column(String(50), nullable=False)

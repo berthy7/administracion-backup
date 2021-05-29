@@ -18,7 +18,7 @@
                         <div class="col-sm-12">
                             <div class="form-group form-float">
                                 <div class="form-line">
-                                    <input type="text" id="descripcion" name="Descripcion" class="form-control item-form" required>
+                                    <input type="text" id="descripcion" name="Descripcion" class="form-control item-form" >
                                     <label class="form-label">Descripcion</label>
                                 </div>
                             </div>
@@ -103,13 +103,32 @@
                                                             <th>Color</th>
                                                             <th>Talla</th>
                                                             <th>Stock</th>
-                                                            <th>Cantidad</th>
+                                                            <th>Backup</th>
+                                                            <th>Stock</th>
+                                                            <th>Usados</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody id="table_content_{{materiales.id}}">
                                                         {% for _detalle in materiales.detalle %}
 
                                                             <tr>
+
+                                                                {% for _materialstock in _detalle.materialdetallestock %}
+
+                                                                    {% if _materialstock.fkalmacen == 1 %}
+
+                                                                        {% set cantBackup = _materialstock.cantidad%}
+
+                                                                    {% end%}
+
+                                                                     {% if _materialstock.fkalmacen == 2 %}
+
+                                                                        {% set cantUsado = _materialstock.cantidad %}
+
+                                                                    {% end%}
+
+                                                                {% end%}
+
                                                                 <td hidden>
                                                                     <input id="id_detalle{{_detalle.id}}"  class="form-control detalle txta-own" >
                                                                 </td>
@@ -117,7 +136,10 @@
                                                                     <input id="fkmaterialDetalle{{_detalle.id}}" value="{{_detalle.id}}"  class="form-control detalle txta-own" >
                                                                 </td>
                                                                 <td hidden>
-                                                                    <input id="stock{{_detalle.id}}" value="{{_detalle.cantidad}}"  class="form-control detalle txta-own" >
+                                                                    <input id="stockBackup{{_detalle.id}}" value="{{cantBackup}}"  class="form-control detalle txta-own" >
+                                                                </td>
+                                                                 <td hidden>
+                                                                    <input id="stockUsado{{_detalle.id}}" value="{{cantUsado}}"  class="form-control detalle txta-own" >
                                                                 </td>
                                                                  <td hidden>
                                                                     <input id="material{{_detalle.id}}" value="{{materiales.nombre}}"  class="form-control detalle txta-own" >
@@ -132,10 +154,16 @@
                                                                 <td>{{_detalle.color.nombre}}</td>
 
                                                                 <td>{{_detalle.talla.nombre}}</td>
-                                                                <td>{{_detalle.cantidad }}</td>
+
+                                                                <td>{{cantBackup }}</td>
                                                                 <td>
-                                                                    <input id="cantidad{{_detalle.id}}" type="number" class="form-control detalle _cantidad txta-own">
+                                                                    <input id="cantidadBackup{{_detalle.id}}" type="number" class="form-control detalle _cantidad txta-own">
                                                                 </td>
+                                                                <td>{{cantUsado }}</td>
+                                                                <td>
+                                                                    <input id="cantidadUsado{{_detalle.id}}" type="number" class="form-control detalle _cantidad txta-own">
+                                                                </td>
+
                                                             </tr>
                                                         {% end%}
                                                     </tbody>

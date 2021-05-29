@@ -17,6 +17,7 @@ class AsignacionController(CrudController):
         '/asignacion': {'GET': 'index', 'POST': 'table'},
         '/asignacion_insert': {'POST': 'insert'},
         '/asignacion_update': {'PUT': 'edit', 'POST': 'update'},
+        '/asignacion_devolucion': {'PUT': 'edit_Devolucion', 'POST': 'update_Devolucion'},
         '/asignacion_state': {'POST': 'state'},
         '/asignacion_delete': {'POST': 'delete'},
         '/asignacion_list': {'POST': 'data_list'},
@@ -127,3 +128,17 @@ class AsignacionController(CrudController):
         except Exception as e:
             print(e)
             self.respond(response=[], success=False, message=str(e))
+
+
+    def edit_Devolucion(self):
+        self.set_session()
+        # self.verif_privileges()
+        ins_manager = self.manager(self.db)
+        diccionary = json.loads(self.get_argument("object"))
+        indicted_object = ins_manager.obtener_para_devolucion(diccionary['id'])
+
+        if len(ins_manager.errors) == 0:
+            self.respond(indicted_object, message='Operación exitosa!')
+        else:
+            self.respond([item.__dict__ for item in ins_manager.errors], False, 'Ocurrió un error al insertar')
+        self.db.close()

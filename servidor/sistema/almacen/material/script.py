@@ -1,7 +1,7 @@
 from servidor.database.connection import transaction
 from servidor.sistema.usuarios.usuario.model import Modulo
 from servidor.sistema.usuarios.rol.model import Rol
-from servidor.sistema.almacen.material.model import MaterialTipo,MaterialColor,MaterialTalla
+from servidor.sistema.almacen.material.model import MaterialTipo,MaterialColor,MaterialTalla,MaterialAlmacen
 
 
 
@@ -94,5 +94,9 @@ def insertions():
         session.add(MaterialColor(nombre='ROSADO'))
         session.add(MaterialColor(nombre='VERDE'))
         session.add(MaterialColor(nombre='PLATA'))
+
+        session.add(MaterialAlmacen(id = 1,nombre='Backup'))
+        session.add(MaterialAlmacen(id = 2,nombre='Usados'))
+        session.add(MaterialAlmacen(id = 3,nombre='Descartes'))
 
         session.commit()

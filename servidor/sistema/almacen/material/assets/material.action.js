@@ -24,7 +24,9 @@ function load_table(data_tb) {
             { title: "ID", data: "id" },
             { title: "Tipo", data: "tipo" },
             { title: "Nombre", data: "nombre" },
-            { title: "Cantidad", data: "cantidadTotal" },
+            { title: "Cant. Backup", data: "cantidadBackup" },
+            { title: "Cant. Usado", data: "cantidadUsado" },
+            { title: "Cant. Descarte", data: "cantidadDescarte" },
             { title: "Estado", data: "estado",
                 render: function(data, type, row) {
                     return '\
@@ -217,7 +219,35 @@ function edit_item(e) {
             $('#fkcolor'+self.detalle[i].id).selectpicker('render')
             $('#fktalla'+self.detalle[i].id).val(self.detalle[i].fktalla)
             $('#fktalla'+self.detalle[i].id).selectpicker('render')
-            $('#cantidad'+self.detalle[i].id).val(self.detalle[i].cantidad)
+
+            for (mat in self.detalle[i].materialdetallestock){
+
+                // if (self.detalle[i].materialdetallestock[mat].fkalmacen == 1){
+                //     $('#cantidadBackup'+self.detalle[i].id).val(self.detalle[i].materialdetallestock[mat].cantidad)
+                // }
+                // if (self.detalle[i].materialdetallestock[mat].fkalmacen == 2){
+                //     $('#cantidadUsado'+self.detalle[i].id).val(self.detalle[i].materialdetallestock[mat].cantidad)
+                // }
+                // if (self.detalle[i].materialdetallestock[mat].fkalmacen == 3){
+                //     $('#cantidadDescarte'+self.detalle[i].id).val(self.detalle[i].materialdetallestock[mat].cantidad)
+                // }
+
+                switch(self.detalle[i].materialdetallestock[mat].fkalmacen) {
+                  case 1:
+                    $('#cantidadBackup'+self.detalle[i].id).val(self.detalle[i].materialdetallestock[mat].cantidad)
+                    break;
+                  case 2:
+                    $('#cantidadUsado'+self.detalle[i].id).val(self.detalle[i].materialdetallestock[mat].cantidad)
+                    break;
+                  case 3:
+                    $('#cantidadDescarte'+self.detalle[i].id).val(self.detalle[i].materialdetallestock[mat].cantidad)
+                    break;
+                  default:
+                    // code block
+                }
+
+
+            }
 
         }
 

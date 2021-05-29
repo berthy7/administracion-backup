@@ -8,6 +8,7 @@
 {% block content %}
     {% if 'asignacion_insert' in privileges or 'asignacion_update' in privileges %}
         {% include _form.html %}
+        {% include _formDevolucion.html %}
     {% end %}
 
     <div class="row clearfix">

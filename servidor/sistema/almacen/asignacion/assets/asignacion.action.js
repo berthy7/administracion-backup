@@ -34,6 +34,13 @@ $('#fkpersonal').selectpicker({
     title: 'Seleccione'
 })
 
+$('#fkpersonalDevolucion').selectpicker({
+    size: 10,
+    liveSearch: true,
+    liveSearchPlaceholder: 'Buscar',
+    title: 'Seleccione'
+})
+
 
 $('#fkpersonal').change(function() {
 
@@ -106,6 +113,12 @@ function load_table(data_tb) {
                                 <i class="material-icons">edit</i>\
                             </button>'
                     }
+                    if (row.disable === '') {
+                        a += '\
+                            <button data-json="' + data + '"  type="button" class="btn btn-primary waves-effect" title="Devolucion" onclick="devolucion_item(this)">\
+                                Devolucion\
+                            </button>'
+                    }
                     if (row.delete) {
                         a += '\
                             <button data-json="' + data + '"  type="button" class="btn btn-danger waves-effect" title="Eliminar" onclick="delete_item(this)">\
@@ -175,9 +188,7 @@ function get_detalle() {
     objeto_inputs = $('.detalle')
     cant_ = 0
 
-    // .attr('data-id')
-
-    for (i = 0; i < objeto_inputs.length; i += 7) {
+    for (i = 0; i < objeto_inputs.length; i += 9) {
         h0 = objeto_inputs[i].value
         h1 = objeto_inputs[i + 1].value
         h2 = objeto_inputs[i + 2].value
@@ -185,15 +196,31 @@ function get_detalle() {
         h4 = objeto_inputs[i + 4].value
         h5 = objeto_inputs[i + 5].value
         h6 = objeto_inputs[i + 6].value
+        h7 = objeto_inputs[i + 7].value
+        h8 = objeto_inputs[i + 8].value
 
-        if(h6 <= h2){
-            if (h6 !=''){
-                objeto.push((function add_(h0, h1, h6) {
+        if (h7 ==''){
+            h7 = 0
+        }
+        if (h8 ==''){
+            h8 = 0
+        }
+
+        if(h7 <= h2){
+            if (h7 !=''){
+                objeto.push((function add_(h0, h1, h7,h8) {
 
                 if (h0 =='' ){
                     return {
                         'fkmaterialDetalle': h1,
-                        'cantidad': h6
+                        'asignacionstock': [{
+                            'fkalmacen': 1,
+                            'cantidad': h7
+                            },
+                            {
+                            'fkalmacen': 2,
+                            'cantidad': h8
+                            }]
 
                     }
 
@@ -201,7 +228,14 @@ function get_detalle() {
                     return {
                     'id':h0,
                     'fkmaterialDetalle': h1,
-                    'cantidad': h6
+                    'asignacionstock': [{
+                            'fkalmacen': 1,
+                            'cantidad': h7
+                            },
+                            {
+                            'fkalmacen': 2,
+                            'cantidad': h8
+                            }]
                     }
                 }
 
@@ -209,7 +243,8 @@ function get_detalle() {
             })(
                 h0,
                 h1,
-                h6))
+                h7,
+                h8))
 
 
 
@@ -219,7 +254,7 @@ function get_detalle() {
             return {
                     'objeto':'',
                     'success': false,
-                    'mensaje': 'la Cantidad ingresada de '+h3+' '+h4+' '+h5+' es mayor al stock disponible'
+                    'mensaje': 'la Cantidad ingresada de '+h4+' '+h5+' '+h6+' es mayor al stock disponible'
                     }
         }
 
@@ -233,6 +268,61 @@ function get_detalle() {
             'mensaje': ''
             }
 }
+
+
+
+function append_input_detalleDevolucion(id_in) {
+
+        $('#detalle_divDevolucion').append(
+        '<div class="row">\
+            <div class="col-sm-1 hidden">\
+                <div class="input-group">\
+                <input  id="id_detalleDevolucion'+id_in+'" class="form-control detalle readonly txta-own">\
+                </div>\
+            </div>\
+            <div class="col-sm-2">\
+                <div  class="form-line">\
+                    <input id="materialDevolucion'+id_in+'" data-id="'+id_in+'" class="form-control  txta-own" readonly>\
+                </div>\
+            </div>\
+            <div class="col-sm-2">\
+                <div  class="form-line">\
+                    <input id="colorDevolucion'+id_in+'" data-id="'+id_in+'" class="form-control  txta-own" readonly>\
+                </div>\
+            </div>\
+            <div class="col-sm-1">\
+                <div  class="form-line">\
+                    <input id="tallaDevolucion'+id_in+'" data-id="'+id_in+'" class="form-control  txta-own" readonly>\
+                </div>\
+            </div>\
+            <div class="col-sm-1">\
+                <div  class="form-line">\
+                    <input id="backupDevolucion'+id_in+'" data-id="'+id_in+'" class="form-control  txta-own" readonly>\
+                </div>\
+            </div>\
+            <div class="col-sm-1">\
+                <div  class="form-line">\
+                    <input id="usadoDevolucion'+id_in+'" data-id="'+id_in+'" class="form-control  txta-own" readonly>\
+                </div>\
+            </div>\
+        </div>'
+    )
+
+        $('.clear_detalle').last().click(function () {
+            $(this).parent().parent().remove()
+        })
+
+
+
+        $('.select_').selectpicker({
+            size: 10,
+            liveSearch: true,
+            liveSearchPlaceholder: 'Buscar',
+            title: 'Seleccione'
+        })
+
+
+    }
 
 $('#new').click(function() {
     $(fkpersonal).val('')
@@ -300,7 +390,7 @@ $('#insert').on('click', function() {
                     else show_toast('warning', self.message);
                  })
         }else{
-            swal(
+            Swal.fire(
                 'Error de datos.',
                  respuestaDetalle['mensaje'],
                 'warning'
@@ -357,6 +447,58 @@ function edit_item(e) {
         $('#insert').hide()
         $('#update').show()
         $('#modal').modal('show')
+    })
+}
+
+function devolucion_item(e) {
+    clean_data()
+
+
+    obj = JSON.stringify({
+        'id': parseInt(JSON.parse($(e).attr('data-json')))
+    })
+
+    ajax_call_get('asignacion_devolucion',{
+        _xsrf: getCookie("_xsrf"),
+        object: obj
+    },function(response){
+        var self = response.response;
+
+        console.log(self)
+
+        $('#idDevolucion').val(self.id)
+        $('#descripcionDevolucion').val(self.descripcion)
+        $('#fkpersonalDevolucion').val(self.fkpersonal)
+        $('#fkpersonalDevolucion').selectpicker('refresh')
+
+        if (self.fotoPersonal) {
+        
+            document.getElementById("imagen_show_img-fotoDevolucion").src =self.fotoPersonal;
+        } else {
+      
+            document.getElementById("imagen_show_img-fotoDevolucion").src = "/resources/images/no_photo.png";
+        }
+
+        $('#detalle_divDevolucion').empty()
+
+        for (i in self.detalle) {
+
+            append_input_detalleDevolucion(self.detalle[i].id)
+            $('#id_detalleDevolucion'+self.detalle[i].id).val(self.detalle[i].id)
+            $('#materialDevolucion'+self.detalle[i].id).val(self.detalle[i].material)
+            $('#colorDevolucion'+self.detalle[i].id).val(self.detalle[i].color)
+            $('#tallaDevolucion'+self.detalle[i].id).val(self.detalle[i].talla)
+            $('#backupDevolucion'+self.detalle[i].id).val(self.detalle[i].backup)
+            $('#usadoDevolucion'+self.detalle[i].id).val(self.detalle[i].usado)
+
+
+        }
+
+        clean_form()
+        verif_inputs('')
+        $('.item-form').parent().addClass('focused')
+        $('#devolucion').show()
+        $('#modalDevolucion').modal('show')
     })
 }
 

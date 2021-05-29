@@ -199,18 +199,34 @@ function get_detalle() {
 
     // .attr('data-id')
 
-    for (i = 0; i < objeto_inputs.length; i += 3) {
+    for (i = 0; i < objeto_inputs.length; i += 4) {
         h0 = objeto_inputs[i].value
         h1 = objeto_inputs[i + 1].value
         h2 = objeto_inputs[i + 2].value
+        h3 = objeto_inputs[i + 3].value
+
+        if (h2 ==''){
+            h2 = 0
+        }
+        if (h3 ==''){
+            h3 = 0
+        }
+
 
         if (h2 !=''){
-            objeto.push((function add_(h0, h1, h2) {
+            objeto.push((function add_(h0, h1, h2,h3) {
 
             if (h0 =='' ){
                 return {
                     'fkmaterialDetalle': h1,
-                    'cantidad': h2
+                    'detallestock': [{
+                        'fkalmacen': 1,
+                        'cantidad': h2
+                        },
+                        {
+                        'fkalmacen': 2,
+                        'cantidad': h3
+                        }]
 
                 }
 
@@ -218,7 +234,14 @@ function get_detalle() {
                 return {
                 'id':h0,
                 'fkmaterialDetalle': h1,
-                'cantidad': h2
+                'detallestock': [{
+                    'fkalmacen': 1,
+                    'cantidad': h2
+                    },
+                    {
+                    'fkalmacen': 2,
+                    'cantidad': h3
+                    }]
                 }
             }
 
@@ -226,9 +249,8 @@ function get_detalle() {
         })(
             h0,
             h1,
-            h2))
-
-
+            h2,
+            h3))
 
         }
 
@@ -288,7 +310,7 @@ $('#insert').on('click', function() {
                     else show_toast('warning', self.message);
                 })
             }else{
-                swal(
+                Swal.fire(
                     'Error de datos.',
                     'el nro de boleta ya fue registrado con anterioridad',
                     'warning'
@@ -328,10 +350,10 @@ function edit_item(e) {
 
         for (i in self.detalle) {
             $('#id_detalle'+self.detalle[i].fkmaterialDetalle).val(self.detalle[i].id)
-            $('#cantidad'+self.detalle[i].fkmaterialDetalle).val(self.detalle[i].cantidad)
+            $('#cantidadBackup'+self.detalle[i].fkmaterialDetalle).val(self.detalle[i].cantidadBackup)
+            $('#cantidadUsado'+self.detalle[i].fkmaterialDetalle).val(self.detalle[i].cantidadUsado)
 
         }
-
 
         clean_form()
         verif_inputs('')

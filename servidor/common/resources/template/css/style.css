@@ -2515,7 +2515,8 @@ section.content {
 .btn-primary:hover,
 .btn-primary:active,
 .btn-primary:focus {
-  background-color: #1f91f3 !important; }
+  /*background-color: #1f91f3 !important; }*/
+  background-color: #424A5A  !important; }
 
 .btn-default,
 .btn-default:hover,

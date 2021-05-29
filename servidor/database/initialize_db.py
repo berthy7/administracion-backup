@@ -5,6 +5,7 @@ from servidor.database.models import Base
 from servidor.sistema.usuarios.rol.script import insertions as rol_insertions
 from servidor.sistema.usuarios.usuario.script import insertions as user_insertions
 from servidor.sistema.usuarios.bitacora.script import insertions as log_insertions
+from servidor.sistema.usuarios.ajuste.script import insertions as ajuste_insertions
 
 from servidor.sistema.parametrizacion.categoria.script import insertions as categoria_insertions
 from servidor.sistema.parametrizacion.civil.script import insertions as civil_insertions
@@ -39,6 +40,7 @@ def main():
     rol_insertions()
     user_insertions()
     log_insertions()
+    ajuste_insertions()
 
     categoria_insertions()
     civil_insertions()

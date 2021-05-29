@@ -3,7 +3,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="largeModalLabel">Stock</h4>
+                <h4 class="modal-title" id="largeModalLabel">Ingreso de Stock</h4>
             </div>
             <div class="modal-body">
             <form>
@@ -62,7 +62,8 @@
                                                             <th>ID Material</th>
                                                             <th>Color</th>
                                                             <th>Talla</th>
-                                                            <th>Cantidad</th>
+                                                            <th>Cant. Backup</th>
+                                                            <th>Cant. Usados</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody id="table_content_{{materiales.id}}">
@@ -80,7 +81,10 @@
 
                                                                 <td>{{_detalle.talla.nombre}}</td>
                                                                 <td>
-                                                                    <input id="cantidad{{_detalle.id}}" type="number" class="form-control detalle _cantidad txta-own">
+                                                                    <input id="cantidadBackup{{_detalle.id}}" type="number" class="form-control detalle _cantidadBackup txta-own">
+                                                                </td>
+                                                                 <td>
+                                                                    <input id="cantidadUsado{{_detalle.id}}" type="number" class="form-control detalle _cantidadUsado txta-own">
                                                                 </td>
                                                             </tr>
                                                         {% end%}

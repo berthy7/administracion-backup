@@ -1,0 +1,86 @@
+{% extends ../../../../common/views/layout.html %}
+
+{% block header %}
+    {% set user = usuario %}
+    <link rel="stylesheet" href="/usuarios/ajuste/assets/ajuste.style.css">
+{% end %}
+
+{% block content %}
+    {% if 'ajuste_insert' in privileges or 'ajuste_update' in privileges %}
+        {% include _form.html %}
+    {% end %}
+
+    <div class="row clearfix">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="card">
+                <div class="header">
+                    <span class="text-uppercase">Ajuste</span>
+                    <input id="id_ajuste" type="hidden" value="{{ ajuste['id'] }}">
+
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <ol class="breadcrumb" style="float: right">
+                            <li><a href="/">Inicio</a></li>
+                            <li><a href="javascript:void(0);">Usuarios</a></li>
+                            <li class="active"><span class="text-info">Ajuste</span></li>
+                        </ol>
+                    </div>
+                </div>
+                <div class="body">
+                    <div class="card-content">
+                        <div class="row clearfix">
+                            <div class="col-sm-4">
+                              <div class="card" style="padding-left: 20px; padding-top: 10px">
+                                  <label ><span class="card-title">Clave Secreta</span></label>
+                                  </br>
+                                  </br>
+                                <div class="card-content">
+
+                                    <div class="row clearfix">
+                                        <div class="col-sm-7">
+                                            <label>Contraseña</label>
+                                                <div class="form-line">
+                                                    <input id="clavesecreta" name="Clave Secreta" value="{{ ajuste['claveSecreta'] }}" type="password" class="form-control txta-own"  >
+                                                </div>
+
+                                            </span>
+                                        </div>
+                                        <div class="col-sm-1">
+                                            <label></label>
+                                             <div class="form-line">
+                                                <span class="input-group-addon">
+                                                <i class="material-icons"  id="cont-eye">visibility</i>
+
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    </br>
+
+                                    <div class="row clearfix">
+                                        <div class="col-sm-4">
+                                            <!--<button id="actualizarClave" type="button" class="btn color_boton waves-effect " >Guardar <i class="material-icons waves-effect">save</i></button>-->
+                                            <button id="actualizarClave" type="button" class="btn btn-primary waves-effect">Guardar <i class="material-icons waves-effect">save</i></button>
+                                        </div>
+                                    </div>
+                                    </br>
+
+                                </div>
+
+                              </div>
+                            </div>
+
+                        </div>
+                        </br>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% end %}
+
+{% block footer %}
+    <script src="/resources/static/js/functions.js"></script>
+    <script src="/usuarios/ajuste/assets/ajuste.action.js"></script>
+{% end %}

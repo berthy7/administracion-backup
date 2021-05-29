@@ -3,6 +3,7 @@ from servidor.sistema.usuarios.usuario.controller import UsuarioController, Manu
 from servidor.sistema.usuarios.persona.controller import PersonaController
 from servidor.sistema.usuarios.rol.controller import RolController
 from servidor.sistema.usuarios.bitacora.controller import BitacoraController
+from servidor.sistema.usuarios.ajuste.controller import AjusteController
 
 from servidor.sistema.parametrizacion.categoria.controller import CategoriaController
 from servidor.sistema.parametrizacion.civil.controller import CivilController
@@ -57,6 +58,7 @@ def get_handlers():
     handlers.extend(get_routes(RolController))
     handlers.extend(get_routes(UsuarioController))
     handlers.extend(get_routes(PersonaController))
+    handlers.extend(get_routes(AjusteController))
 
     # Parametrizacion
     handlers.extend(get_routes(CategoriaController))

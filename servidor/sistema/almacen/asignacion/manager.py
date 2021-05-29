@@ -18,6 +18,44 @@ class AsignacionManager(SuperManager):
     def __init__(self, db):
         super().__init__(Asignacion, db)
 
+    def obtener_para_devolucion(self,idAsignacion):
+
+        asignacion = self.db.query(self.entity).filter(self.entity.id == idAsignacion).first()
+
+        lista_detalle = list()
+        for detalle in asignacion.detalle:
+
+            for asignacionstock in detalle.asignacionstock:
+
+
+
+                print(asignacionstock.asignaciondetalle.materialDetalle.material.nombre)
+                cant_backup = 0
+                cant_usado = 0
+
+                # for asignacionAlmacen in asignacionstock.almacen:
+                #     if asignacionAlmacen.fkalmacen == 1:
+                #         cant_backup = asignacion.cantidad
+                #     if asignacionAlmacen.fkalmacen == 2:
+                #         cant_usado = asignacion.cantidad
+
+
+                lista_detalle.append(dict(id=asignacionstock.id,material=asignacionstock.asignaciondetalle.materialDetalle.material.nombre,
+                                          color=asignacionstock.asignaciondetalle.materialDetalle.color.nombre,
+                                          talla=asignacionstock.asignaciondetalle.materialDetalle.talla.nombre,
+                                          backup =cant_backup,
+                                          usado= cant_usado))
+
+
+
+        asignacion_dict = dict(id=asignacion.id,
+                               descripcion=asignacion.descripcion,
+                               fkpersonal=asignacion.fkpersonal,
+                               fotoPersonal=asignacion.personal.foto,
+                               detalle=lista_detalle)
+
+        return asignacion_dict
+
     def listar_habilitados(self):
         return self.db.query(self.entity).filter(self.entity.estado).filter(self.entity.enabled).all()
 

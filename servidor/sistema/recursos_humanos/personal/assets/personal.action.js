@@ -191,7 +191,14 @@ $('#fechanacimiento').change(function() {
 
             response = JSON.parse(response);
 
+
             $('#edad').val(response.response)
+
+
+            if (parseInt(response.response) < 18){
+                show_msg_lg('error', 'No se cumple con la edad minima 18 años', 'center')
+            }
+
 
         })
 
@@ -219,18 +226,10 @@ $('#serviciomilitar').change(function() {
         // $('#div_residente').hide()
         // $('#div_invitacion').show()
         // $('#div_datos_visita').show()
-
-
         $('#fkregimiento').prop("required", true);
-
-
-
-
+        
     }else{
         $('#nrolibreta').val('')
-
-
- 
 
         $(fkregimiento).val('')
         $(fkregimiento).selectpicker('render')
@@ -729,7 +728,8 @@ $('#new').click(function() {
     verif_inputs('')
     validationInputSelects("modal")
     $('.item-form').parent().removeClass('focused')
-    
+
+    $('#fechanacimiento').val('')
     $('#fkexpedido').val('')
     $('#fkexpedido').selectpicker('refresh')
 
@@ -753,63 +753,65 @@ $('#new').click(function() {
 });
 
 $('#insert').on('click', function() {
-    notvalid = validationInputSelectsWithReturn("modal");
-
-    if (!notvalid) {
-
-        var data = new FormData($('#form_submit')[0]);
-
-        objeto = JSON.stringify({
-            'apellidop': $('#apellidop').val(),
-            'apellidom': $('#apellidom').val(),
-            'nombre': $('#nombre').val(),
-            'ci': $('#dni').val(),
-            'fkexpedido': $('#fkexpedido').val(),
-            'fknacionalidad': $('#fknacionalidad').val(),
-            'fechanacimiento': $('#fechanacimiento').val(),
-            'expendido': $('#expendido').val(),
-            'licenciavehiculo': $('#licenciavehiculo').val(),
-            'fkcategoriavehiculo': $('#fkcategoriavehiculo').val(),
-            'licenciamotocicleta': $('#licenciamotocicleta').val(),
-            'fkcategoriamotocicleta': $('#fkcategoriamotocicleta').val(),
-            'domicilio': $('#domicilio').val(),
-            'telefono': $('#telefono').val(),
-            'fkcivil': $('#fkcivil').val(),
-            'fkcargo': $('#fkcargo').val(),
-
-            'administrativos' : get_administrativos(),
-            'familiares' : get_familiares(),
-            'experiencias' : get_laboral(),
-            'estudios' : get_estudio(),
-            'complementos' : get_complemento()
-        })
-        ruta = "personal_insert";
-        data.append('object', objeto)
-        data.append('_xsrf', getCookie("_xsrf"))
-
-        $.ajax({
-            url: ruta,
-            type: "post",
-            data: data,
-            contentType: false,
-            processData: false,
-            cache: false,
-            async: true
-        }).done(function (response) {
-            self = JSON.parse(response);
-
-            if (self.success) {
-                show_msg_lg('success', self.message, 'center')
-                setTimeout(function () {
-                    $('#modal').modal('hide')
-                    reload_table()
-                }, 2000);
-            }
-            else show_toast('warning', self.message);
-
-        })
+    if (parseInt($('#edad').val()) >= 18) {
+        notvalid = validationInputSelectsWithReturn("modal");
+        if (!notvalid) {
+    
+            var data = new FormData($('#form_submit')[0]);
+    
+            objeto = JSON.stringify({
+                'apellidop': $('#apellidop').val(),
+                'apellidom': $('#apellidom').val(),
+                'nombre': $('#nombre').val(),
+                'ci': $('#dni').val(),
+                'fkexpedido': $('#fkexpedido').val(),
+                'fknacionalidad': $('#fknacionalidad').val(),
+                'fechanacimiento': $('#fechanacimiento').val(),
+                'expendido': $('#expendido').val(),
+                'licenciavehiculo': $('#licenciavehiculo').val(),
+                'fkcategoriavehiculo': $('#fkcategoriavehiculo').val(),
+                'licenciamotocicleta': $('#licenciamotocicleta').val(),
+                'fkcategoriamotocicleta': $('#fkcategoriamotocicleta').val(),
+                'domicilio': $('#domicilio').val(),
+                'telefono': $('#telefono').val(),
+                'fkcivil': $('#fkcivil').val(),
+                'fkcargo': $('#fkcargo').val(),
+    
+                'administrativos' : get_administrativos(),
+                'familiares' : get_familiares(),
+                'experiencias' : get_laboral(),
+                'estudios' : get_estudio(),
+                'complementos' : get_complemento()
+            })
+            ruta = "personal_insert";
+            data.append('object', objeto)
+            data.append('_xsrf', getCookie("_xsrf"))
+    
+            $.ajax({
+                url: ruta,
+                type: "post",
+                data: data,
+                contentType: false,
+                processData: false,
+                cache: false,
+                async: true
+            }).done(function (response) {
+                self = JSON.parse(response);
+    
+                if (self.success) {
+                    show_msg_lg('success', self.message, 'center')
+                    setTimeout(function () {
+                        $('#modal').modal('hide')
+                        reload_table()
+                    }, 2000);
+                }
+                else show_toast('warning', self.message);
+    
+            })
+        }
+        else show_toast('warning', 'Por favor, ingresa todos los campos requeridos (*).');
     }
-    else show_toast('warning', 'Por favor, ingresa todos los campos requeridos (*).');
+    else show_msg_lg('error', 'No se cumple con la edad minima 18 años');
 });
 
 function edit_item(e) {

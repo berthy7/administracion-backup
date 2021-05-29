@@ -22,20 +22,37 @@ class Stock(Serializable, Base):
 
 
 class StockDetalle(Serializable, Base):
-    way = {'stock': {}, 'materialDetalle': {'color': {},'talla': {}}}
+    way = {'detallestock': {}, 'stock': {}, 'materialDetalle': {'color': {},'talla': {}}}
 
     __tablename__ = 'almacen_stock_detalle'
 
     id = Column(BigInteger, primary_key=True)
     fkstock = Column(BigInteger, ForeignKey("almacen_stock.id"), nullable=True)
     fkmaterialDetalle = Column(BigInteger, ForeignKey("almacen_material_Detalle.id"), nullable=True)
-    cantidad = Column(String(50), nullable=False)
 
     estado = Column(Boolean, default=True)
     enabled = Column(Boolean, default=True)
 
     stock = relationship('Stock')
     materialDetalle = relationship('MaterialDetalle')
+    detallestock = relationship("StockDetalleAlmacen", cascade="save-update, merge, delete, delete-orphan")
+
+
+class StockDetalleAlmacen(Serializable, Base):
+    way = {'stockdetalle': {}, 'almacen': {}}
+
+    __tablename__ = 'almacen_detalle_stockalmacen'
+
+    id = Column(BigInteger, primary_key=True)
+    fkstockdetalle = Column(BigInteger, ForeignKey("almacen_stock_detalle.id"), nullable=True)
+    fkalmacen = Column(BigInteger, ForeignKey("almacen_material_almacen.id"), nullable=True)
+    cantidad = Column(BigInteger, nullable=True, default=0)
+
+    estado = Column(Boolean, default=True)
+    enabled = Column(Boolean, default=True)
+
+    stockdetalle = relationship('StockDetalle')
+    almacen = relationship('MaterialAlmacen')
 
 
 
