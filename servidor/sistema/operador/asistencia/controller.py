@@ -23,7 +23,7 @@ class AsistenciaController(CrudController):
     def get_extra_data(self):
         aux = super().get_extra_data()
         us = self.get_user()
-        aux['personales'] = PersonalManager(self.db).get_all_solo_foto()
+        aux['personales'] = PersonalManager(self.db).listar_habilitados()
         aux['clientes'] = ClienteManager(self.db).get_all()
         aux['tipoausencias'] = TipoAusenciaManager(self.db).get_all()
 

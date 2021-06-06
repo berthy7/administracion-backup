@@ -7,7 +7,7 @@ from sqlalchemy.orm import relationship
 
 
 class Personal(Serializable, Base):
-    way = {'cargo': {},'expedido': {},'nacionalidad': {},'civil': {},'administrativos': {},'familiares': {},'experiencias': {},'estudios': {},'complementos': {},'documentos': {}}
+    way = {'cargo': {},'expedido': {},'nacionalidad': {},'civil': {},'administrativos': {},'familiares': {},'experiencias': {},'estudios': {},'complementos': {},'documentos': {},'contratos': {}}
 
     __tablename__ = 'rrhh_personal'
 
@@ -18,9 +18,12 @@ class Personal(Serializable, Base):
     ci = Column(String(50), nullable=False)
     fechanacimiento = Column(Date, nullable=True)
     fechar = Column(Date, nullable=True)
-    telefono = Column(String(100), nullable=True)
+    telefono = Column(String(100), nullable=False)
     domicilio = Column(String(255), nullable=True)
+    latitud = Column(Text, nullable=True)
+    longitud = Column(Text, nullable=True)
     foto = Column(Text,nullable=True)
+    tipo = Column(String(50), nullable=True)
     fkcargo = Column(BigInteger, ForeignKey("rrhh_cargo.id"), nullable=True)
 
     licenciavehiculo = Column(String(100), nullable=True)
@@ -50,6 +53,7 @@ class Personal(Serializable, Base):
     estudios = relationship("Estudios", cascade="save-update, merge, delete, delete-orphan")
     complementos = relationship("Complementos", cascade="save-update, merge, delete, delete-orphan")
     documentos = relationship("Documentos", cascade="save-update, merge, delete, delete-orphan")
+    contratos = relationship("Contrato", cascade="save-update, merge, delete, delete-orphan")
 
 
     def get_dict(self, way=None):
@@ -185,3 +189,52 @@ class Documentos(Serializable, Base):
     otros = Column(Text, nullable=True)
 
     personal = relationship("Personal")
+
+
+class Contrato(Serializable, Base):
+    way = {'personal': {},'retiro': {},'tipocontrato': {}}
+
+    __tablename__ = 'rrhh_personal_contrato'
+
+    id = Column(BigInteger, primary_key=True)
+    fkpersonal = Column(BigInteger, ForeignKey("rrhh_personal.id"))
+
+    fechai = Column(Date, nullable=True)
+    fechaf = Column(Date, nullable=True)
+    fkretiro = Column(BigInteger, ForeignKey('parametrizacion_retiro.id'), nullable=True)
+    fktipocontrato = Column(BigInteger, ForeignKey('rrhh_personal_tipocontrato.id'), nullable=True)
+
+    estado = Column(Boolean, default=True)
+    enabled = Column(Boolean, default=True)
+
+    personal = relationship("Personal")
+    retiro = relationship('Retiro')
+    tipocontrato = relationship('TipoContrato')
+
+    def get_dict(self, way=None):
+        aux = super().get_dict(way)
+
+        if aux['fechai'] == 'None':
+            aux['fechai'] = None
+        else:
+            aux['fechai'] = self.fechai.strftime('%d/%m/%Y')
+
+        if aux['fechaf'] == 'None':
+            aux['fechaf'] = None
+        else:
+            aux['fechaf'] = self.fechaf.strftime('%d/%m/%Y')
+
+        return aux
+
+
+class TipoContrato(Serializable, Base):
+    way = {}
+
+    __tablename__ = 'rrhh_personal_tipocontrato'
+
+    id = Column(BigInteger, primary_key=True)
+    nombre = Column(String(100), nullable=True)
+
+
+    estado = Column(Boolean, default=True)
+    enabled = Column(Boolean, default=True)

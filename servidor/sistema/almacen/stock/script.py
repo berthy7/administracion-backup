@@ -12,7 +12,7 @@ def insertions():
 
         stock_m = session.query(Modulo).filter(Modulo.nombre == 'stock').first()
         if stock_m is None:
-            stock_m = Modulo(titulo='Stock', ruta='/stock', nombre='stock', icono='business')
+            stock_m = Modulo(titulo='Ingreso de Stock', ruta='/stock', nombre='stock', icono='business')
 
         almacen_m.children.append(stock_m)
 
@@ -34,7 +34,7 @@ def insertions():
         stock_m.children.append(update_stock)
         stock_m.children.append(delete_stock)
 
-        roles = session.query(Rol).filter(Rol.nombre.in_(['SUPER ADMINISTRADOR', "ADMINISTRADOR"])).all()
+        roles = session.query(Rol).filter(Rol.nombre.in_(['SUPER ADMINISTRADOR', "ADMINISTRADOR", "ALMACEN"])).all()
 
         for rol in roles:
             rol.modulos.append(almacen_m)

@@ -3,6 +3,7 @@
 {% block header %}
     {% set user = usuario %}
     <link rel="stylesheet" href="/recursos_humanos/personal/assets/personal.style.css">
+    <link rel="stylesheet" href="/resources/plugins/leaflet/leaflet.css" />
 {% end %}
 
 {% block content %}
@@ -43,7 +44,9 @@
 {% end %}
 
 {% block footer %}
+    <script src="/resources/plugins/leaflet/leaflet.js"></script>
     <script src="/resources/static/js/functions.js"></script>
+    <script src="/resources/static/js/location.js"></script>
     <script src="/recursos_humanos/personal/assets/personal.action.js"></script>
     <script>
     function append_input_familiar(id_in) {
@@ -266,6 +269,68 @@
                 liveSearchPlaceholder: 'Buscar',
                 title: 'Seleccione'
             })
+
+
+    }
+
+
+    function append_input_contrato(id_in) {
+
+        $('#contrato_div').append(
+        '<div class="row">\
+            <div class="col-sm-1 hidden">\
+                <div class="input-group">\
+                <input  id="id_contrato'+id_in+'" class="form-control readonly txta-own">\
+                </div>\
+            </div>\
+            <div class="col-md-1">\
+            </div>\
+            <div class="col-sm-1 ">\
+                <div class="form-line">\
+                <input  id="nro_contrato'+id_in+'" class="form-control contrato readonly txta-own">\
+                </div>\
+            </div>\
+            <div class="col-sm-2">\
+                <div class="form-line">\
+                <input id="fechainicio'+id_in+'" data-id="'+id_in+'" type="text" class="form-control contrato date txta-own" required>\
+                </div>\
+            </div>\
+            <div class="col-sm-2">\
+                <div class="form-line">\
+                <input id="fechafinal'+id_in+'" data-id="'+id_in+'" type="text" class="form-control contrato date txta-own" required>\
+                </div>\
+            </div>\
+            <div class="col-md-2">\
+                 <select id="fktipocontrato'+id_in+'" class="form-control contrato fktipocontrato" >\
+                    {% for tipo in tipocontratos %}\
+                        <option value="{{tipo.id}}">{{tipo.nombre}}</option>\
+                    {% end %}\
+                 </select>\
+            </div>\
+        </div>'
+    )
+
+        $('.clear_estudio').last().click(function () {
+            $(this).parent().parent().remove()
+        })
+
+            $('.fktipocontrato').selectpicker({
+                size: 10,
+                liveSearch: true,
+                liveSearchPlaceholder: 'Buscar',
+                title: 'Seleccione'
+            })
+
+        $('.date').bootstrapMaterialDatePicker({
+    format: 'DD/MM/YYYY',
+    clearButton: false,
+    weekStart: 1,
+    locale: 'es',
+    time: false
+}).on('change', function (e, date) {
+    $(this).parent().addClass('focused');
+    eraseError(this)
+});
 
 
     }

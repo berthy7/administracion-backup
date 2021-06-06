@@ -16,14 +16,18 @@ from servidor.sistema.parametrizacion.regimiento.controller import RegimientoCon
 
 from servidor.sistema.recursos_humanos.personal.controller import PersonalController
 from servidor.sistema.recursos_humanos.cargo.controller import CargoController
+from servidor.sistema.recursos_humanos.capacitacion.controller import CapacitacionController
 
 from servidor.sistema.almacen.asignacion.controller import AsignacionController
 from servidor.sistema.almacen.material.controller import MaterialController
 from servidor.sistema.almacen.stock.controller import StockController
 from servidor.sistema.almacen.tipomaterial.controller import TipoMaterialController
+from servidor.sistema.almacen.almacen.controller import AlmacenController
+from servidor.sistema.almacen.subalmacen.controller import SubAlmacenController
 
 from servidor.sistema.operador.asistencia.controller import AsistenciaController
 from servidor.sistema.operador.cliente.controller import ClienteController
+from servidor.sistema.operador.postulante.controller import PostulanteController
 
 
 from servidor.main.controller import Index
@@ -73,16 +77,20 @@ def get_handlers():
     # Recursos Humanos
     handlers.extend(get_routes(PersonalController))
     handlers.extend(get_routes(CargoController))
+    handlers.extend(get_routes(CapacitacionController))
 
     # Almacen
     handlers.extend(get_routes(AsignacionController))
     handlers.extend(get_routes(MaterialController))
     handlers.extend(get_routes(StockController))
     handlers.extend(get_routes(TipoMaterialController))
+    handlers.extend(get_routes(AlmacenController))
+    handlers.extend(get_routes(SubAlmacenController))
 
     # Operador
     handlers.extend(get_routes(AsistenciaController))
     handlers.extend(get_routes(ClienteController))
+    handlers.extend(get_routes(PostulanteController))
 
     handlers.append((r'/resources/(.*)', StaticFileHandler, {'path': os.path.join(os.path.dirname(__file__), 'common', 'resources')}))
 

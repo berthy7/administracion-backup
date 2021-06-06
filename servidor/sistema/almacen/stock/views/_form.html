@@ -36,68 +36,59 @@
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="form-group">
-                            <label  class="form-label">Materiales</label>
+                            <label  class="form-label">Almacen</label>
+                            <select id="fkalmacen" name="fkalmacen" class="form-control show-tick item-form" required>
+                                {% for e in almacenes %}
+                                    <option value="{{ e.id }}">{{ e.nombre }}</option>
+                                {% end %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label  class="form-label">Material</label>
+                            <select id="fkmaterial" name="fkmaterial" class="form-control show-tick item-form">
+                                {% for e in materiales_detalle %}
+                                    <option value="{{ e.id }}">{{ e.nombre }}</option>
+                                {% end %}
+                            </select>
                         </div>
                     </div>
                 </div>
                 <div class="row clearfix">
-                    <div class="col-xs-12 ol-sm-12 col-md-12 col-lg-12">
-                        <div class="panel-group" id="accordion_parent" role="tablist" aria-multiselectable="true">
+                    <div class="col-sm-3">
+                        <label class="form-label">Material</label>
+                    </div>
+                    <div class="col-sm-2">
+                        <label class="form-label">Color</label>
+                    </div>
+                    <div class="col-sm-1">
+                        <label class="form-label">Talla</label>
+                    </div>
+                                        <div class="col-sm-2">
+                        <label class="form-label">Nuevo</label>
+                    </div>
+                                        <div class="col-sm-2">
+                        <label class="form-label">Usado</label>
+                    </div>
 
-                            {% for materiales in materiales_detalle %}
-                                <div class="panel panel-col-black">
-                                    <div class="panel-heading" role="tab" id="heading{{materiales.id}}">
-                                        <h4 class="panel-title">
-                                            <a role="button" data-toggle="collapse" data-parent="#accordion_parent" href="#collapse{{materiales.id}}" aria-expanded="true" aria-controls="collapseOne_12">
-                                                {{materiales.nombre}}
-                                            </a>
-                                        </h4>
-                                    </div>
-                                    <div id="collapse{{materiales.id}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading{{materiales.id}}">
-                                        <div class="panel-body" id="cuerpo_{{materiales.id}}">
+                </div>
 
-                                                <table id="data_table_{{materiales.id}}" class="table results">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>ID Material</th>
-                                                            <th>Color</th>
-                                                            <th>Talla</th>
-                                                            <th>Cant. Backup</th>
-                                                            <th>Cant. Usados</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody id="table_content_{{materiales.id}}">
-                                                        {% for _detalle in materiales.detalle %}
+                <div class="row clearfix">
+                    <div class="col-sm-12">
+                        <div id="detalle" class="box-body">
+                            <div id="detalle_div" class="clearfix">
 
-                                                            <tr>
-                                                                <td hidden>
-                                                                    <input id="id_detalle{{_detalle.id}}"  class="form-control detalle txta-own" >
-                                                                </td>
-                                                                <td hidden>
-                                                                    <input id="fkmaterialDetalle{{_detalle.id}}" value="{{_detalle.id}}"  class="form-control detalle txta-own" >
-                                                                </td>
-                                                                <td>{{_detalle.id}}</td>
-                                                                <td>{{_detalle.color.nombre}}</td>
-
-                                                                <td>{{_detalle.talla.nombre}}</td>
-                                                                <td>
-                                                                    <input id="cantidadBackup{{_detalle.id}}" type="number" class="form-control detalle _cantidadBackup txta-own">
-                                                                </td>
-                                                                 <td>
-                                                                    <input id="cantidadUsado{{_detalle.id}}" type="number" class="form-control detalle _cantidadUsado txta-own">
-                                                                </td>
-                                                            </tr>
-                                                        {% end%}
-                                                    </tbody>
-                                                </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            {% end %}
+                            </div>
 
                         </div>
                     </div>
+
                 </div>
+                </br>
+
             </form>
             </div>
             <div class="modal-footer">

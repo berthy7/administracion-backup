@@ -1,9 +1,18 @@
 var class_item = '.item-form';
 var id_table = '#data_table';
 accion = "nuevo"
+var gb_latitud = -17.783751985640855;
+var gb_longitud = -63.181171417236335;
+const nulos = [0, '', 'None', null];
+var ubicacion_solicitud = '.ubicacion-solicitud';
+var latitud = document.getElementById('latitud');
+var longitud = document.getElementById('longitud');
+var latitud_solicitud = document.getElementById('latitud-solicitud');
+var longitud_solicitud = document.getElementById('longitud-solicitud');
 
 $(document).ready( function () {
     reload_table();
+     init_map();
 });
 validationKeyup("modal")
 
@@ -198,47 +207,24 @@ $('#fechanacimiento').change(function() {
             if (parseInt(response.response) < 18){
                 show_msg_lg('error', 'No se cumple con la edad minima 18 años', 'center')
             }
-
-
         })
-
-
-
-})
-
-$('#serviciomilitar').change(function() {
-
-
-    if($('#serviciomilitar').val()== "Si"){
-        $('#div_servicio_militar').show()
-
-    }else{
-        $('#div_servicio_militar').hide()
-
-    }
-
 })
 
 $('#serviciomilitar').change(function() {
 
     if($('#serviciomilitar').val() == "Si"){
-
-        // $('#div_residente').hide()
-        // $('#div_invitacion').show()
-        // $('#div_datos_visita').show()
+        $('#div_servicio_militar').show()
         $('#fkregimiento').prop("required", true);
         
     }else{
         $('#nrolibreta').val('')
+        $('#div_servicio_militar').hide()
 
         $(fkregimiento).val('')
         $(fkregimiento).selectpicker('render')
         
        $('#fkregimiento').removeAttr("required");
         eraseError('fkregimiento')
-
-
-
     }
 
 })
@@ -250,15 +236,18 @@ document.getElementById("tab-personal").click();
         $('#body-administrativos').css("display", "none")
         $('#body-estudios').css("display", "none")
         $('#body-documentos').css("display", "none")
+        $('#body-contratos').css("display", "none")
 
         if (accion == "nuevo"){
             $('#siguiente1').show()
             $('#siguiente2').hide()
             $('#siguiente3').hide()
+            $('#siguiente4').hide()
         }else{
             $('#siguiente1').hide()
             $('#siguiente2').hide()
             $('#siguiente3').hide()
+            $('#siguiente4').hide()
         }
     })
     $('#tab-administrativos').click(function () {
@@ -266,6 +255,7 @@ document.getElementById("tab-personal").click();
         $('#body-administrativos').css("display", "block")
         $('#body-estudios').css("display", "none")
         $('#body-documentos').css("display", "none")
+        $('#body-contratos').css("display", "none")
 
         $('#div_buscar_administrativos').hide()
         $('#div_cancelar_administrativos').hide()
@@ -275,10 +265,12 @@ document.getElementById("tab-personal").click();
             $('#siguiente1').hide()
             $('#siguiente2').show()
             $('#siguiente3').hide()
+            $('#siguiente4').hide()
         }else{
             $('#siguiente1').hide()
             $('#siguiente2').hide()
             $('#siguiente3').hide()
+            $('#siguiente4').hide()
         }
     })
     $('#tab-estudios').click(function () {
@@ -286,6 +278,7 @@ document.getElementById("tab-personal").click();
         $('#body-administrativos').css("display", "none")
         $('#body-estudios').css("display", "block")
         $('#body-documentos').css("display", "none")
+        $('#body-contratos').css("display", "none")
 
         $('#div_buscar_estudios').hide()
         $('#div_cancelar_estudios').hide()
@@ -295,31 +288,55 @@ document.getElementById("tab-personal").click();
             $('#siguiente1').hide()
             $('#siguiente2').hide()
             $('#siguiente3').show()
+            $('#siguiente4').hide()
         }else{
             $('#siguiente1').hide()
             $('#siguiente2').hide()
             $('#siguiente3').hide()
+            $('#siguiente4').hide()
         }
 
     })
+
     $('#tab-documentos').click(function () {
         $('#body-personal').css("display", "none")
         $('#body-administrativos').css("display", "none")
         $('#body-estudios').css("display", "none")
         $('#body-documentos').css("display", "block")
+        $('#body-contratos').css("display", "none")
 
+        if (accion == "nuevo"){
+            $('#siguiente1').hide()
+            $('#siguiente2').hide()
+            $('#siguiente3').hide()
+            $('#siguiente4').show()
+        }else{
+            $('#siguiente1').hide()
+            $('#siguiente2').hide()
+            $('#siguiente3').hide()
+            $('#siguiente4').hide()
+        }
 
+    })
+    $('#tab-contratos').click(function () {
+        $('#body-personal').css("display", "none")
+        $('#body-administrativos').css("display", "none")
+        $('#body-estudios').css("display", "none")
+        $('#body-documentos').css("display", "none")
+        $('#body-contratos').css("display", "block")
 
         if (accion == "nuevo"){
             $('#insert').show()
             $('#siguiente1').hide()
             $('#siguiente2').hide()
             $('#siguiente3').hide()
+            $('#siguiente4').hide()
         }else{
             $('#update').show()
             $('#siguiente1').hide()
             $('#siguiente2').hide()
             $('#siguiente3').hide()
+            $('#siguiente4').hide()
         }
 
     })
@@ -348,10 +365,12 @@ $('#siguiente1').click(function () {
     $('#body-administrativos').css("display", "block")
     $('#body-estudios').css("display", "none")
     $('#body-documentos').css("display", "none")
+    $('#body-contratos').css("display", "none")
 
     $('#siguiente1').hide()
     $('#siguiente2').show()
     $('#siguiente3').hide()
+    $('#siguiente4').hide()
 
 
 })
@@ -362,10 +381,12 @@ $('#siguiente2').click(function () {
     $('#body-administrativos').css("display", "none")
     $('#body-estudios').css("display", "block")
     $('#body-documentos').css("display", "none")
+    $('#body-contratos').css("display", "none")
 
     $('#siguiente1').hide()
     $('#siguiente2').hide()
     $('#siguiente3').show()
+    $('#siguiente4').hide()
 
 
 })
@@ -376,13 +397,31 @@ $('#siguiente3').click(function () {
     $('#body-administrativos').css("display", "none")
     $('#body-estudios').css("display", "none")
     $('#body-documentos').css("display", "block")
+    $('#body-contratos').css("display", "none")
 
     $('#siguiente1').hide()
     $('#siguiente2').hide()
     $('#siguiente3').hide()
+    $('#siguiente4').show()
+
+})
+
+$('#siguiente4').click(function () {
+    document.getElementById("tab-contratos").click();
+    $('#body-personal').css("display", "none")
+    $('#body-administrativos').css("display", "none")
+    $('#body-estudios').css("display", "none")
+    $('#body-documentos').css("display", "none")
+    $('#body-contratos').css("display", "block")
+
+    $('#siguiente1').hide()
+    $('#siguiente2').hide()
+    $('#siguiente3').hide()
+    $('#siguiente4').hide()
     $('#insert').show()
 
 })
+
 
 function get_administrativos() {
     objeto = []
@@ -609,6 +648,62 @@ function get_complemento() {
 }
 
 
+$('#new_contrato').click(function () {
+    append_input_contrato('')
+})
+
+function get_contrato() {
+    objeto = []
+    objeto_inputs = $('.contrato')
+    cant_ = 0
+
+    console.log(objeto_inputs)
+
+    for (i = 0; i < objeto_inputs.length; i += 5) {
+
+        h0 = objeto_inputs[i].value
+        console.log(h0)
+        h2 = objeto_inputs[i + 2].value
+        console.log(h2)
+
+        h3 = objeto_inputs[i + 4].value
+        console.log(h3)
+                h1 = objeto_inputs[i + 1].value
+        console.log(h1)
+
+        objeto.push((function add_(h0, h1, h2,h3) {
+
+            if (h0 ==''){
+                return {
+                    'fechai': h1,
+                    'fechaf': h2,
+                     'fktipocontrato': h3
+
+                }
+
+            }else{
+                return {
+                'id':h0,
+                'fechai': h1,
+                'fechaf': h2,
+                 'fktipocontrato': h3
+                }
+            }
+
+
+        })(
+            h0,
+            h1,
+            h2,
+            h3))
+    }
+
+
+
+    return objeto
+}
+
+
 function limpiar_formulario(){
     $('#apellidop').val('')
     $('#apellidom').val('')
@@ -729,6 +824,8 @@ $('#new').click(function() {
     validationInputSelects("modal")
     $('.item-form').parent().removeClass('focused')
 
+    accion = "nuevo"
+
     $('#fechanacimiento').val('')
     $('#fkexpedido').val('')
     $('#fkexpedido').selectpicker('refresh')
@@ -758,56 +855,67 @@ $('#insert').on('click', function() {
         if (!notvalid) {
     
             var data = new FormData($('#form_submit')[0]);
-    
-            objeto = JSON.stringify({
-                'apellidop': $('#apellidop').val(),
-                'apellidom': $('#apellidom').val(),
-                'nombre': $('#nombre').val(),
-                'ci': $('#dni').val(),
-                'fkexpedido': $('#fkexpedido').val(),
-                'fknacionalidad': $('#fknacionalidad').val(),
-                'fechanacimiento': $('#fechanacimiento').val(),
-                'expendido': $('#expendido').val(),
-                'licenciavehiculo': $('#licenciavehiculo').val(),
-                'fkcategoriavehiculo': $('#fkcategoriavehiculo').val(),
-                'licenciamotocicleta': $('#licenciamotocicleta').val(),
-                'fkcategoriamotocicleta': $('#fkcategoriamotocicleta').val(),
-                'domicilio': $('#domicilio').val(),
-                'telefono': $('#telefono').val(),
-                'fkcivil': $('#fkcivil').val(),
-                'fkcargo': $('#fkcargo').val(),
-    
-                'administrativos' : get_administrativos(),
-                'familiares' : get_familiares(),
-                'experiencias' : get_laboral(),
-                'estudios' : get_estudio(),
-                'complementos' : get_complemento()
-            })
-            ruta = "personal_insert";
-            data.append('object', objeto)
-            data.append('_xsrf', getCookie("_xsrf"))
-    
-            $.ajax({
-                url: ruta,
-                type: "post",
-                data: data,
-                contentType: false,
-                processData: false,
-                cache: false,
-                async: true
-            }).done(function (response) {
-                self = JSON.parse(response);
-    
-                if (self.success) {
-                    show_msg_lg('success', self.message, 'center')
-                    setTimeout(function () {
-                        $('#modal').modal('hide')
-                        reload_table()
-                    }, 2000);
-                }
-                else show_toast('warning', self.message);
-    
-            })
+
+             if( $('#ci').val() != '' &&  $('#flcv').val() != '' &&  $('#flcc').val() != ''){
+
+                objeto = JSON.stringify({
+                    'apellidop': $('#apellidop').val(),
+                    'apellidom': $('#apellidom').val(),
+                    'nombre': $('#nombre').val(),
+                    'ci': $('#dni').val(),
+                    'fkexpedido': $('#fkexpedido').val(),
+                    'fknacionalidad': $('#fknacionalidad').val(),
+                    'fechanacimiento': $('#fechanacimiento').val(),
+                    'expendido': $('#expendido').val(),
+                    'licenciavehiculo': $('#licenciavehiculo').val(),
+                    'fkcategoriavehiculo': $('#fkcategoriavehiculo').val(),
+                    'licenciamotocicleta': $('#licenciamotocicleta').val(),
+                    'fkcategoriamotocicleta': $('#fkcategoriamotocicleta').val(),
+                    'domicilio': $('#domicilio').val(),
+                    'latitud': $('#latitud').val(),
+                    'longitud': $('#longitud').val(),
+                    'telefono': $('#telefono').val(),
+                    'fkcivil': $('#fkcivil').val(),
+                    'fkcargo': $('#fkcargo').val(),
+
+                    'administrativos' : get_administrativos(),
+                    'familiares' : get_familiares(),
+                    'experiencias' : get_laboral(),
+                    'estudios' : get_estudio(),
+                    'complementos' : get_complemento(),
+                    'contratos' : get_contrato()
+                })
+                ruta = "personal_insert";
+                data.append('object', objeto)
+                data.append('_xsrf', getCookie("_xsrf"))
+
+                $.ajax({
+                    url: ruta,
+                    type: "post",
+                    data: data,
+                    contentType: false,
+                    processData: false,
+                    cache: false,
+                    async: true
+                }).done(function (response) {
+                    self = JSON.parse(response);
+
+                    if (self.success) {
+                        show_msg_lg('success', self.message, 'center')
+                        setTimeout(function () {
+                            $('#modal').modal('hide')
+                            reload_table()
+                        }, 2000);
+                    }
+                    else show_toast('warning', self.message);
+
+                })
+
+              }else{
+                     show_toast('warning', 'Por favor, ingresa los documentos CI, FLCV y FLCC');
+            }
+
+
         }
         else show_toast('warning', 'Por favor, ingresa todos los campos requeridos (*).');
     }
@@ -825,6 +933,8 @@ function edit_item(e) {
         object: obj
     },function(response){
         var self = response.response;
+
+        accion = "editar"
 
         $('#id').val(self.id)
         $('#nombre').val(self.nombre)
@@ -856,7 +966,6 @@ function edit_item(e) {
         $('#fkcivil').selectpicker('refresh')
 
         $('.fotos').fileinput('clear');
-        
 
         $('#administrativos_div').empty()
         $('#estudio_div').empty()
@@ -871,15 +980,26 @@ function edit_item(e) {
 
         }
 
-
         for (fami in self.familiares) {
 
-            append_input_familiar(self.familiares[fami]['id'])
-            $('#id_familiar' + self.familiares[fami]['id']).val(self.familiares[fami]['id'])
-            $('#nombre' + self.familiares[fami]['id']).val(self.familiares[fami]['nombre'])
-            $('#celular' + self.familiares[fami]['id']).val(self.familiares[fami]['celular'])
-            $('#fkparentesco' + self.familiares[fami]['id']).val(self.familiares[fami]['fkparentesco'])
-            $('#fkparentesco' + self.familiares[fami]['id']).selectpicker('refresh')
+
+            if (fami == 0){
+                $('#id_familiar').val(self.familiares[fami]['id'])
+                $('#nombre_famili').val(self.familiares[fami]['nombre'])
+                $('#celular').val(self.familiares[fami]['celular'])
+                $('#fkparentesco').val(self.familiares[fami]['fkparentesco'])
+                $('#fkparentesco').selectpicker('refresh')
+
+
+            }else{
+                append_input_familiar(self.familiares[fami]['id'])
+                $('#id_familiar' + self.familiares[fami]['id']).val(self.familiares[fami]['id'])
+                $('#nombre' + self.familiares[fami]['id']).val(self.familiares[fami]['nombre'])
+                $('#celular' + self.familiares[fami]['id']).val(self.familiares[fami]['celular'])
+                $('#fkparentesco' + self.familiares[fami]['id']).val(self.familiares[fami]['fkparentesco'])
+                $('#fkparentesco' + self.familiares[fami]['id']).selectpicker('refresh')
+
+            }
 
         }
 
@@ -895,7 +1015,6 @@ function edit_item(e) {
             $('#telefono' + self.experiencias[expe]['id']).val(self.experiencias[expe]['telefono'])
             $('#referencia' + self.experiencias[expe]['id']).val(self.experiencias[expe]['referencia'])
 
-
         }
 
         for (estu in self.estudios) {
@@ -906,7 +1025,6 @@ function edit_item(e) {
             $('#fkgrado_estudio' + self.estudios[estu]['id']).val(self.estudios[estu]['fkgrado'])
             $('#fkgrado_estudio' + self.estudios[estu]['id']).selectpicker('refresh')
             $('#egreso' + self.estudios[estu]['id']).val(self.estudios[estu]['egreso'])
-
 
         }
 
@@ -920,73 +1038,114 @@ function edit_item(e) {
 
         }
 
-        $('#id_documentos').val(self.documentos[0].id)
+        for (cont in self.contratos) {
 
-        if (self.documentos[0].ci != "None" && self.documentos[0].ci != "") {
-            document.getElementById("imagen_show_img-ci").src = self.documentos[0].ci;
-        } else {
-            document.getElementById("imagen_show_img-ci").src = "/resources/images/sinImagen.jpg";
+            append_input_contrato(self.contratos[cont]['id'])
+            $('#nro_contrato' + self.contratos[cont]['id']).val(self.contratos[cont]['id'])
+            $('#fechainicio' + self.contratos[cont]['id']).val(self.contratos[cont]['fechai'])
+            $('#fechafinal' + self.contratos[cont]['id']).val(self.contratos[cont]['fechaf'])
+            $('#fktipocontrato' + self.contratos[cont]['id']).val(self.contratos[cont]['fktipocontrato'])
+            $('#fktipocontrato' + self.contratos[cont]['id']).selectpicker('refresh')
+
+        }
+        
+        
+        if (self.documentos.length != 0){
+            $('#id_documentos').val(self.documentos[0].id)
+
+            if (self.documentos[0].ci != "None" && self.documentos[0].ci != "") {
+                document.getElementById("imagen_show_img-ci").src = self.documentos[0].ci;
+            } else {
+                document.getElementById("imagen_show_img-ci").src = "/resources/images/sinImagen.jpg";
+            }
+
+            if (self.documentos[0].libretamilitar != "None" && self.documentos[0].libretamilitar != "") {
+                document.getElementById("imagen_show_img-libretamilitar").src = self.documentos[0].libretamilitar;
+            } else {
+                document.getElementById("imagen_show_img-libretamilitar").src = "/resources/images/sinImagen.jpg";
+            }
+
+                    if (self.documentos[0].titulobachiller != "None" && self.documentos[0].titulobachiller != "") {
+                document.getElementById("imagen_show_img-titulobachiller").src = self.documentos[0].titulobachiller;
+            } else {
+                document.getElementById("imagen_show_img-titulobachiller").src = "/resources/images/sinImagen.jpg";
+            }
+
+                    if (self.documentos[0].titulotecnico != "None" && self.documentos[0].titulotecnico != "") {
+                document.getElementById("imagen_show_img-titulotecnico").src = self.documentos[0].titulotecnico;
+            } else {
+                document.getElementById("imagen_show_img-titulotecnico").src = "/resources/images/sinImagen.jpg";
+            }
+
+                    if (self.documentos[0].titulolicenciatura != "None" && self.documentos[0].titulolicenciatura != "") {
+                document.getElementById("imagen_show_img-titulolicenciatura").src = self.documentos[0].titulolicenciatura;
+            } else {
+                document.getElementById("imagen_show_img-titulolicenciatura").src = "/resources/images/sinImagen.jpg";
+            }
+
+                    if (self.documentos[0].flcn != "None" && self.documentos[0].flcn != "") {
+                document.getElementById("imagen_show_img-flcn").src = self.documentos[0].flcn;
+            } else {
+                document.getElementById("imagen_show_img-flcn").src = "/resources/images/sinImagen.jpg";
+            }
+
+                    if (self.documentos[0].flcc != "None" && self.documentos[0].flcc != "") {
+                document.getElementById("imagen_show_img-flcc").src = self.documentos[0].flcc;
+            } else {
+                document.getElementById("imagen_show_img-flcc").src = "/resources/images/sinImagen.jpg";
+            }
+
+                    if (self.documentos[0].flcv != "None" && self.documentos[0].flcv != "") {
+                document.getElementById("imagen_show_img-flcv").src = self.documentos[0].flcv;
+            } else {
+                document.getElementById("imagen_show_img-flcv").src = "/resources/images/sinImagen.jpg";
+            }
+
+                    if (self.documentos[0].luzagua != "None" && self.documentos[0].luzagua != "") {
+                document.getElementById("imagen_show_img-luzagua").src = self.documentos[0].luzagua;
+            } else {
+                document.getElementById("imagen_show_img-luzagua").src = "/resources/images/sinImagen.jpg";
+            }
+
+                    if (self.documentos[0].certificadonacimiento != "None" && self.documentos[0].certificadonacimiento != "") {
+                document.getElementById("imagen_show_img-certificadonacimiento").src = self.documentos[0].certificadonacimiento;
+            } else {
+                document.getElementById("imagen_show_img-certificadonacimiento").src = "/resources/images/sinImagen.jpg";
+            }
+
+                    if (self.documentos[0].otros != "None" && self.documentos[0].otros != "") {
+                document.getElementById("imagen_show_img-otros").src = self.documentos[0].otros;
+            } else {
+                document.getElementById("imagen_show_img-otros").src = "/resources/images/sinImagen.jpg";
+            }
+
+        }
+        
+         $(latitud).val(self.latitud)
+        $(longitud).val(self.longitud)
+        
+                if (!nulos.includes(self.latitud) && !nulos.includes(self.longitud)) {
+            gb_latitud = parseFloat(self.latitud).toFixed(6)
+            gb_longitud = parseFloat(self.longitud).toFixed(6)
         }
 
-        if (self.documentos[0].libretamilitar != "None" && self.documentos[0].libretamilitar != "") {
-            document.getElementById("imagen_show_img-libretamilitar").src = self.documentos[0].libretamilitar;
-        } else {
-            document.getElementById("imagen_show_img-libretamilitar").src = "/resources/images/sinImagen.jpg";
+        if (!nulos.includes(self.latitud_solicitud) && !nulos.includes(self.longitud_solicitud)) {
+            $(ubicacion_solicitud).show()
+            $(latitud_solicitud).html(self.latitud_solicitud)
+            $(longitud_solicitud).html(self.longitud_solicitud)
+            lbl_class = 'label-default'
+            
+            if (!nulos.includes(self.latitud) && !nulos.includes(self.longitud)) {
+                lat = parseFloat(parseFloat(latitud.value).toFixed(4))
+                lng = parseFloat(parseFloat(longitud.value).toFixed(4))
+                lts = parseFloat(parseFloat(latitud_solicitud.innerHTML).toFixed(4))
+                lns = parseFloat(parseFloat(longitud_solicitud.innerHTML).toFixed(4))
+                lbl_class = (lts>=lat-0.0003 && lts<=lat+0.0003) && (lns>=lng-0.0003 && lns<=lng+0.0003)? 'label-default': 'label-danger'
+            }
+            $(latitud_solicitud).addClass(lbl_class)
+            $(longitud_solicitud).addClass(lbl_class)
         }
-
-                if (self.documentos[0].titulobachiller != "None" && self.documentos[0].titulobachiller != "") {
-            document.getElementById("imagen_show_img-titulobachiller").src = self.documentos[0].titulobachiller;
-        } else {
-            document.getElementById("imagen_show_img-titulobachiller").src = "/resources/images/sinImagen.jpg";
-        }
-
-                if (self.documentos[0].titulotecnico != "None" && self.documentos[0].titulotecnico != "") {
-            document.getElementById("imagen_show_img-titulotecnico").src = self.documentos[0].titulotecnico;
-        } else {
-            document.getElementById("imagen_show_img-titulotecnico").src = "/resources/images/sinImagen.jpg";
-        }
-
-                if (self.documentos[0].titulolicenciatura != "None" && self.documentos[0].titulolicenciatura != "") {
-            document.getElementById("imagen_show_img-titulolicenciatura").src = self.documentos[0].titulolicenciatura;
-        } else {
-            document.getElementById("imagen_show_img-titulolicenciatura").src = "/resources/images/sinImagen.jpg";
-        }
-
-                if (self.documentos[0].flcn != "None" && self.documentos[0].flcn != "") {
-            document.getElementById("imagen_show_img-flcn").src = self.documentos[0].flcn;
-        } else {
-            document.getElementById("imagen_show_img-flcn").src = "/resources/images/sinImagen.jpg";
-        }
-
-                if (self.documentos[0].flcc != "None" && self.documentos[0].flcc != "") {
-            document.getElementById("imagen_show_img-flcc").src = self.documentos[0].flcc;
-        } else {
-            document.getElementById("imagen_show_img-flcc").src = "/resources/images/sinImagen.jpg";
-        }
-
-                if (self.documentos[0].flcv != "None" && self.documentos[0].flcv != "") {
-            document.getElementById("imagen_show_img-flcv").src = self.documentos[0].flcv;
-        } else {
-            document.getElementById("imagen_show_img-flcv").src = "/resources/images/sinImagen.jpg";
-        }
-
-                if (self.documentos[0].luzagua != "None" && self.documentos[0].luzagua != "") {
-            document.getElementById("imagen_show_img-luzagua").src = self.documentos[0].luzagua;
-        } else {
-            document.getElementById("imagen_show_img-luzagua").src = "/resources/images/sinImagen.jpg";
-        }
-
-                if (self.documentos[0].certificadonacimiento != "None" && self.documentos[0].certificadonacimiento != "") {
-            document.getElementById("imagen_show_img-certificadonacimiento").src = self.documentos[0].certificadonacimiento;
-        } else {
-            document.getElementById("imagen_show_img-certificadonacimiento").src = "/resources/images/sinImagen.jpg";
-        }
-
-                if (self.documentos[0].otros != "None" && self.documentos[0].otros != "") {
-            document.getElementById("imagen_show_img-otros").src = self.documentos[0].otros;
-        } else {
-            document.getElementById("imagen_show_img-otros").src = "/resources/images/sinImagen.jpg";
-        }
+        
 
         clean_form()
         verif_inputs('')
@@ -1009,7 +1168,6 @@ function edit_item(e) {
     })
 }
 
-
 $('#update').on('click', function() {
     notvalid = validationInputSelectsWithReturn("modal");
 
@@ -1017,57 +1175,61 @@ $('#update').on('click', function() {
 
         var data = new FormData($('#form_submit')[0]);
 
-        objeto = JSON.stringify({
-            'id': $('#id').val(),
-            'apellidop': $('#apellidop').val(),
-            'apellidom': $('#apellidom').val(),
-            'nombre': $('#nombre').val(),
-            'ci': $('#dni').val(),
-            'fkexpedido': $('#fkexpedido').val(),
-            'fknacionalidad': $('#fknacionalidad').val(),
-            'fechanacimiento': $('#fechanacimiento').val(),
-            'expendido': $('#expendido').val(),
-            'licenciavehiculo': $('#licenciavehiculo').val(),
-            'fkcategoriavehiculo': $('#fkcategoriavehiculo').val(),
-            'licenciamotocicleta': $('#licenciamotocicleta').val(),
-            'fkcategoriamotocicleta': $('#fkcategoriamotocicleta').val(),
-            'domicilio': $('#domicilio').val(),
-            'telefono': $('#telefono').val(),
-            'fkcivil': $('#fkcivil').val(),
-            'fkcargo': $('#fkcargo').val(),
-            'id_documentos': $('#id_documentos').val(),
+            objeto = JSON.stringify({
+                'id': $('#id').val(),
+                'apellidop': $('#apellidop').val(),
+                'apellidom': $('#apellidom').val(),
+                'nombre': $('#nombre').val(),
+                'ci': $('#dni').val(),
+                'fkexpedido': $('#fkexpedido').val(),
+                'fknacionalidad': $('#fknacionalidad').val(),
+                'fechanacimiento': $('#fechanacimiento').val(),
+                'expendido': $('#expendido').val(),
+                'licenciavehiculo': $('#licenciavehiculo').val(),
+                'fkcategoriavehiculo': $('#fkcategoriavehiculo').val(),
+                'licenciamotocicleta': $('#licenciamotocicleta').val(),
+                'fkcategoriamotocicleta': $('#fkcategoriamotocicleta').val(),
+                'domicilio': $('#domicilio').val(),
+                'latitud': $('#latitud').val(),
+                'longitud': $('#longitud').val(),
+                'telefono': $('#telefono').val(),
+                'fkcivil': $('#fkcivil').val(),
+                'fkcargo': $('#fkcargo').val(),
+                'id_documentos': $('#id_documentos').val(),
 
-            'administrativos' : get_administrativos(),
-            'familiares' : get_familiares(),
-            'experiencias' : get_laboral(),
-            'estudios' : get_estudio(),
-            'complementos' : get_complemento()
-        })
-        ruta = "personal_update";
-        data.append('object', objeto)
-        data.append('_xsrf', getCookie("_xsrf"))
+                'administrativos' : get_administrativos(),
+                'familiares' : get_familiares(),
+                'experiencias' : get_laboral(),
+                'estudios' : get_estudio(),
+                'complementos' : get_complemento(),
+                'contratos' : get_contrato()
+            })
+            ruta = "personal_update";
+            data.append('object', objeto)
+            data.append('_xsrf', getCookie("_xsrf"))
 
-        $.ajax({
-            url: ruta,
-            type: "post",
-            data: data,
-            contentType: false,
-            processData: false,
-            cache: false,
-            async: true
-        }).done(function (response) {
-            self = JSON.parse(response);
+            $.ajax({
+                url: ruta,
+                type: "post",
+                data: data,
+                contentType: false,
+                processData: false,
+                cache: false,
+                async: true
+            }).done(function (response) {
+                self = JSON.parse(response);
 
-            if (self.success) {
-                show_msg_lg('success', self.message, 'center')
-                setTimeout(function () {
-                    $('#modal').modal('hide')
-                    reload_table()
-                }, 2000);
-            }
-            else show_toast('warning', self.message);
+                if (self.success) {
+                    show_msg_lg('success', self.message, 'center')
+                    setTimeout(function () {
+                        $('#modal').modal('hide')
+                        reload_table()
+                    }, 2000);
+                }
+                else show_toast('warning', self.message);
 
-        })
+            })
+
 
     }
     else show_toast('warning', 'Por favor, ingresa todos los campos requeridos (*).');

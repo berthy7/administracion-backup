@@ -58,6 +58,7 @@ class PersonalController(CrudController):
         aux['grados'] = GradoManager(self.db).listar_habilitados()
         aux['regimientos'] = RegimientoManager(self.db).get_all()
         aux['cargos'] = CargoManager(self.db).get_all()
+        aux['tipocontratos'] = PersonalManager(self.db).listar_tipocontrato_habilitados()
 
         return aux
 
@@ -338,7 +339,6 @@ class PersonalController(CrudController):
             f.write(fileinfo.body)
             f.close()
             dicc_foto['otros'] = "/resources/images/foto_documentos/" + cname
-
 
         dicc_foto['id'] = diccionary['id_documentos']
         list_doc.append(dicc_foto)

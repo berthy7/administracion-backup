@@ -7,6 +7,13 @@ $(document).ready( function () {
 });
 validationKeyup("modal")
 
+$('#fkalmacen').selectpicker({
+    size: 10,
+    liveSearch: true,
+    liveSearchPlaceholder: 'Buscar',
+    title: 'Seleccione'
+})
+
 function AddCheck() {
     $('.empleado_checkbox').click(function () {
 
@@ -61,6 +68,9 @@ $('#fktalla').selectpicker({
 
 $('#fkmaterial').change(function () {
     cargar_detalle(parseInt(JSON.parse($('#fkmaterial').val())))
+
+    $(fkmaterial).val('')
+    $(fkmaterial).selectpicker('render')
     
 });
 
@@ -192,6 +202,63 @@ $('#new_detalle').click(function () {
     append_input_detalle('')
 })
 
+
+function append_input_detalle(id_in) {
+
+    $('#detalle_div').append(
+        '<div class="row">\
+            <div class="col-sm-1" hidden>\
+                <div class="input-group">\
+                <input  id="id'+id_in+'" class="form-control subalmacen txta-own"readonly>\
+                </div>\
+            </div>\
+            <div class="col-sm-1" hidden>\
+                <div class="input-group">\
+                <input  id="fkdetallematerial'+id_in+'" class="form-control subalmacen  txta-own"readonly>\
+                </div>\
+            </div>\
+            <div class="col-sm-3">\
+                <div class="form-line">\
+                    <input id="nombre'+id_in+'" data-id="'+id_in+'" class="form-control txta-own"readonly>\
+                </div>\
+            </div>\
+            <div class="col-sm-2">\
+                <div class="form-line">\
+                    <input id="color'+id_in+'" data-id="'+id_in+'" class="form-control txta-own"readonly>\
+                </div>\
+            </div>\
+            <div class="col-sm-1">\
+                <div class="form-line">\
+                    <input id="talla'+id_in+'" data-id="'+id_in+'" class="form-control txta-own"readonly>\
+                </div>\
+            </div>\
+            <div class="col-sm-2">\
+                <div class="form-line">\
+                    <input id="cantidadNuevo'+id_in+'" data-id="'+id_in+'" class="form-control txta-own">\
+                </div>\
+            </div>\
+            <div class="col-sm-2">\
+                <div class="form-line">\
+                    <input id="cantidadUsado'+id_in+'" data-id="'+id_in+'" class="form-control txta-own">\
+                </div>\
+            </div>\
+            <div class="col-sm-1">\
+                <button type="button" class="btn bg-red waves-effect clear_detalle" title="Eliminar">\
+                    <i class="material-icons">clear</i>\
+                </button>\
+            </div>\
+        </div>\
+        </br>'
+    )
+
+            $('.clear_detalle').last().click(function () {
+            $(this).parent().parent().remove()
+        })
+
+
+}
+
+
 function get_detalle() {
     objeto = []
     objeto_inputs = $('.detalle')
@@ -258,6 +325,42 @@ function get_detalle() {
     }
 
     return objeto
+}
+
+
+function cargar_detalle(fkmaterial) {
+
+    obj = JSON.stringify({
+        'idMaterial': parseInt(JSON.parse(fkmaterial)),
+        '_xsrf': getCookie("_xsrf")
+    })
+
+    ruta = "material_listar_detalle";
+
+    $.ajax({
+        method: "POST",
+        url: ruta,
+        data: {_xsrf: getCookie("_xsrf"), object: obj},
+        async: false
+    }).done(function (response) {
+        response = JSON.parse(response)
+        console.log(response)
+        console.log("cargar detalle")
+
+        for (det in response.response ) {
+
+            append_input_detalle(response.response[det]['id'])
+
+            $('#fkdetallematerial' + response.response[det].id).val(response.response[det].id)
+            $('#nombre' + response.response[det].id).val(response.response[det].material.nombre)
+            $('#color' + response.response[det].id).val(response.response[det].color.nombre)
+            $('#talla' + response.response[det].id).val(response.response[det].talla.nombre)
+
+
+        }
+
+    })
+
 }
 
 $('#new').click(function() {

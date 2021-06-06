@@ -34,7 +34,7 @@ def insertions():
         tipomaterial_m.children.append(update_tipomaterial)
         tipomaterial_m.children.append(delete_tipomaterial)
 
-        roles = session.query(Rol).filter(Rol.nombre.in_(['SUPER ADMINISTRADOR', "ADMINISTRADOR"])).all()
+        roles = session.query(Rol).filter(Rol.nombre.in_(['SUPER ADMINISTRADOR', "ADMINISTRADOR", "ALMACEN"])).all()
 
         for rol in roles:
             rol.modulos.append(almacen_m)

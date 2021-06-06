@@ -41,6 +41,18 @@ def insertions():
         if admin_role is None:
             admin_role = Rol(nombre='ADMINISTRADOR', descripcion='Solo permisos de administrador.')
 
+        rrhh_role = session.query(Rol).filter(Rol.nombre == 'RRHH').first()
+        if rrhh_role is None:
+            rrhh_role = Rol(nombre='RRHH', descripcion='Permiso para el modulo rrhh.')
+
+        almacen_role = session.query(Rol).filter(Rol.nombre == 'ALMACEN').first()
+        if almacen_role is None:
+            almacen_role = Rol(nombre='ALMACEN', descripcion='Permiso para el modulo almacen.')
+
+        operador_role = session.query(Rol).filter(Rol.nombre == 'OPERADOR').first()
+        if operador_role is None:
+            operador_role = Rol(nombre='OPERADOR', descripcion='Permiso para el modulo operador.')
+
         super_role.modulos.append(user_m)
         super_role.modulos.append(roles_m)
         super_role.modulos.append(query_rol)
@@ -50,5 +62,8 @@ def insertions():
 
         session.add(super_role)
         session.add(admin_role)
+        session.add(rrhh_role)
+        session.add(almacen_role)
+        session.add(operador_role)
 
         session.commit()

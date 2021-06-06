@@ -18,15 +18,19 @@ from servidor.sistema.parametrizacion.regimiento.script import insertions as reg
 
 from servidor.sistema.recursos_humanos.personal.script import insertions as personal_insertions
 from servidor.sistema.recursos_humanos.cargo.script import insertions as cargo_insertions
+from servidor.sistema.recursos_humanos.capacitacion.script import insertions as capacitacion_insertions
 
 
 from servidor.sistema.almacen.asignacion.script import insertions as asignacion_insertions
 from servidor.sistema.almacen.material.script import insertions as material_insertions
 from servidor.sistema.almacen.stock.script import insertions as stock_insertions
 from servidor.sistema.almacen.tipomaterial.script import insertions as tipomaterial_insertions
+from servidor.sistema.almacen.almacen.script import insertions as almacen_insertions
+from servidor.sistema.almacen.subalmacen.script import insertions as subalmacen_insertions
 
 from servidor.sistema.operador.asistencia.script import insertions as asistencia_insertions
 from servidor.sistema.operador.cliente.script import insertions as cliente_insertions
+from servidor.sistema.operador.postulante.script import insertions as postulante_insertions
 
 
 
@@ -54,14 +58,18 @@ def main():
 
     personal_insertions()
     cargo_insertions()
+    capacitacion_insertions()
 
     asignacion_insertions()
     stock_insertions()
     material_insertions()
     tipomaterial_insertions()
+    almacen_insertions()
+    subalmacen_insertions()
 
     asistencia_insertions()
     cliente_insertions()
+    postulante_insertions()
 
 
 

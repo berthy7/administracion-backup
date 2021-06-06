@@ -1,7 +1,7 @@
 from servidor.database.connection import transaction
 from servidor.sistema.usuarios.usuario.model import Modulo
 from servidor.sistema.usuarios.rol.model import Rol
-from servidor.sistema.almacen.material.model import MaterialTipo,MaterialColor,MaterialTalla,MaterialAlmacen
+from servidor.sistema.almacen.material.model import MaterialTipo,MaterialColor,MaterialTalla
 
 
 
@@ -35,7 +35,7 @@ def insertions():
         material_m.children.append(update_material)
         material_m.children.append(delete_material)
 
-        roles = session.query(Rol).filter(Rol.nombre.in_(['SUPER ADMINISTRADOR', "ADMINISTRADOR"])).all()
+        roles = session.query(Rol).filter(Rol.nombre.in_(['SUPER ADMINISTRADOR', "ADMINISTRADOR", "ALMACEN"])).all()
 
         for rol in roles:
             rol.modulos.append(almacen_m)
@@ -77,8 +77,6 @@ def insertions():
         session.add(MaterialTalla(nombre='49'))
         session.add(MaterialTalla(nombre='50'))
 
-
-
         session.add(MaterialColor(nombre='AMARILLO'))
         session.add(MaterialColor(nombre='AZUL'))
         session.add(MaterialColor(nombre='BLANCO'))
@@ -94,9 +92,5 @@ def insertions():
         session.add(MaterialColor(nombre='ROSADO'))
         session.add(MaterialColor(nombre='VERDE'))
         session.add(MaterialColor(nombre='PLATA'))
-
-        session.add(MaterialAlmacen(id = 1,nombre='Backup'))
-        session.add(MaterialAlmacen(id = 2,nombre='Usados'))
-        session.add(MaterialAlmacen(id = 3,nombre='Descartes'))
 
         session.commit()

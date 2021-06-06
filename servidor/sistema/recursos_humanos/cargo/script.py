@@ -36,7 +36,7 @@ def insertions():
         cargo_m.children.append(update_cargo)
         cargo_m.children.append(delete_cargo)
 
-        roles = session.query(Rol).filter(Rol.nombre.in_(['SUPER ADMINISTRADOR', "ADMINISTRADOR"])).all()
+        roles = session.query(Rol).filter(Rol.nombre.in_(['SUPER ADMINISTRADOR', "ADMINISTRADOR", "RRHH"])).all()
 
         for rol in roles:
             rol.modulos.append(recursos_humanos_m)

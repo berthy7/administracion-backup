@@ -29,7 +29,6 @@ class MaterialDetalle(Serializable, Base):
 
     fktalla = Column(BigInteger, ForeignKey("almacen_material_talla.id"), nullable=True)
     fkcolor = Column(BigInteger, ForeignKey("almacen_material_color.id"), nullable=True)
-    cantidad = Column(BigInteger, nullable=True, default=0)
 
     estado = Column(Boolean, default=True)
     enabled = Column(Boolean, default=True)
@@ -74,29 +73,18 @@ class MaterialColor(Serializable, Base):
 
 
 class MaterialAlmacenStock(Serializable, Base):
-    way = {'material': {}, 'almacen': {}}
+    way = {'material': {}, 'subalmacen': {}}
 
     __tablename__ = 'almacen_material_almacenstock'
 
     id = Column(BigInteger, primary_key=True)
     fkdetallematerial = Column(BigInteger, ForeignKey("almacen_material_Detalle.id"), nullable=True)
-    fkalmacen = Column(BigInteger, ForeignKey("almacen_material_almacen.id"), nullable=True)
+    fksubalmacen = Column(BigInteger, ForeignKey("almacen_almacen_subalmacen.id"), nullable=True)
     cantidad = Column(BigInteger, nullable=True, default=0)
 
     estado = Column(Boolean, default=True)
     enabled = Column(Boolean, default=True)
 
     material = relationship('MaterialDetalle')
-    almacen = relationship('MaterialAlmacen')
+    subalmacen = relationship('AlmacenSubalmacen')
 
-
-class MaterialAlmacen(Serializable, Base):
-    way = {}
-
-    __tablename__ = 'almacen_material_almacen'
-
-    id = Column(BigInteger, primary_key=True)
-    nombre = Column(String(50), nullable=False)
-
-    estado = Column(Boolean, default=True)
-    enabled = Column(Boolean, default=True)

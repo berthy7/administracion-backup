@@ -2,7 +2,7 @@ from servidor.common.managers import SuperManager
 from servidor.sistema.usuarios.bitacora.manager import BitacoraManager
 from servidor.sistema.usuarios.usuario.manager import UsuarioManager
 from servidor.sistema.usuarios.bitacora.model import Bitacora
-from servidor.sistema.recursos_humanos.personal.model import Personal
+from servidor.sistema.recursos_humanos.personal.model import Personal,TipoContrato
 
 from datetime import datetime
 
@@ -18,6 +18,10 @@ class PersonalManager(SuperManager):
 
     def __init__(self, db):
         super().__init__(Personal, db)
+
+
+    def listar_tipocontrato_habilitados(self):
+        return self.db.query(TipoContrato).filter(TipoContrato.estado).filter(TipoContrato.enabled).all()
 
 
     def generar_codigo(self):
@@ -402,10 +406,12 @@ class PersonalManager(SuperManager):
             check = 'checked' if is_active else ''
             delete = 'personal_delete' in privilegios
 
+            cargo = item.cargo.nombre if item.fkcargo else item.tipo
+
             list.append(dict(id=item.id,
                  fechar=item.fechar.strftime('%d/%m/%Y'),
                  fullname=item.fullname,
-                 cargo=item.cargo.nombre,
+                 cargo=cargo,
                  estado=estado,check=check,
                  disable=disable,
                  delete=delete))
@@ -424,13 +430,11 @@ class PersonalManager(SuperManager):
             diccionary['administrativos'][0]['fkregimiento']= None
 
 
-
         objeto = PersonalManager(self.db).entity(**diccionary)
         objeto.fechanacimiento = datetime.strptime(objeto.fechanacimiento, '%d/%m/%Y')
 
-
         fecha = BitacoraManager(self.db).fecha_actual()
-
+        objeto.tipo = "Personal"
         objeto.fechar = fecha
 
         a = super().insert(objeto)
@@ -442,10 +446,23 @@ class PersonalManager(SuperManager):
 
     def update(self, diccionary):
 
+        if diccionary['fkcategoriamotocicleta'] == '':
+            diccionary['fkcategoriamotocicleta'] = None
+
+        if diccionary['fkcategoriavehiculo'] == '':
+            diccionary['fkcategoriavehiculo'] = None
+
+        if diccionary['administrativos'][0]['fkregimiento'] == "":
+            diccionary['administrativos'][0]['fkregimiento']= None
+
+        if diccionary['fkcargo']:
+            diccionary['tipo'] = "Personal"
 
         objeto = PersonalManager(self.db).entity(**diccionary)
         fecha = BitacoraManager(self.db).fecha_actual()
         objeto.fechanacimiento = datetime.strptime(objeto.fechanacimiento, '%d/%m/%Y')
+
+
 
 
         a = super().update(objeto)

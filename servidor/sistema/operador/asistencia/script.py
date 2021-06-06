@@ -35,7 +35,7 @@ def insertions():
         asistencia_m.children.append(update_asistencia)
         asistencia_m.children.append(delete_asistencia)
 
-        roles = session.query(Rol).filter(Rol.nombre.in_(['SUPER ADMINISTRADOR', "ADMINISTRADOR"])).all()
+        roles = session.query(Rol).filter(Rol.nombre.in_(['SUPER ADMINISTRADOR', "ADMINISTRADOR", "OPERADOR"])).all()
 
         for rol in roles:
             rol.modulos.append(operador_m)

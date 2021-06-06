@@ -1,6 +1,7 @@
 from servidor.common.controllers import CrudController
 from servidor.sistema.almacen.stock.manager import StockManager
 from servidor.sistema.almacen.material.manager import MaterialManager,MaterialColorManager,MaterialTallaManager
+from servidor.sistema.almacen.almacen.manager import AlmacenManager
 
 import json
 
@@ -23,6 +24,8 @@ class StockController(CrudController):
         aux = super().get_extra_data()
 
         aux['materiales_detalle'] = MaterialManager(self.db).get_all()
+        aux['almacenes'] = AlmacenManager(self.db).get_all()
+
         return aux
 
     def data_list(self):

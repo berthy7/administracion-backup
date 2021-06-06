@@ -1,6 +1,7 @@
 from servidor.database.connection import transaction
 from servidor.sistema.usuarios.usuario.model import Modulo
 from servidor.sistema.usuarios.rol.model import Rol
+from servidor.sistema.recursos_humanos.personal.model import TipoContrato
 
 
 def insertions():
@@ -33,7 +34,7 @@ def insertions():
         personal_m.children.append(update_personal)
         personal_m.children.append(delete_personal)
 
-        roles = session.query(Rol).filter(Rol.nombre.in_(['SUPER ADMINISTRADOR', "ADMINISTRADOR"])).all()
+        roles = session.query(Rol).filter(Rol.nombre.in_(['SUPER ADMINISTRADOR', "ADMINISTRADOR", "RRHH"])).all()
 
         for rol in roles:
             rol.modulos.append(recursos_humanos_m)
@@ -42,5 +43,11 @@ def insertions():
             rol.modulos.append(insert_personal)
             rol.modulos.append(update_personal)
             rol.modulos.append(delete_personal)
+
+        session.add(TipoContrato(nombre='PLAZO FIJO'))
+        session.add(TipoContrato(nombre='INDEFINIDO'))
+        session.add(TipoContrato(nombre='PASANTE'))
+        session.add(TipoContrato(nombre='CONSULTOR'))
+        session.add(TipoContrato(nombre='POR PROYECTO'))
 
         session.commit()

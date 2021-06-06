@@ -24,9 +24,8 @@ function load_table(data_tb) {
             { title: "ID", data: "id" },
             { title: "Tipo", data: "tipo" },
             { title: "Nombre", data: "nombre" },
-            { title: "Cant. Backup", data: "cantidadBackup" },
-            { title: "Cant. Usado", data: "cantidadUsado" },
-            { title: "Cant. Descarte", data: "cantidadDescarte" },
+            { title: "Color", data: "color" },
+            { title: "Talla", data: "talla" },
             { title: "Estado", data: "estado",
                 render: function(data, type, row) {
                     return '\

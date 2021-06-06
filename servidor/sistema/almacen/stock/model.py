@@ -39,20 +39,20 @@ class StockDetalle(Serializable, Base):
 
 
 class StockDetalleAlmacen(Serializable, Base):
-    way = {'stockdetalle': {}, 'almacen': {}}
+    way = {'stockdetalle': {}, 'subalmacen': {}}
 
     __tablename__ = 'almacen_detalle_stockalmacen'
 
     id = Column(BigInteger, primary_key=True)
     fkstockdetalle = Column(BigInteger, ForeignKey("almacen_stock_detalle.id"), nullable=True)
-    fkalmacen = Column(BigInteger, ForeignKey("almacen_material_almacen.id"), nullable=True)
+    fksubalmacen = Column(BigInteger, ForeignKey("almacen_almacen_subalmacen.id"), nullable=True)
     cantidad = Column(BigInteger, nullable=True, default=0)
 
     estado = Column(Boolean, default=True)
     enabled = Column(Boolean, default=True)
 
     stockdetalle = relationship('StockDetalle')
-    almacen = relationship('MaterialAlmacen')
+    subalmacen = relationship('AlmacenSubalmacen')
 
 
 

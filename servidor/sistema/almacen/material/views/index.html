@@ -71,23 +71,8 @@
                     {% end %}\
                  </select>\
             </div>\
-            <div class="col-sm-1 div_cantidad">\
-                <div  class="form-line">\
-                    <input id="cantidadBackup'+id_in+'" data-id="'+id_in+'" class="form-control  txta-own" readonly>\
-                </div>\
-            </div>\
-            <div class="col-sm-1 div_cantidad">\
-                <div  class="form-line">\
-                    <input id="cantidadUsado'+id_in+'" data-id="'+id_in+'" class="form-control  txta-own" readonly>\
-                </div>\
-            </div>\
-                        <div class="col-sm-1 div_cantidad">\
-                <div  class="form-line">\
-                    <input id="cantidadDescarte'+id_in+'" data-id="'+id_in+'" class="form-control  txta-own" readonly>\
-                </div>\
-            </div>\
             <div class="col-sm-2">\
-                <button type="button" class="btn bg-red waves-effect white-own clear_detalle" title="Eliminar">\
+                <button type="button" class="btn bg-red waves-effect clear_detalle" title="Eliminar">\
                     <i class="material-icons">clear</i>\
                 </button>\
             </div>\
@@ -97,7 +82,6 @@
         $('.clear_detalle').last().click(function () {
             $(this).parent().parent().remove()
         })
-
 
 
         $('.select_').selectpicker({

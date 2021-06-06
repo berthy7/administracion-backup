@@ -11,7 +11,7 @@ def insertions():
 
         asignacion_m = session.query(Modulo).filter(Modulo.nombre == 'asignacion').first()
         if asignacion_m is None:
-            asignacion_m = Modulo(titulo='Asignacion de material', ruta='/asignacion', nombre='asignacion', icono='business')
+            asignacion_m = Modulo(titulo='Entrega de material', ruta='/asignacion', nombre='asignacion', icono='business')
 
         almacen_m.children.append(asignacion_m)
 
@@ -33,7 +33,7 @@ def insertions():
         asignacion_m.children.append(update_asignacion)
         asignacion_m.children.append(delete_asignacion)
 
-        roles = session.query(Rol).filter(Rol.nombre.in_(['SUPER ADMINISTRADOR', "ADMINISTRADOR"])).all()
+        roles = session.query(Rol).filter(Rol.nombre.in_(['SUPER ADMINISTRADOR', "ADMINISTRADOR", "ALMACEN"])).all()
 
         for rol in roles:
             rol.modulos.append(almacen_m)
