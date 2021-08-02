@@ -5,6 +5,7 @@ from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy.orm import relationship
 
 
+
 class Stock(Serializable, Base):
     way = {'detalle': {}}
 

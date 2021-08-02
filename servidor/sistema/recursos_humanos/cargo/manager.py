@@ -17,6 +17,8 @@ class CargoManager(SuperManager):
     def __init__(self, db):
         super().__init__(Cargo, db)
 
+    def obtener_x_nombre(self, nombre):
+        return self.db.query(self.entity).filter(self.entity.nombre == nombre).first()
 
     def listar_habilitados(self):
         return self.db.query(self.entity).filter(self.entity.estado).filter(self.entity.enabled).all()
@@ -29,6 +31,10 @@ class CargoManager(SuperManager):
 
     def get_all(self):
         items = self.db.query(self.entity).filter(self.entity.estado).filter(self.entity.enabled)
+        return items
+
+    def get_all_postulantes(self):
+        items = self.db.query(self.entity).filter(self.entity.estado).filter(self.entity.enabled).filter(self.entity.id.in_([1,2,5,6]))
         return items
 
     def all_data(self, idu):

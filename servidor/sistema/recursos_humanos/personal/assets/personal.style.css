@@ -1,0 +1,2 @@
+.tree-container, .tree-container li { list-style-type: none !important; }
+table th { white-space: nowrap; max-width: 190px; }

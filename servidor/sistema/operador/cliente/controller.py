@@ -1,5 +1,9 @@
 from servidor.common.controllers import CrudController
 from servidor.sistema.operador.cliente.manager import ClienteManager
+from servidor.sistema.recursos_humanos.personal.manager import PersonalManager
+from servidor.sistema.operador.asistencia.manager import TipoAusenciaManager
+
+from datetime import datetime
 
 
 import json
@@ -15,15 +19,36 @@ class ClienteController(CrudController):
         '/cliente_update': {'PUT': 'edit', 'POST': 'update'},
         '/cliente_state': {'POST': 'state'},
         '/cliente_delete': {'POST': 'delete'},
-        '/cliente_list': {'POST': 'data_list'}
+        '/cliente_list': {'POST': 'data_list'},
+        '/cliente_list_fecha': {'POST': 'data_list_fecha'}
     }
 
     def get_extra_data(self):
         aux = super().get_extra_data()
         us = self.get_user()
-
+        aux['personales'] = PersonalManager(self.db).listar_habilitados()
+        aux['tipos_asistencia'] = TipoAusenciaManager(self.db).get_all()
         return aux
 
+
+    def data_list_fecha(self):
+        try:
+            self.set_session()
+            diccionary = json.loads(self.get_argument("object"))
+
+            user = self.get_user()
+            ins_manager = self.manager(self.db)
+            diccionary['fecha'] = datetime.strptime(diccionary['fecha'], '%d/%m/%Y')
+            indicted_object = ins_manager.all_data_fecha(user.id,diccionary['fecha'])
+
+            if len(ins_manager.errors) == 0:
+                self.respond_ajax(indicted_object, message='Operación exitosa!')
+            else:
+                self.respond([item.__dict__ for item in ins_manager.errors], False, 'Ocurrió un error al consultar')
+        except Exception as e:
+            print(e)
+            self.respond(response=[], success=False, message=str(e))
+        self.db.close()
 
 
     def data_list(self):

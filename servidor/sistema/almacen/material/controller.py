@@ -16,7 +16,10 @@ class MaterialController(CrudController):
         '/material_state': {'POST': 'state'},
         '/material_delete': {'POST': 'delete'},
         '/material_list': {'POST': 'data_list'},
-        '/material_listar_detalle': {'POST': 'listar_detalle'}
+        '/material_listar_detalle': {'POST': 'listar_detalle'},
+        '/material_listar_detalle_saldos': {'POST': 'listar_detalle_saldos'},
+        '/material_listar_detalle_saldo_subalmacen': {'POST': 'listar_detalle_saldo_subalmacen'},
+        '/material_listar_x_tipo': {'POST': 'listar_x_tipo'}
     }
 
     def get_extra_data(self):
@@ -29,6 +32,17 @@ class MaterialController(CrudController):
 
         return aux
 
+
+    def listar_x_tipo(self):
+        self.set_session()
+        us = self.get_user()
+
+        data = json.loads(self.get_argument("object"))
+        arraT = self.manager(self.db).get_page(1, 10, None, None, True)
+        arraT['objeto'] = MaterialManager(self.db).listar_x_tipo(data['fktipo'])
+        self.respond([item.get_dict() for item in arraT['objeto']])
+        self.db.close()
+
     def listar_detalle(self):
 
         self.set_session()
@@ -37,6 +51,28 @@ class MaterialController(CrudController):
         arraT = self.manager(self.db).get_page(1, 10, None, None, True)
         arraT['objeto'] = MaterialManager(self.db).listar_detalle(data['idMaterial'])
         self.respond([item.get_dict() for item in arraT['objeto']])
+        self.db.close()
+
+
+    def listar_detalle_saldos(self):
+
+        self.set_session()
+
+        data = json.loads(self.get_argument("object"))
+        arraT = self.manager(self.db).get_page(1, 10, None, None, True)
+        arraT['objeto'] = MaterialManager(self.db).listar_detalle_saldos(data['idMaterial'],data['fkalmacen'])
+        self.respond(arraT['objeto'])
+        self.db.close()
+
+
+    def listar_detalle_saldo_subalmacen(self):
+
+        self.set_session()
+
+        data = json.loads(self.get_argument("object"))
+        arraT = self.manager(self.db).get_page(1, 10, None, None, True)
+        arraT['objeto'] = MaterialManager(self.db).listar_detalle_saldo_subalmacen(data['idMaterial'],data['fksubalmacen'])
+        self.respond(arraT['objeto'])
         self.db.close()
 
     def data_list(self):

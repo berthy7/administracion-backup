@@ -71,7 +71,7 @@ class StockManager(SuperManager):
 
         a = super().insert(objeto)
 
-        MaterialManager(self.db).update_detalle(a.detalle)
+        MaterialManager(self.db).update_x_stock(a.detalle,objeto.user,objeto.ip)
 
         b = Bitacora(fkusuario=objeto.user, ip=objeto.ip, accion="Registró stock.", fecha=fecha, tabla="parametrizacion_stock", identificador=a.id)
         super().insert(b)

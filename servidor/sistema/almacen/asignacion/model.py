@@ -40,7 +40,7 @@ class AsignacionDetalle(Serializable, Base):
 
 
 class StockAsignacionAlmacen(Serializable, Base):
-    way = {'asignaciondetalle': {}, 'subalmacen': {}}
+    way = {'asignaciondetalle': {}, 'subalmacen': {'almacen': {}}}
 
     __tablename__ = 'almacen_asignacion_stockalmacen'
 

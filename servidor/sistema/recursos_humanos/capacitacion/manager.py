@@ -2,7 +2,7 @@ from servidor.common.managers import SuperManager
 from servidor.sistema.usuarios.bitacora.manager import BitacoraManager
 from servidor.sistema.usuarios.usuario.manager import UsuarioManager
 from servidor.sistema.usuarios.bitacora.model import Bitacora
-from servidor.sistema.recursos_humanos.capacitacion.model import Capacitacion
+from servidor.sistema.recursos_humanos.capacitacion.model import Capacitacion,Tema,Titulo,Integrantes
 
 from datetime import datetime
 
@@ -17,6 +17,10 @@ class CapacitacionManager(SuperManager):
     def __init__(self, db):
         super().__init__(Capacitacion, db)
 
+    def listar_por_participacion(self,idpersonal):
+        return self.db.query(Integrantes).join(Capacitacion)\
+            .filter(Integrantes.fkpersonal == idpersonal)\
+            .filter(Capacitacion.estado).filter(Capacitacion.enabled).all()
 
     def listar_habilitados(self):
         return self.db.query(self.entity).filter(self.entity.estado).filter(self.entity.enabled).all()
@@ -48,6 +52,8 @@ class CapacitacionManager(SuperManager):
             diccionario['check'] = check
             diccionario['disable'] = disable
             diccionario['delete'] = delete
+            diccionario['fecha'] = item.fecha.strftime('%d/%m/%Y %H:%M')
+            diccionario['titulo'] = item.titulo.nombre
             list.append(diccionario)
 
         return list
@@ -62,7 +68,9 @@ class CapacitacionManager(SuperManager):
         super().insert(b)
         return a
 
-    def update(self, objeto):
+    def update(self, diccionary):
+        diccionary['fecha'] = datetime.strptime(diccionary['fecha'] + ' ' + diccionary['hora'], '%d/%m/%Y %H:%M')
+        objeto = CapacitacionManager(self.db).entity(**diccionary)
         fecha = BitacoraManager(self.db).fecha_actual()
 
         a = super().update(objeto)
@@ -92,3 +100,41 @@ class CapacitacionManager(SuperManager):
         super().insert(b)
         self.db.merge(x)
         self.db.commit()
+
+
+class TituloManager(SuperManager):
+
+    def __init__(self, db):
+        super().__init__(Titulo, db)
+
+    def listar_habilitados(self):
+        return self.db.query(self.entity).filter(self.entity.estado).filter(self.entity.enabled).all()
+
+    def listar_todo(self):
+        return self.db.query(self.entity).filter(self.entity.enabled).all()
+
+    def list_all(self):
+        return dict(objects=self.db.query(self.entity).filter(self.entity.enabled))
+
+    def get_all(self):
+        items = self.db.query(self.entity).filter(self.entity.estado).filter(self.entity.enabled)
+        return items
+
+
+class TemaManager(SuperManager):
+
+    def __init__(self, db):
+        super().__init__(Tema, db)
+
+    def listar_habilitados(self):
+        return self.db.query(self.entity).filter(self.entity.estado).filter(self.entity.enabled).all()
+
+    def listar_todo(self):
+        return self.db.query(self.entity).filter(self.entity.enabled).all()
+
+    def list_all(self):
+        return dict(objects=self.db.query(self.entity).filter(self.entity.enabled))
+
+    def get_all(self):
+        items = self.db.query(self.entity).filter(self.entity.estado).filter(self.entity.enabled)
+        return items

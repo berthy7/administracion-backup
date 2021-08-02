@@ -1,6 +1,8 @@
 from servidor.database.connection import transaction
 from servidor.sistema.usuarios.usuario.model import Modulo
 from servidor.sistema.usuarios.rol.model import Rol
+from servidor.sistema.almacen.almacen.model import Almacen
+from servidor.sistema.almacen.subalmacen.model import SubAlmacen
 
 
 
@@ -43,5 +45,16 @@ def insertions():
             rol.modulos.append(insert_almacen)
             rol.modulos.append(update_almacen)
             rol.modulos.append(delete_almacen)
+
+        session.add(SubAlmacen(id = 1,nombre='Nuevo'))
+        session.add(SubAlmacen(id = 2,nombre='Usado'))
+        session.add(SubAlmacen(id = 3,nombre='Descarte'))
+
+        session.commit()
+
+        session.add(Almacen(id = 1,nombre='Adquisición',descripcion="gerencia, donde llegan uniformes nuevos y otros equipos de consideración",subalmacenes=[dict(fksubalmacen=1),dict(fksubalmacen=2)]))
+        session.add(Almacen(id = 2,nombre='Dotación',descripcion="se alimenta de Adquisición y también recibe los usados",subalmacenes=[dict(fksubalmacen=1),dict(fksubalmacen=2),dict(fksubalmacen=3)]))
+        session.add(Almacen(id = 3,nombre='Apoyo',descripcion="recibe los descartes y otro tipo de material en desuso temporal",subalmacenes=[dict(fksubalmacen=1),dict(fksubalmacen=2),dict(fksubalmacen=3)]))
+        session.add(Almacen(id=4, nombre='Tecnologia',descripcion="en de Harold",subalmacenes=[dict(fksubalmacen=1),dict(fksubalmacen=2),dict(fksubalmacen=3)]))
 
         session.commit()

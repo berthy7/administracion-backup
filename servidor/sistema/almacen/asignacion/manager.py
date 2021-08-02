@@ -27,8 +27,6 @@ class AsignacionManager(SuperManager):
 
             for asignacionstock in detalle.asignacionstock:
 
-
-
                 print(asignacionstock.asignaciondetalle.materialDetalle.material.nombre)
                 cant_backup = 0
                 cant_usado = 0
@@ -98,7 +96,7 @@ class AsignacionManager(SuperManager):
         objeto.fechar = fecha
         a = super().insert(objeto)
 
-        MaterialManager(self.db).update_detalle_asignacion(a.detalle)
+        MaterialManager(self.db).update_detalle_asignacion(a.detalle,objeto.user,objeto.ip)
 
         b = Bitacora(fkusuario=objeto.user, ip=objeto.ip, accion="Registró asignacion.", fecha=fecha, tabla="parametrizacion_asignacion", identificador=a.id)
         super().insert(b)

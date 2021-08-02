@@ -6,6 +6,12 @@ $(document).ready( function () {
 });
 validationKeyup("modal")
 
+$('#fkcargo').selectpicker({
+    size: 10,
+    liveSearch: true,
+    liveSearchPlaceholder: 'Buscar',
+    title: 'Seleccione'
+})
 
 function load_table(data_tb) {
     var tabla = $(id_table).DataTable({
@@ -16,6 +22,8 @@ function load_table(data_tb) {
         scroller:       true,
         columns: [
             { title: "ID", data: "id" },
+            { title: "Fecha Registro", data: "fechar" },
+            { title: "Cargo", data: "cargo" },
             { title: "Nombre", data: "fullname" },
             { title: "Ci", data: "ci" },
             { title: "Telefono", data: "telefono" },
@@ -73,8 +81,17 @@ function load_table(data_tb) {
                 },
             }
         ],
-        "order": [ [0, 'asc'] ],
+        "order": [ [3, 'asc'] ],
         columnDefs: [ { width: '10%', targets: [0] }, { width: '30%', targets: [1, 2, 3] } ],
+        "createdRow": function(row, data, dataIndex) {
+            
+            if(data.cargo == 'POSTULANTE'){
+                let class_rw =  'bg-pro-wrn'
+
+                $(row).addClass(class_rw)
+            }
+
+        },
         "initComplete": function() {}
     });
     tabla.draw()
@@ -82,6 +99,7 @@ function load_table(data_tb) {
 
 function clean_data() {
     $(class_item).val('')
+    $('#id_familiar').val('')
 }
 
 function reload_table() {
@@ -100,7 +118,159 @@ function reload_table() {
     });
 }
 
+function get_familiares() {
+    objeto = []
+    
+        h0 = $('#id_familiar').val()
+        h1 = $('#nombre_famili').val()
+        h2 = $('#celular').val()
+        h3 = null
 
+        objeto.push((function add_(h0, h1, h2,h3) {
+
+            if (h0 ==''){
+                return {
+                    'nombre': h1,
+                    'celular': h2,
+                    'fkparentesco': h3
+
+                }
+
+            }else{
+                return {
+                'id':h0,
+                    'nombre': h1,
+                    'celular': h2,
+                    'fkparentesco': h3
+                }
+            }
+
+
+        })(
+            h0,
+            h1,
+            h2,
+            h3))
+  
+
+
+
+    return objeto
+}
+
+
+
+$('#importar_Excel').click(function () {
+    $(".xlsfl").each(function () {
+        $(this).fileinput('refresh',{
+            allowedFileExtensions: ['xlsx', 'txt'],
+            maxFileSize: 2000,
+            maxFilesNum: 1,
+            showUpload: false,
+            layoutTemplates: {
+                main1: '{preview}\n' +
+                    '<div class="kv-upload-progress hide"></div>\n' +
+                    '<div class="input-group {class}">\n' +
+                    '   {caption}\n' +
+                    '   <div class="input-group-btn">\n' +
+                    '       {remove}\n' +
+                    '       {cancel}\n' +
+                    '       {browse}\n' +
+                    '   </div>\n' +
+                    '</div>',
+                main2: '{preview}\n<div class="kv-upload-progress hide"></div>\n{remove}\n{cancel}\n{browse}\n',
+                preview: '<div class="file-preview {class}">\n' +
+                    '    {close}\n' +
+                    '    <div class="{dropClass}">\n' +
+                    '    <div class="file-preview-thumbnails">\n' +
+                    '    </div>\n' +
+                    '    <div class="clearfix"></div>' +
+                    '    <div class="file-preview-status text-center text-success"></div>\n' +
+                    '    <div class="kv-fileinput-error"></div>\n' +
+                    '    </div>\n' +
+                    '</div>',
+                icon: '<span class="glyphicon glyphicon-file kv-caption-icon"></span>',
+                caption: '<div tabindex="-1" class="form-control file-caption {class}">\n' +
+                    '   <div class="file-caption-name"></div>\n' +
+                    '</div>',
+                btnDefault: '<button type="{type}" tabindex="500" title="{title}" class="{css}"{status}>{icon}{label}</button>',
+                btnLink: '<a href="{href}" tabindex="500" title="{title}" class="{css}"{status}>{icon}{label}</a>',
+                btnBrowse: '<div tabindex="500" class="{css}"{status}>{icon}{label}</div>',
+                progress: '<div class="progress">\n' +
+                    '    <div class="progress-bar progress-bar-success progress-bar-striped text-center" role="progressbar" aria-valuenow="{percent}" aria-valuemin="0" aria-valuemax="100" style="width:{percent}%;">\n' +
+                    '        {percent}%\n' +
+                    '     </div>\n' +
+                    '</div>',
+                footer: '<div class="file-thumbnail-footer">\n' +
+                    '    <div class="file-caption-name" style="width:{width}">{caption}</div>\n' +
+                    '    {progress} {actions}\n' +
+                    '</div>',
+                actions: '<div class="file-actions">\n' +
+                    '    <div class="file-footer-buttons">\n' +
+                    '        {delete} {other}' +
+                    '    </div>\n' +
+                    '    {drag}\n' +
+                    '    <div class="file-upload-indicator" title="{indicatorTitle}">{indicator}</div>\n' +
+                    '    <div class="clearfix"></div>\n' +
+                    '</div>',
+                actionDelete: '<button type="button" class="kv-file-remove {removeClass}" title="{removeTitle}"{dataUrl}{dataKey}>{removeIcon}</button>\n',
+                actionDrag: '<span class="file-drag-handle {dragClass}" title="{dragTitle}">{dragIcon}</span>'
+            }
+        })
+    });
+    verif_inputs('')
+
+    $('#id_div').hide()
+    $('#insert-importar').show()
+    $('#form-importar').modal('show')
+})
+
+$('#insert-importar').on('click',function (e) {
+     e.preventDefault();
+
+    var data = new FormData($('#importar-form')[0]);
+
+    ruta = "postulante_importar";
+    data.append('_xsrf', getCookie("_xsrf"))
+    render = null
+    callback = function () {
+        setTimeout
+        (function () {
+            window.location = main_route
+        }, 2000);
+    }
+    $.ajax({
+        url: ruta,
+        type: "post",
+        data: data,
+        contentType: false,
+        processData: false,
+        cache: false,
+        async: false
+    }).done(function (response) {
+        $('.page-loader-wrapper').hide();
+        $('#form').modal('hide');
+        response = JSON.parse(response)
+
+        if (response.success) {
+
+            show_msg_lg('success', 'Operacion Correcta', 'center')
+
+            setTimeout(function () {
+                $('#form-importar').modal('hide')
+                reload_table()
+            }, 2000);
+
+
+
+        } else {
+            swal("Operacion Fallida", response.message, "error").then(function () {
+                query_render('/residente');
+            });
+        }
+    })
+    $('#form').modal('hide')
+})
 
 
 
@@ -126,7 +296,7 @@ $('#insert').on('click', function() {
             'ci': $('#dni').val(),
             'telefono': $('#telefono').val(),
             'administrativos' : [],
-            'familiares' : [],
+            'familiares' : get_familiares(),
             'experiencias' : [],
             'estudios' : [],
             'complementos' : []
@@ -170,7 +340,16 @@ function edit_item(e) {
         $('#apellidom').val(self.apellidom)
         $('#dni').val(self.ci)
         $('#telefono').val(self.telefono)
-
+        
+        for (fami in self.familiares) {
+            
+                $('#id_familiar').val(self.familiares[fami]['id'])
+                $('#nombre_famili').val(self.familiares[fami]['nombre'])
+                $('#celular').val(self.familiares[fami]['celular'])
+                $('#fkparentesco').val(self.familiares[fami]['fkparentesco'])
+                $('#fkparentesco').selectpicker('refresh')
+            
+        }
 
         clean_form()
         verif_inputs('')
@@ -191,9 +370,10 @@ $('#update').click(function() {
             'apellidom': $('#apellidom').val(),
             'nombre': $('#nombre').val(),
             'ci': $('#dni').val(),
+            'fkcargo': $('#fkcargo').val(),
             'telefono': $('#telefono').val(),
             'administrativos' : [],
-            'familiares' : [],
+            'familiares' : get_familiares(),
             'experiencias' : [],
             'estudios' : [],
             'complementos' : []

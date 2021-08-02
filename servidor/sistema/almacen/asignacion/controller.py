@@ -2,6 +2,7 @@ from servidor.common.controllers import CrudController
 from servidor.sistema.almacen.asignacion.manager import AsignacionManager
 from servidor.sistema.recursos_humanos.personal.manager import PersonalManager
 from servidor.sistema.almacen.material.manager import MaterialManager,MaterialColorManager,MaterialTallaManager
+from servidor.sistema.almacen.almacen.manager import AlmacenManager
 
 import os.path
 import uuid
@@ -27,7 +28,7 @@ class AsignacionController(CrudController):
         aux = super().get_extra_data()
 
         aux['personales'] = PersonalManager(self.db).get_all()
-
+        aux['almacenes'] = AlmacenManager(self.db).get_all()
         aux['materiales_detalle'] = MaterialManager(self.db).get_all()
 
         return aux
@@ -72,8 +73,6 @@ class AsignacionController(CrudController):
             print(e)
             self.respond(response=[], success=False, message=str(e))
         self.db.close()
-
-
 
 
 

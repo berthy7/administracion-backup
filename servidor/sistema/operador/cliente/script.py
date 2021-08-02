@@ -2,6 +2,7 @@ from servidor.database.connection import transaction
 from servidor.sistema.usuarios.usuario.model import Modulo
 from servidor.sistema.usuarios.rol.model import Rol
 from servidor.sistema.operador.cliente.model import Cliente
+from servidor.sistema.operador.asistencia.model import TipoAusencia,Turno
 
 
 
@@ -14,7 +15,7 @@ def insertions():
 
         cliente_m = session.query(Modulo).filter(Modulo.nombre == 'cliente').first()
         if cliente_m is None:
-            cliente_m = Modulo(titulo='Cliente', ruta='/cliente', nombre='cliente', icono='business')
+            cliente_m = Modulo(titulo='Control de Asistencia', ruta='/cliente', nombre='cliente', icono='business')
 
         operador_m.children.append(cliente_m)
 
@@ -47,32 +48,42 @@ def insertions():
             rol.modulos.append(delete_cliente)
 
 
-        session.add(Cliente(nombre='BACKUP',dia="BCK",noche="BCK-N"))
-        session.add(Cliente(nombre='CONSTRUCTORA GOMEZ',dia="COG",noche="COG-N"))
-        session.add(Cliente(nombre='IFA BANZER',dia="IFZ",noche="IFZ-N"))
-        session.add(Cliente(nombre='IFA BENI',dia="IFB",noche="IFB-N"))
-        session.add(Cliente(nombre='IFA BANZER ALMACEN',dia="IFM",noche="IFM-N"))
-        session.add(Cliente(nombre='NELLY 1',dia="NL1",noche="NL1-N"))
-        session.add(Cliente(nombre='NELLY 2',dia="NL2",noche="NL2-N"))
-        session.add(Cliente(nombre='AVESCA',dia="AVE",noche="AVE-N"))
-        session.add(Cliente(nombre='DOMICILIO SR.ROCA',dia="RDM",noche="RDM-N"))
-        session.add(Cliente(nombre='URUBO GARDEN',dia="URG",noche="URG-N"))
-        session.add(Cliente(nombre='LA FLORESTA',dia="FLO",noche="FLO-N"))
-        session.add(Cliente(nombre='PRAXI 1', dia="PX1", noche="PX1-N"))
-        session.add(Cliente(nombre='PRAXI 2', dia="PX2", noche="PX2-N"))
-        session.add(Cliente(nombre='BARRIO NORTE', dia="BNO", noche="BNO-N"))
-        session.add(Cliente(nombre='CIUDAD JARDIN', dia="CJA", noche="CJA-N"))
-        session.add(Cliente(nombre='BARCELO', dia="BAC", noche="BAC-N"))
-        session.add(Cliente(nombre='LAS PALMAS II', dia="PL2", noche="PL2-N"))
-        session.add(Cliente(nombre='4LIVE', dia="LIV", noche="LIV-N"))
-        session.add(Cliente(nombre='LA RIVIERA', dia="RIV", noche="RIV-N"))
-        session.add(Cliente(nombre='CUBO II', dia="CUB", noche="CUB-N"))
-        session.add(Cliente(nombre='SAE', dia="SAE", noche="SAE-N"))
-        session.add(Cliente(nombre='IGUAZU', dia="IGU", noche="IGU-N"))
-        session.add(Cliente(nombre='DATEC', dia="DTC", noche="DTC-N"))
-        session.add(Cliente(nombre='PUESTO NUEVO 1', dia="PN1", noche="PN1-N"))
-        session.add(Cliente(nombre='PUESTO NUEVO 2', dia="PN2", noche="PN2-N"))
-        session.add(Cliente(nombre='PUESTO NUEVO 3', dia="PN3", noche="PN3-N"))
-        session.add(Cliente(nombre='PUESTO NUEVO 4', dia="PN4", noche="PN4-N"))
+        session.add(Cliente(nombre='BACKUP',codigo="BCK"))
+        session.add(Cliente(nombre='PUESTO MOVIL', codigo="MOV"))
+        session.add(Cliente(nombre='CONSTRUCTORA GOMEZ',codigo="COG"))
+        session.add(Cliente(nombre='IFA BANZER',codigo="IFZ"))
+        session.add(Cliente(nombre='IFA BENI',codigo="IFB"))
+        session.add(Cliente(nombre='IFA BANZER ALMACEN',codigo="IFM"))
+        session.add(Cliente(nombre='NELLY 1',codigo="NL1"))
+        session.add(Cliente(nombre='NELLY 2',codigo="NL2"))
+        session.add(Cliente(nombre='AVESCA',codigo="AVE"))
+        session.add(Cliente(nombre='DOMICILIO SR.ROCA',codigo="RDM"))
+        session.add(Cliente(nombre='URUBO GARDEN',codigo="URG"))
+        session.add(Cliente(nombre='LA FLORESTA',codigo="FLO"))
+        session.add(Cliente(nombre='PRAXI 1', codigo="PX1"))
+        session.add(Cliente(nombre='PRAXI 2', codigo="PX2"))
+        session.add(Cliente(nombre='BARRIO NORTE', codigo="BNO"))
+        session.add(Cliente(nombre='CIUDAD JARDIN', codigo="CJA"))
+        session.add(Cliente(nombre='BARCELO', codigo="BAC"))
+        session.add(Cliente(nombre='LAS PALMAS II', codigo="PL2"))
+        session.add(Cliente(nombre='4LIVE', codigo="LIV"))
+        session.add(Cliente(nombre='LA RIVIERA', codigo="RIV"))
+        session.add(Cliente(nombre='CUBO II', codigo="CUB"))
+        session.add(Cliente(nombre='SAE', codigo="SAE"))
+        session.add(Cliente(nombre='IGUAZU', codigo="IGU"))
+        session.add(Cliente(nombre='DATEC', codigo="DTC"))
+
+        session.add(TipoAusencia(nombre='PRESENTE', codigo="PR", color="color_verde"))
+        session.add(TipoAusencia(nombre='FALTA', codigo="F", color="color_rojo"))
+        session.add(TipoAusencia(nombre='FRANCO',codigo="L", color="color_amarillo"))
+        session.add(TipoAusencia(nombre='PERMISO',codigo="X", color="color_naranja"))
+        session.add(TipoAusencia(nombre='BAJA MEDICA',codigo="BJM", color="color_cafe"))
+        session.add(TipoAusencia(nombre='VACACION',codigo="V", color="color_rosado"))
+        session.add(TipoAusencia(nombre='RETIRADOS',codigo="R", color="color_azul"))
+        session.add(TipoAusencia(nombre='PERMISO SIN GOSE', codigo="PSG", color="color_celeste"))
+
+        session.add(Turno(nombre='DIURNO'))
+        session.add(Turno(nombre='NOCTURNO'))
+
 
         session.commit()

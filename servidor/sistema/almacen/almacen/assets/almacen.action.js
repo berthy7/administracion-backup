@@ -71,7 +71,7 @@ function load_table(data_tb) {
                 },
             }
         ],
-        "order": [ [0, 'desc'] ],
+        "order": [ [0, 'asc'] ],
         columnDefs: [ { width: '10%', targets: [0] }, { width: '30%', targets: [1, 2, 3] } ],
         "initComplete": function() {}
     });
@@ -143,14 +143,14 @@ function obtener_subalmacen() {
     
                     if (h0 ==''){
                         return {
-                        'fksubalmacen': h1,
+                        'fksubalmacen': h1
     
                         }
     
                     }else{
                         return {
                         'id':h0,
-                        'fksubalmacen': h1,
+                        'fksubalmacen': h1
                         }
                     }
     
@@ -212,7 +212,7 @@ $('#insert').on('click', function() {
     if (!notvalid) {
         objeto = JSON.stringify({
             'nombre': $('#nombre').val(),
-            'direccion': $('#direccion').val(),
+            'descripcion': $('#descripcion').val(),
             'subalmacenes' : obtener_subalmacen()
         })
 
@@ -266,7 +266,7 @@ $('#update').click(function() {
         objeto = JSON.stringify({
             'id': $('#id').val(),
             'nombre': $('#nombre').val(),
-            'direccion': $('#direccion').val()
+            'descripcion': $('#descripcion').val()
         })
 
         ajax_call('almacen_update', {

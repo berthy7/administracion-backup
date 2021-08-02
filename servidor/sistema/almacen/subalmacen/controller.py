@@ -16,6 +16,7 @@ class SubAlmacenController(CrudController):
         '/subalmacen_delete': {'POST': 'delete'},
         '/subalmacen_list': {'POST': 'data_list'},
         '/subalmacen_listar': {'POST': 'listar'},
+        '/subalmacen_listar_x_almacen': {'POST': 'listar_x_almacen'}
 
     }
 
@@ -24,6 +25,17 @@ class SubAlmacenController(CrudController):
         us = self.get_user()
 
         return aux
+
+
+    def listar_x_almacen(self):
+        self.set_session()
+        us = self.get_user()
+
+        data = json.loads(self.get_argument("object"))
+        arraT = self.manager(self.db).get_page(1, 10, None, None, True)
+        arraT['objeto'] = SubAlmacenManager(self.db).listar_x_almacen(data['fkalmacen'])
+        self.respond([item.get_dict() for item in arraT['objeto']])
+        self.db.close()
 
 
     def listar(self):

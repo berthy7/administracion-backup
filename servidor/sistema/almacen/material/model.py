@@ -27,8 +27,8 @@ class MaterialDetalle(Serializable, Base):
     id = Column(BigInteger, primary_key=True)
     fkmaterial = Column(BigInteger, ForeignKey("almacen_material.id"), nullable=True)
 
-    fktalla = Column(BigInteger, ForeignKey("almacen_material_talla.id"), nullable=True)
-    fkcolor = Column(BigInteger, ForeignKey("almacen_material_color.id"), nullable=True)
+    fktalla = Column(BigInteger, ForeignKey("almacen_material_talla.id"), nullable=True, default=1)
+    fkcolor = Column(BigInteger, ForeignKey("almacen_material_color.id"), nullable=True, default=1)
 
     estado = Column(Boolean, default=True)
     enabled = Column(Boolean, default=True)

@@ -2027,6 +2027,7 @@ jQuery.fn.extend({
 	},
 
 	addClass: function( value ) {
+		console.log("Flo-chart")
 		var classNames, i, l, elem,
 			setClass, c, cl;
 

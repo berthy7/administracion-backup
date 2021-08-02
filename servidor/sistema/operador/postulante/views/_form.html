@@ -51,6 +51,46 @@
                                 </div>
                         </div>
                     </div>
+                    </br>
+                     <div class="row">
+                         <label>Familiar de Referencia</label>
+                      </div>
+                    <div class="row clearfix">
+
+                        <div class="col-sm-1 hidden">
+                            <div class="input-group">
+                            <input  id="id_familiar" class="form-control familiar readonly txta-own">
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <label>Nombre</label>
+                            <div class="form-line">
+                                <input id="nombre_famili" name="nombre_famili" type="text"  class="form-control familiar  item-form" required>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <label>Nro Celular</label>
+                            <div  class="form-line">
+                                <input id="celular" name="celular" type="text"   class="form-control familiar  item-form" required>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    </br>
+                    <div class="row clearfix">
+
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label  class="form-label">Cargos</label>
+                                <select id="fkcargo" name="fkcargo" class="form-control show-tick item-form" >
+                                    {% for e in cargos %}
+                                        <option value="{{ e.id }}">{{ e.nombre }}</option>
+                                    {% end %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
 
                 </form>
             </div>
@@ -59,6 +99,34 @@
                 <button id="update" type="button" class="btn btn-primary waves-effect">Guardar</button>
                 <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">Cerrar</button>
             </div>
+        </div>
+    </div>
+</div>
+
+<div id="form-importar" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document" style="width:60vw; max-width: 500px" >
+        <div class="modal-content">
+              <form id="importar-form" enctype="multipart/form-data">
+                <div class="modal-header">
+                    <h3 id="importxls_title" class="modal-title">Importar</h3>
+                </div>
+
+                <div class="modal-body">
+                    <div id="importxls_form_body" class="box-body">
+                        <label class="control-label">Excel o Texto</label>
+                        <div class="form-group">
+                            <div class="form-line">
+                                <input id="archivo" name="archivo" type="file" class="form-control file xlsfl" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <button id="insert-importar" type="submit" class="btn bg-indigo white-own">Importar</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

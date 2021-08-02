@@ -24,8 +24,34 @@ function load_table(data_tb) {
             { title: "ID", data: "id" },
             { title: "Tipo", data: "tipo" },
             { title: "Nombre", data: "nombre" },
-            { title: "Color", data: "color" },
-            { title: "Talla", data: "talla" },
+            { title: "Color", data: "color",
+                render: function(data, type, row) {
+                    a = ''
+                    for (var i = 0; i < Object.keys(row.detalle).length; i++) {
+                        a += '<p><input id="nombreInputColor'+row.detalle[i].id+'"  value="'+ row.detalle[i].color +'" type="text" minlength="4" maxlength="30" size="30" class="form-control" readonly>'
+                            '</p>'
+
+                        $('#nombreInputDia' + row.detalle[i].id).addClass(row.detalle[i].detalle);
+                    }
+                    return a
+                }
+            },
+            { title: "Talla", data: "talla" ,
+                            render: function(data, type, row) {
+                    a = ''
+                    for (var i = 0; i < Object.keys(row.detalle).length; i++) {
+
+
+                        a += '<p><input id="nombreInputColor'+row.detalle[i].id+'"  value="'+ row.detalle[i].talla +'" type="text" minlength="4" maxlength="30" size="30" class="form-control" readonly>'
+                            '</p>'
+
+                        $('#nombreInputDia' + row.detalle[i].id).addClass(row.detalle[i].detalle);
+
+                    }
+                    return a
+                }
+
+            },
             { title: "Estado", data: "estado",
                 render: function(data, type, row) {
                     return '\
@@ -80,8 +106,8 @@ function load_table(data_tb) {
                 },
             }
         ],
-        "order": [ [0, 'desc'] ],
-        columnDefs: [ { width: '10%', targets: [0] }, { width: '30%', targets: [1, 2, 3] } ],
+        "order": [ [0, 'asc'] ],
+        columnDefs: [ { width: '5%', targets: [0] }, { width: '15%', targets: [1, 2] }, { width: '7%', targets: [3] } , { width: '7%', targets: [4] }, { width: '10%', targets: [5] }, { width: '35%', targets: [6] }],
         "initComplete": function() {}
     });
     tabla.draw()
@@ -121,6 +147,14 @@ function get_detalle() {
         h0 = objeto_inputs[i].value
         h1 = objeto_inputs[i + 2].value
         h2 = objeto_inputs[i + 4].value
+
+        if(h1 == ''){
+            h1 = null
+        }
+        if(h2 == ''){
+            h2 = null
+        }
+
 
 
         objeto.push((function add_(h0, h1, h2) {

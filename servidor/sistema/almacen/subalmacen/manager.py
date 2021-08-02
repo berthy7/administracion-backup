@@ -3,6 +3,7 @@ from servidor.sistema.usuarios.bitacora.manager import BitacoraManager
 from servidor.sistema.usuarios.usuario.manager import UsuarioManager
 from servidor.sistema.usuarios.bitacora.model import Bitacora
 from servidor.sistema.almacen.subalmacen.model import SubAlmacen
+from servidor.sistema.almacen.almacen.model import AlmacenSubalmacen
 
 from datetime import datetime
 
@@ -16,6 +17,17 @@ class SubAlmacenManager(SuperManager):
 
     def __init__(self, db):
         super().__init__(SubAlmacen, db)
+
+    def listar_x_almacen(self, idalmacen):
+
+        return self.db.query(AlmacenSubalmacen).filter(AlmacenSubalmacen.fkalmacen == idalmacen).order_by(
+            AlmacenSubalmacen.id.asc()).all()
+
+
+    # def listar_x_almacen(self, idalmacen):
+    #
+    #     return self.db.query(self.entity).join(AlmacenSubalmacen).filter(AlmacenSubalmacen.fkalmacen == idalmacen).order_by(
+    #         self.entity.id.asc()).all()
 
     def listar_habilitados(self):
         return self.db.query(self.entity).filter(self.entity.estado).filter(self.entity.enabled).all()

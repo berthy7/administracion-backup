@@ -17,7 +17,8 @@ class AsistenciaController(CrudController):
         '/asistencia_update': {'PUT': 'edit', 'POST': 'update'},
         '/asistencia_state': {'POST': 'state'},
         '/asistencia_delete': {'POST': 'delete'},
-        '/asistencia_list': {'POST': 'data_list'}
+        '/asistencia_list': {'POST': 'data_list'},
+        '/asistencia_reporte_excel': {'POST': 'reporte_excel'},
     }
 
     def get_extra_data(self):
@@ -28,6 +29,14 @@ class AsistenciaController(CrudController):
         aux['tipoausencias'] = TipoAusenciaManager(self.db).get_all()
 
         return aux
+
+    def reporte_excel(self):
+        self.set_session()
+        diccionary = json.loads(self.get_argument("object"))
+
+        cname = self.manager(self.db).asistencia_excel(diccionary)
+        self.respond({'nombre': cname, 'url': 'resources/downloads/' + cname}, True)
+        self.db.close()
 
 
     def data_list(self):

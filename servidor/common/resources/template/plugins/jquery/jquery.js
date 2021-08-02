@@ -8806,6 +8806,7 @@ function getClass( elem ) {
 
 jQuery.fn.extend( {
 	addClass: function( value ) {
+		console.log("jquery")
 		var classes, elem, cur, curValue, clazz, j, finalValue,
 			i = 0;
 

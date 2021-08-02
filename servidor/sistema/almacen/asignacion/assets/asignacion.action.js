@@ -34,6 +34,20 @@ $('#fkpersonal').selectpicker({
     title: 'Seleccione'
 })
 
+$('#fkalmacen').selectpicker({
+    size: 10,
+    liveSearch: true,
+    liveSearchPlaceholder: 'Buscar',
+    title: 'Seleccione'
+})
+
+$('#fkmaterial').selectpicker({
+    size: 10,
+    liveSearch: true,
+    liveSearchPlaceholder: 'Buscar',
+    title: 'Seleccione'
+})
+
 $('#fkpersonalDevolucion').selectpicker({
     size: 10,
     liveSearch: true,
@@ -156,7 +170,7 @@ function load_table(data_tb) {
             }
         ],
         "order": [ [0, 'desc'] ],
-        columnDefs: [ { width: '10%', targets: [0] }, { width: '30%', targets: [1, 2, 3] } ],
+        columnDefs: [ { width: '5%', targets: [0] }, { width: '20%', targets: [1, 2, 3,4] }, { width: '35%', targets: [5] } ],
         "initComplete": function() {}
     });
     tabla.draw()
@@ -182,8 +196,62 @@ function reload_table() {
     });
 }
 
+function append_input_detalle(id_in) {
 
-function get_detalle() {
+    $('#detalle_div').append(
+        '<div class="row">\
+            <div class="col-sm-1" hidden>\
+                <div class="input-group">\
+                <input  id="id'+id_in+'" class="form-control subalmacen detalle txta-own"readonly>\
+                </div>\
+            </div>\
+            <div class="col-sm-1" hidden>\
+                <div class="input-group">\
+                <input  id="fkdetallematerial'+id_in+'" class="form-control subalmacen detalle txta-own"readonly>\
+                </div>\
+            </div>\
+            <div class="col-sm-2">\
+                <h5 class="label_normal" id="nombre'+id_in+'"></h5>\
+            </div>\
+            <div class="col-sm-2">\
+                <h5 class="label_normal" id="color'+id_in+'"></h5>\
+            </div>\
+            <div class="col-sm-1">\
+                <h5 class="label_normal" id="talla'+id_in+'"></h5>\
+            </div>\
+            <div class="col-sm-1">\
+                <h5 class="label_normal" id="nuevo'+id_in+'"></h5>\
+            </div>\
+            <div class="col-sm-2">\
+                <div class="form-line">\
+                    <input id="saldonuevo'+id_in+'" type="hidden" data-id="'+id_in+'" class="form-control detalle txta-own">\
+                    <input id="cantidadNuevo'+id_in+'" data-id="'+id_in+'" class="form-control detalle txta-own">\
+                </div>\
+            </div>\
+            <div class="col-sm-1">\
+                <h5 class="label_normal" id="usado'+id_in+'"></h5>\
+            </div>\
+            <div class="col-sm-2">\
+                <div class="form-line">\
+                    <input id="saldousado'+id_in+'" type="hidden" data-id="'+id_in+'" class="form-control detalle txta-own">\
+                    <input id="cantidadUsado'+id_in+'" data-id="'+id_in+'" class="form-control detalle txta-own">\
+                </div>\
+            </div>\
+            <div class="col-sm-1">\
+                <button type="button" class="btn bg-red waves-effect clear_detalle" title="Eliminar">\
+                    <i class="material-icons">clear</i>\
+                </button>\
+            </div>\
+        </div>'
+    )
+
+            $('.clear_detalle').last().click(function () {
+            $(this).parent().parent().remove()
+        })
+
+
+}
+function get_detalle2() {
     objeto = []
     objeto_inputs = $('.detalle')
     cant_ = 0
@@ -258,8 +326,6 @@ function get_detalle() {
                     }
         }
 
-
-
     }
 
     return {
@@ -269,64 +335,150 @@ function get_detalle() {
             }
 }
 
+function get_detalle() {
+    objeto = []
+    objeto_inputs = $('.detalle')
+    cant_ = 0
+
+    // .attr('data-id')
+
+    for (i = 0; i < objeto_inputs.length; i += 6) {
+        h0 = objeto_inputs[i].value
+        h1 = objeto_inputs[i + 1].value
+        h2 = objeto_inputs[i + 2].value
+        h3 = objeto_inputs[i + 3].value
+        h4 = objeto_inputs[i + 4].value
+        h5 = objeto_inputs[i + 5].value
+
+        if (h3 ==''){
+            h3 = 0
+        }
+        if (h5 ==''){
+            h5 = 0
+        }
+
+        if(parseInt(h3) <= parseInt(h2)){
+            if(parseInt(h5) <= parseInt(h4)){
+                if (parseInt(h3) != 0 || parseInt(h5) != 0){
+                    objeto.push((function add_(h0, h1, h3,h5) {
+                    if (h0 =='' ){
+                        return {
+                            'fkalmacen': $('#fkalmacen').val(),
+                            'fkmaterialDetalle': h1,
+                            'asignacionstock': [{
+                                'fksubalmacen': 1,
+                                'cantidad': h3
+                                },
+                                {
+                                'fksubalmacen': 2,
+                                'cantidad': h5
+                                }]
+                        }
+                    }else{
+                        return {
+                        'id':h0,
+                            'fkalmacen': $('#fkalmacen').val(),
+                            'fkmaterialDetalle': h1,
+                                'asignacionstock': [{
+                                    'fksubalmacen': 1,
+                                    'cantidad': h3
+                                    },
+                                    {
+                                    'fksubalmacen': 2,
+                                    'cantidad': h5
+                                    }]
+                        }
+                    }
+                })(
+                    h0,
+                    h1,
+                    h3,
+                    h5))
+                }
+            }else{
+                return {
+                'objeto':'',
+                'success': false,
+                'mensaje': 'la Cantidad ingresada de '+h5+' es mayor al stock disponible'
+                }
+            }
 
 
-function append_input_detalleDevolucion(id_in) {
-
-        $('#detalle_divDevolucion').append(
-        '<div class="row">\
-            <div class="col-sm-1 hidden">\
-                <div class="input-group">\
-                <input  id="id_detalleDevolucion'+id_in+'" class="form-control detalle readonly txta-own">\
-                </div>\
-            </div>\
-            <div class="col-sm-2">\
-                <div  class="form-line">\
-                    <input id="materialDevolucion'+id_in+'" data-id="'+id_in+'" class="form-control  txta-own" readonly>\
-                </div>\
-            </div>\
-            <div class="col-sm-2">\
-                <div  class="form-line">\
-                    <input id="colorDevolucion'+id_in+'" data-id="'+id_in+'" class="form-control  txta-own" readonly>\
-                </div>\
-            </div>\
-            <div class="col-sm-1">\
-                <div  class="form-line">\
-                    <input id="tallaDevolucion'+id_in+'" data-id="'+id_in+'" class="form-control  txta-own" readonly>\
-                </div>\
-            </div>\
-            <div class="col-sm-1">\
-                <div  class="form-line">\
-                    <input id="backupDevolucion'+id_in+'" data-id="'+id_in+'" class="form-control  txta-own" readonly>\
-                </div>\
-            </div>\
-            <div class="col-sm-1">\
-                <div  class="form-line">\
-                    <input id="usadoDevolucion'+id_in+'" data-id="'+id_in+'" class="form-control  txta-own" readonly>\
-                </div>\
-            </div>\
-        </div>'
-    )
-
-        $('.clear_detalle').last().click(function () {
-            $(this).parent().parent().remove()
-        })
-
-
-
-        $('.select_').selectpicker({
-            size: 10,
-            liveSearch: true,
-            liveSearchPlaceholder: 'Buscar',
-            title: 'Seleccione'
-        })
-
+        }else{
+            return {
+            'objeto':'',
+            'success': false,
+            'mensaje': 'la Cantidad ingresada de '+h3+' es mayor al stock disponible'
+            }
+        }
 
     }
 
+        return {
+            'objeto':objeto,
+            'success': true,
+            'mensaje': ''
+            }
+}
+
+$('#fkalmacen').change(function () {
+    $('#detalle_div').empty()
+});
+
+$('#fkmaterial').change(function () {
+    cargar_detalle(parseInt(JSON.parse($('#fkmaterial').val())),parseInt(JSON.parse($('#fkalmacen').val())))
+
+    $(fkmaterial).val('')
+    $(fkmaterial).selectpicker('render')
+    
+});
+
+function cargar_detalle(fkmaterial,fkalmacen) {
+
+    obj = JSON.stringify({
+        'idMaterial':fkmaterial,
+        'fkalmacen': fkalmacen,
+        '_xsrf': getCookie("_xsrf")
+    })
+
+    ruta = "material_listar_detalle_saldos";
+
+    $.ajax({
+        method: "POST",
+        url: ruta,
+        data: {_xsrf: getCookie("_xsrf"), object: obj},
+        async: false
+    }).done(function (response) {
+        response = JSON.parse(response)
+
+        for (det in response['response'] ) {
+
+            append_input_detalle(response['response'][det]['id'])
+
+            $('#fkdetallematerial' + response['response'][det].id).val(response['response'][det].id)
+            // $('#nombre' + response.response[det].id).val(response.response[det].material.nombre)
+            $('#nombre' + response['response'][det].id).html(response['response'][det].material);
+            $('#color' + response['response'][det].id).html(response['response'][det].color)
+            $('#talla' + response['response'][det].id).html(response['response'][det].talla)
+            $('#nuevo' + response['response'][det].id).html(response['response'][det].nuevo)
+            $('#saldonuevo' + response['response'][det].id).val(response['response'][det].nuevo)
+            $('#usado' + response['response'][det].id).html(response['response'][det].usado)
+            $('#saldousado' + response['response'][det].id).val(response['response'][det].usado)
+
+
+
+        }
+
+    })
+
+}
+
 $('#new').click(function() {
+    $('#detalle_div').empty()
     $(fkpersonal).val('')
     $(fkpersonal).selectpicker('render')
+    $(fkalmacen).val('')
+    $(fkalmacen).selectpicker('render')
     $('#foto').fileinput('clear');
     $('#div_foto').hide()
     $('._cantidad').val('')
@@ -359,6 +511,7 @@ $('#insert').on('click', function() {
                     'nombre': $('#nombre').val(),
                     'fkpersonal': $('#fkpersonal').val(),
                     'descripcion': $('#descripcion').val(),
+                    'fkalmacen': $('#fkalmacen').val(),
                     'detalle': respuestaDetalle['objeto']
                 })
 
@@ -426,6 +579,8 @@ function edit_item(e) {
         $('#descripcion').val(self.descripcion)
         $('#fkpersonal').val(self.fkpersonal)
         $('#fkpersonal').selectpicker('refresh')
+        $('#fkalmacen').val(self.fkalmacen)
+        $('#fkalmacen').selectpicker('refresh')
         
         if (self.personal.foto) {
             console.log("entro")
@@ -468,6 +623,7 @@ function devolucion_item(e) {
 
         $('#idDevolucion').val(self.id)
         $('#descripcionDevolucion').val(self.descripcion)
+        $('#fkalmacen').val(self.fkalmacen)
         $('#fkpersonalDevolucion').val(self.fkpersonal)
         $('#fkpersonalDevolucion').selectpicker('refresh')
 
@@ -514,6 +670,7 @@ $('#update').on('click', function() {
             'nombre': $('#nombre').val(),
             'fkpersonal': $('#fkpersonal').val(),
             'descripcion': $('#descripcion').val(),
+            'fkalmacen': $('#fkalmacen').val(),
             'detalle': get_detalle()
 
         })

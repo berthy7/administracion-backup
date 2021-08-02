@@ -3,7 +3,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="largeModalLabel">Cargo</h4>
+                <h4 class="modal-title" id="largeModalLabel">Capacitacion</h4>
             </div>
             <div class="modal-body">
                 <form>
@@ -14,14 +14,48 @@
                         </div>
                     </div>
 
-                    <div class="row clearfix">
+
+                    <div class="row">
                         <div class="col-sm-6">
-                            <label>Tema</label>
-                                <div class="form-line">
-                                    <input id="tema" name="Tema" type="text" class="form-control item-form" required >
-                                </div>
+                            <div class="form-group">
+                                <label  class="form-label">Titulo</label>
+                                <select id="fktitulo" name="fktitulo" class="form-control show-tick item-form">
+                                    {% for e in titulos %}
+                                        <option value="{{ e.id }}">{{ e.nombre }}</option>
+                                    {% end %}
+                                </select>
+                            </div>
                         </div>
+
                     </div>
+                    </br>
+
+                    <div class="row clearfix">
+                        <div class="col-sm-5">
+                            <div class="form-group">
+                                <label  class="form-label">Seleccione Tema</label>
+                                <select id="fktema" name="fktema" class="form-control show-tick item-form">
+                                    {% for e in temas %}
+                                        <option value="{{ e.id }}">{{ e.nombre }}</option>
+                                    {% end %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-1">
+                            <label  class="form-label"></label>
+                            <div class="form-group">
+                                <button id="new_tema" type="button" class="btn btn-primary waves-effect" title="Agregar">Agregar Tema </button>
+                            </div>
+                       </div>
+                    </div>
+
+                     <div id="tema" class="box-body">
+                        <div id="tema_div" class="clearfix">
+
+                        </div>
+                     </div>
+
+                    </br>
                     </br>
                     <div class="row clearfix">
                         <div class="col-sm-3">
@@ -40,10 +74,34 @@
                     </br>
                     <div class="row clearfix">
                         <div class="col-sm-6">
-                            <label>Relator</label>
+                            <label>Instructor</label>
                                 <div class="form-line">
-                                    <input id="relator" name="Relator" type="text" class="form-control item-form" required >
+                                    <input id="instructor" name="Instructor" type="text" class="form-control item-form" required >
                                 </div>
+                        </div>
+
+                    </div>
+                    </br>
+                    <div class="row clearfix">
+                        <div class="col-sm-6">
+                            <label>Ubicacion</label>
+                                <div class="form-line">
+                                    <input id="ubicacion" name="Ubicacion " type="text" class="form-control item-form" required >
+                                </div>
+                        </div>
+
+                    </div>
+                    </br>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label  class="form-label">Cargos</label>
+                                <select id="fkcargo" name="fkcargo" class="form-control show-tick item-form">
+                                    {% for e in cargos %}
+                                        <option value="{{ e.id }}">{{ e.nombre }}</option>
+                                    {% end %}
+                                </select>
+                            </div>
                         </div>
 
                     </div>
@@ -68,7 +126,7 @@
                         </div>
                         <div class="col-sm-4">
                             <div class="modal-header header-own">
-                                <h4 class="modal-title">Integrantes</h4>
+                                <h4 class="modal-title">Participantes</h4>
                             </div>
                         </div>
                     </div>
@@ -78,18 +136,24 @@
                         <div class="col-md-1">
 
                         </div>
-                        <div class="col-sm-2">
+                        <div class="col-sm-3">
                             <label class="form-label">Nombre</label>
+                        </div>
+                        <div class="col-sm-2">
+                            <label class="form-label">Resultado</label>
+                        </div>
+                        <div class="col-sm-2">
+                            <label class="form-label">Observacion</label>
                         </div>
 
                     </div>
-                        <div class="row clearfix">
-                             <div id="integrante" class="box-body">
-                                <div id="integrante_div" class="clearfix">
+                    <div class="row clearfix">
+                         <div id="integrante" class="box-body">
+                            <div id="integrante_div" class="clearfix">
 
-                                </div>
-                             </div>
-                       </div>
+                            </div>
+                         </div>
+                   </div>
                 </br>
 
 

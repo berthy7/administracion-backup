@@ -1,7 +1,10 @@
 from servidor.common.controllers import CrudController
 from servidor.sistema.operador.postulante.manager import PostulanteManager
+from servidor.sistema.recursos_humanos.cargo.manager import CargoManager
 
 
+import os.path
+import uuid
 import json
 
 
@@ -15,16 +18,33 @@ class PostulanteController(CrudController):
         '/postulante_update': {'PUT': 'edit', 'POST': 'update'},
         '/postulante_state': {'POST': 'state'},
         '/postulante_delete': {'POST': 'delete'},
-        '/postulante_list': {'POST': 'data_list'}
+        '/postulante_list': {'POST': 'data_list'},
+        '/postulante_importar': {'POST': 'importar'},
     }
 
     def get_extra_data(self):
         aux = super().get_extra_data()
+        aux['cargos'] = CargoManager(self.db).get_all_postulantes()
         us = self.get_user()
 
         return aux
 
 
+    def importar(self):
+        self.set_session()
+        fileinfo = self.request.files['archivo'][0]
+        fname = fileinfo['filename']
+        extn = os.path.splitext(fname)[1]
+        cname = str(uuid.uuid4()) + extn
+        fh = open("servidor/common/resources/uploads/" + cname, 'wb')
+        fh.write(fileinfo['body'])
+        fh.close()
+        if extn in ['.xlsx', '.xls']:
+            mee = self.manager(self.db).importar_excel(cname,self.get_user_id(),self.request.remote_ip)
+            self.respond(message=mee['message'], success=mee['success'])
+        else:
+            self.respond(message='Formato de Archivo no aceptado¡¡', success=False)
+        self.db.close()
 
     def data_list(self):
         try:

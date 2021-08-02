@@ -1,6 +1,7 @@
 from servidor.common.controllers import CrudController
-from servidor.sistema.recursos_humanos.capacitacion.manager import CapacitacionManager
+from servidor.sistema.recursos_humanos.capacitacion.manager import CapacitacionManager,TemaManager,TituloManager
 from servidor.sistema.recursos_humanos.personal.manager import PersonalManager
+from servidor.sistema.recursos_humanos.cargo.manager import CargoManager
 
 
 
@@ -25,8 +26,12 @@ class CapacitacionController(CrudController):
         aux = super().get_extra_data()
         us = self.get_user()
         aux['personales'] = PersonalManager(self.db).listar_habilitados()
+        aux['cargos'] = CargoManager(self.db).get_all()
+        aux['titulos'] = TituloManager(self.db).get_all()
+        aux['temas'] = TemaManager(self.db).get_all()
 
         return aux
+
 
     def listar_detalle(self):
 
@@ -74,8 +79,8 @@ class CapacitacionController(CrudController):
             diccionary = json.loads(self.get_argument("object"))
             diccionary['user'] = self.get_user_id()
             diccionary['ip'] = self.request.remote_ip
-            objeto = self.manager(self.db).entity(**diccionary)
-            CapacitacionManager(self.db).update(objeto)
+
+            CapacitacionManager(self.db).update(diccionary)
             self.respond(success=True, message='Modificado correctamente.')
         except Exception as e:
             print(e)

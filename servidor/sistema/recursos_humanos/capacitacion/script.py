@@ -1,6 +1,7 @@
 from servidor.database.connection import transaction
 from servidor.sistema.usuarios.usuario.model import Modulo
 from servidor.sistema.usuarios.rol.model import Rol
+from servidor.sistema.recursos_humanos.capacitacion.manager import Titulo,Tema
 
 
 
@@ -44,5 +45,16 @@ def insertions():
             rol.modulos.append(insert_capacitacion)
             rol.modulos.append(update_capacitacion)
             rol.modulos.append(delete_capacitacion)
+
+
+        session.add(Titulo(nombre='Capacitacion Inicial'))
+        session.add(Titulo(nombre='Capacitacion Recurrente'))
+        session.add(Titulo(nombre='Capacitacion Especial'))
+
+        session.add(Tema(nombre='Principios Basicos de un Guardia de Seguridad'))
+        session.add(Tema(nombre='Procedimientos Generales de Seguridad'))
+        session.add(Tema(nombre='Soporte Vital Basico'))
+        session.add(Tema(nombre='Prevencion y Extincion de Incendios'))
+        session.add(Tema(nombre='Procedimientos Especificos de Puestos'))
 
         session.commit()

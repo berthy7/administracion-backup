@@ -1,8 +1,13 @@
 from servidor.common.managers import SuperManager
 from servidor.sistema.usuarios.bitacora.manager import BitacoraManager
 from servidor.sistema.usuarios.usuario.manager import UsuarioManager
+from servidor.sistema.recursos_humanos.capacitacion.manager import CapacitacionManager
 from servidor.sistema.usuarios.bitacora.model import Bitacora
 from servidor.sistema.recursos_humanos.personal.model import Personal,TipoContrato
+from servidor.sistema.operador.asistencia.manager import TipoAusenciaManager
+from servidor.sistema.almacen.descuento.manager import DescuentoManager
+from servidor.sistema.operador.sancion.manager import SancionManager
+from sqlalchemy import func, desc, asc
 
 from datetime import datetime
 
@@ -19,6 +24,12 @@ class PersonalManager(SuperManager):
     def __init__(self, db):
         super().__init__(Personal, db)
 
+
+    def listar_x_cargo(self, idcargo):
+
+        x = self.db.query(self.entity).filter(self.entity.fkcargo == idcargo).order_by(
+            self.entity.id.asc()).all()
+        return x
 
     def listar_tipocontrato_habilitados(self):
         return self.db.query(TipoContrato).filter(TipoContrato.estado).filter(TipoContrato.enabled).all()
@@ -44,15 +55,21 @@ class PersonalManager(SuperManager):
     def crear_pdf(self, diccionario):
 
         persona = PersonalManager(self.db).obtener_x_id(diccionario['idPersonal'])
+
+
         var_categoriamotocicleta = "----"
         var_categoriavehiculo = "----"
 
         var_regimiento = "----"
+        var_serviciomilitar = "----"
+        var_nrolibreta = "----"
+
 
         detalle_familiar = ""
         detalle_experiencia_laboral = ""
         detalle_estudios = ""
         detalle_complementos = ""
+        detalle_capacitacion = ""
 
         if persona.fkcategoriavehiculo:
             var_categoriavehiculo = persona.categoriavehiculo.nombre
@@ -60,22 +77,54 @@ class PersonalManager(SuperManager):
         if persona.fkcategoriamotocicleta:
             var_categoriamotocicleta = persona.categoriamotocicleta.nombre
 
+        capacitaciones = CapacitacionManager(self.db).listar_por_participacion(persona.id)
 
-        if persona.administrativos[0].fkregimiento:
-            var_regimiento = persona.administrativos[0].regimiento.nombre
 
+        if len(persona.administrativos) != 0:
+            if persona.administrativos[0].fkregimiento:
+                var_regimiento = persona.administrativos[0].regimiento.nombre
+                var_serviciomilitar = persona.administrativos[0].regimiento.serviciomilitar
+                var_nrolibreta = persona.administrativos[0].regimiento.nrolibreta
+
+            else:
+                var_regimiento = "----"
         else:
+
             var_regimiento = "----"
 
 
 
         for fami in persona.familiares:
+            parentesco = str(fami.parentesco.nombre) if fami.fkparentesco else '----'
             detalle_familiar = detalle_familiar + "" \
                                                   "<tr style='font-size: 12px; border: 0px; '>" \
                                                   "<td colspan='5' scope='colgroup'align='left'><font>" + str(fami.nombre) + "</font></td>" \
                                                    "<td colspan='5' scope='colgroup'align='left'><font>" + str(fami.celular) + "</font></td>" \
-                                                    "<td colspan='5' scope='colgroup'align='left'><font>" + str(fami.parentesco.nombre) + "</font></td>" \
+                                                    "<td colspan='5' scope='colgroup'align='left'><font>" + parentesco + "</font></td>" \
                                                               "</tr>"
+
+
+
+        for capa in capacitaciones:
+
+            resultado = "APROBADO" if capa.resultado else "REPROBADO"
+            dt_tema = ""
+
+            detalle_capacitacion = detalle_capacitacion + "<table style='padding: 4px; border: 1px solid grey' width='100%'>"
+
+            for temas in capa.capacitacion.temas:
+                dt_tema += "<p>" + str(temas.tema.nombre) + "</p>"
+
+            detalle_capacitacion = detalle_capacitacion + "" \
+                  "<tr style='font-size: 12px; border: 0px; '>" \
+                  "<td colspan='2' scope='colgroup'align='left'><font>" + str(capa.capacitacion.fecha) + "</font></td>" \
+                  "<td colspan='3' scope='colgroup'align='left'><font>" + str(capa.capacitacion.titulo.nombre) + "</font></td>" \
+                   "<td colspan='7' scope='colgroup'align='left'><font>" + dt_tema + "</font></td>" \
+                  "<td colspan='2' scope='colgroup'align='left'><font>" + resultado + "</font></td>" \
+                  "<td colspan='4' scope='colgroup'align='left'><font>" + str(capa.observacion) + "</font></td>" \
+                  "</tr>"
+
+            detalle_capacitacion = detalle_capacitacion + "</table>"
 
         for expe in persona.experiencias:
             detalle_experiencia_laboral = detalle_experiencia_laboral + "" \
@@ -107,9 +156,8 @@ class PersonalManager(SuperManager):
 
         for comple in persona.complementos:
             detalle_complementos = detalle_complementos + "" \
-                                                          "<tr style='font-size: 12px; border: 0px; '>" \
-                                                          "<td colspan='5' scope='colgroup'align='left'><font>" + str(
-                comple.estudio) + "</font></td>" \
+                                  "<tr style='font-size: 12px; border: 0px; '>" \
+                                  "<td colspan='5' scope='colgroup'align='left'><font>" + str(comple.estudio) + "</font></td>" \
                                   "<td colspan='5' scope='colgroup'align='left'><font></font></td>" \
                                        "</tr>"
 
@@ -225,6 +273,29 @@ class PersonalManager(SuperManager):
 
         logoempresa = "/resources/iconos/logo.png"
 
+
+        expedido = "---"
+        civil = "---"
+        nacionalidad = "---"
+        fechanacimiento = "---"
+        Nombrecargo = "Postulante"
+
+        if persona.fkexpedido :
+            expedido = persona.expedido.nombre
+
+        if persona.fkcivil:
+            civil = persona.civil.nombre
+
+        if persona.fknacionalidad:
+            nacionalidad = persona.nacionalidad.nombre
+
+        if persona.fkcargo:
+            Nombrecargo = persona.cargo.nombre
+
+
+        if persona.fechanacimiento:
+            fechanacimiento = persona.fechanacimiento.strftime('%d/%m/%Y')
+
         html = "" \
                "<meta http-equiv='Content-Type' content='text/html'; charset='utf-8' />" \
                "<style>" \
@@ -244,7 +315,7 @@ class PersonalManager(SuperManager):
                       "</table>" \
                       "<table style='padding: 4px; border: 1px solid grey' width='100%'>" \
                       "<tr color='#ffffff' >" \
-                      "<th colspan='22' scope='colgroup' align='left' style='background-color: #DC3131; font-size=4; color: white; margin-top: 4px'>REPORTE DE PERSONAL</th>" \
+                      "<th colspan='22' scope='colgroup' align='left' style='background-color: #DC3131; font-size=4; color: white; margin-top: 4px'>ARCHIVO PERSONAL</th>" \
                       "</tr>" \
                       "<tr style='font-size: 12px; border: 0px; '>" \
                       "<td colspan='5' style='border-right: 1px solid grey ' scope='colgroup'align='left'><strong>Nombres y Apellidos: </strong></td>" \
@@ -254,34 +325,29 @@ class PersonalManager(SuperManager):
                                         "<tr style='font-size: 12px; border: 0px; '>" \
                                         "<td colspan='5' style='border-right: 1px solid grey ' scope='colgroup'align='left'><strong>DNI: </strong></td>" \
                                         "<td colspan='12' scope='colgroup'align='left'><font>" + str(
-                    persona.ci) + " " + persona.expedido.nombre + "</font></td>" \
-                                                                  "</tr>" \
-                                                                  "<tr style='font-size: 12px; border: 0px; '>" \
-                                                                  "<td colspan='5' style='border-right: 1px solid grey ' scope='colgroup'align='left'><strong>Nacionalidad: </strong></td>" \
-                                                                  "<td colspan='12' scope='colgroup'align='left'><font>" + str(
-                    persona.nacionalidad.nombre) + "</font></td>" \
-                                                   "</tr>" \
-                                                   "<tr style='font-size: 12px; border: 0px; '>" \
-                                                   "<td colspan='5' style='border-right: 1px solid grey ' scope='colgroup'align='left'><strong>Fecha Nacimiento: </strong></td>" \
-                                                   "<td colspan='12' scope='colgroup'align='left'><font>" + str(
-                    persona.fechanacimiento.strftime('%d/%m/%Y')) + "</font></td>" \
-                                                                    "</tr>" \
-                                                                    "<tr style='font-size: 12px; border: 0px; '>" \
-                                                                    "<td colspan='5' style='border-right: 1px solid grey ' scope='colgroup'align='left'><strong>Licencia Vehiculo: </strong></td>" \
-                                                                    "<td colspan='5' scope='colgroup'align='left'><font>" + str(
-                    persona.licenciavehiculo) + "</font></td>" \
-                                                "<td colspan='5' style='border-right: 0px solid grey ' scope='colgroup'align='left'><strong>Categoria: </strong>" + var_categoriavehiculo + "</td>" \
-                                                              "</tr>" \
-                                                              "<tr style='font-size: 12px; border: 0px; '>" \
-                                                              "<td colspan='5' style='border-right: 1px solid grey ' scope='colgroup'align='left'><strong>Licencia Motocicleta: </strong></td>" \
-                                                              "<td colspan='5' scope='colgroup'align='left'><font>" + str(
-                    persona.licenciamotocicleta) + "</font></td>" \
-                                                   "<td colspan='5' style='border-right: 0px solid grey ' scope='colgroup'align='left'><strong>Categoria: </strong>" + var_categoriamotocicleta + "</td>" \
-                                          "</tr>" \
-                                          "<tr style='font-size: 12px; border: 0px; '>" \
-                                          "<td colspan='5' style='border-right: 1px solid grey ' scope='colgroup'align='left'><strong>Domicilio: </strong></td>" \
-                                          "<td colspan='12' scope='colgroup'align='left'><font>" + str(
-                    persona.domicilio) + "</font></td>" \
+                    persona.ci) + " " +expedido  + "</font></td>" \
+                              "</tr>" \
+                              "<tr style='font-size: 12px; border: 0px; '>" \
+                              "<td colspan='5' style='border-right: 1px solid grey ' scope='colgroup'align='left'><strong>Nacionalidad: </strong></td>" \
+                              "<td colspan='12' scope='colgroup'align='left'><font>" + nacionalidad + "</font></td>" \
+                               "</tr>" \
+                               "<tr style='font-size: 12px; border: 0px; '>" \
+                               "<td colspan='5' style='border-right: 1px solid grey ' scope='colgroup'align='left'><strong>Fecha Nacimiento: </strong></td>" \
+                               "<td colspan='12' scope='colgroup'align='left'><font>" + fechanacimiento + "</font></td>" \
+                                "</tr>" \
+                                "<tr style='font-size: 12px; border: 0px; '>" \
+                                "<td colspan='5' style='border-right: 1px solid grey ' scope='colgroup'align='left'><strong>Licencia Vehiculo: </strong></td>" \
+                                "<td colspan='5' scope='colgroup'align='left'><font>" + str(persona.licenciavehiculo) + "</font></td>" \
+                            "<td colspan='5' style='border-right: 0px solid grey ' scope='colgroup'align='left'><strong>Categoria: </strong>" + var_categoriavehiculo + "</td>" \
+                            "</tr>" \
+                            "<tr style='font-size: 12px; border: 0px; '>" \
+                            "<td colspan='5' style='border-right: 1px solid grey ' scope='colgroup'align='left'><strong>Licencia Motocicleta: </strong></td>" \
+                            "<td colspan='5' scope='colgroup'align='left'><font>" + str(persona.licenciamotocicleta) + "</font></td>" \
+                               "<td colspan='5' style='border-right: 0px solid grey ' scope='colgroup'align='left'><strong>Categoria: </strong>" + var_categoriamotocicleta + "</td>" \
+                              "</tr>" \
+                              "<tr style='font-size: 12px; border: 0px; '>" \
+                              "<td colspan='5' style='border-right: 1px solid grey ' scope='colgroup'align='left'><strong>Domicilio: </strong></td>" \
+                              "<td colspan='12' scope='colgroup'align='left'><font>" + str(persona.domicilio) + "</font></td>" \
                                          "</tr>" \
                                          "<tr style='font-size: 12px; border: 0px; '>" \
                                          "<td colspan='5' style='border-right: 1px solid grey ' scope='colgroup'align='left'><strong>Nro. Celular: </strong></td>" \
@@ -290,13 +356,11 @@ class PersonalManager(SuperManager):
                                         "</tr>" \
                                         "<tr style='font-size: 12px; border: 0px; '>" \
                                         "<td colspan='5' style='border-right: 1px solid grey ' scope='colgroup'align='left'><strong>Estado Civil: </strong></td>" \
-                                        "<td colspan='12' scope='colgroup'align='left'><font>" + str(
-                    persona.civil.nombre) + "</font></td>" \
+                                        "<td colspan='12' scope='colgroup'align='left'><font>" + civil + "</font></td>" \
                                             "</tr>" \
                                             "<tr style='font-size: 12px; border: 0px; '>" \
                                             "<td colspan='5' style='border-right: 1px solid grey ' scope='colgroup'align='left'><strong>Cargo: </strong></td>" \
-                                            "<td colspan='12' scope='colgroup'align='left'><font>" + str(
-            persona.cargo.nombre) + "</font></td>" \
+                                            "<td colspan='12' scope='colgroup'align='left'><font>" + str(Nombrecargo) + "</font></td>" \
                                     "</tr>" \
                                     "</table>" \
                                             "<table style='padding: 4px; border: 1px solid grey' width='100%'>" \
@@ -306,8 +370,8 @@ class PersonalManager(SuperManager):
                                             "<td colspan='5' style='border-right: 0px solid grey ' scope='colgroup'align='left'><strong>Expedido en:</strong></td>" \
                                             "</tr>" \
                                             "<tr style='font-size: 12px; border: 0px; '>" \
-                                            "<td colspan='5' scope='colgroup'align='left'><font>" + str(persona.administrativos[0].serviciomilitar) + "</font></td>" \
-                                            "<td colspan='5' scope='colgroup'align='left'><font>" + str(persona.administrativos[0].nrolibreta) + "</font></td>" \
+                                            "<td colspan='5' scope='colgroup'align='left'><font>" + var_serviciomilitar  + "</font></td>" \
+                                            "<td colspan='5' scope='colgroup'align='left'><font>" + var_nrolibreta + "</font></td>" \
                                             "<td colspan='5' scope='colgroup'align='left'><font>" + var_regimiento + "</font></td>" \
                    "</tr>" \
                    "</table>" \
@@ -358,8 +422,22 @@ class PersonalManager(SuperManager):
                   "<td colspan='5' style='border-right: 0px solid grey ' scope='colgroup'align='left'><strong>Grado</strong></td>" \
                   "</tr>" \
                   "" + detalle_complementos + "" \
+                  "</table>" \
+                  "<table style='padding: 4px; border: 1px solid grey' width='100%'>" \
+                  "<tr style='font-size: 12px; border: 0px; '>" \
+                  "<td colspan='5' style='border-right: 0px solid grey ' scope='colgroup'align='left'><strong>Capacitaciones Recibidas: </strong></td>" \
+                  "<td colspan='12' scope='colgroup'align='left'><font></font></td>" \
+                  "</tr>" \
+                  "<tr style='font-size: 12px; border: 0px; '>" \
+                  "<td colspan='2' style='border-right: 0px solid grey ' scope='colgroup'align='left'><strong>Fecha</strong></td>" \
+                  "<td colspan='3' style='border-right: 0px solid grey ' scope='colgroup'align='left'><strong>Titulo</strong></td>" \
+                  "<td colspan='7' style='border-right: 0px solid grey ' scope='colgroup'align='left'><strong>Temas</strong></td>" \
+                  "<td colspan='2' style='border-right: 0px solid grey ' scope='colgroup'align='left'><strong>Resultado</strong></td>" \
+                  "<td colspan='4' style='border-right: 0px solid grey ' scope='colgroup'align='left'><strong>Observacion</strong></td>" \
+                  "</tr>" \
+                  "" + detalle_capacitacion + "" \
                                           "</table>" \
-                  "</br>"
+                                          "</br>"
         html += "<table style='padding: 4px; border: 1px solid grey' width='100%'>" \
                 "" + foto1x + "" \
                               "" + foto2x + "" \
@@ -376,17 +454,208 @@ class PersonalManager(SuperManager):
 
         return html
 
+    def crear_pdf_pago(self, diccionario):
+
+        persona = PersonalManager(self.db).obtener_x_id(diccionario['idPersonal'])
+
+        detalle_asistencia = ""
+        detalle_descuento = ""
+        monto_descuento = 0
+        detalle_sancion = ""
+        monto_sancion = 0
+
+
+        tipoAusencia = TipoAusenciaManager(self.db).listar_todo()
+        descuentos = DescuentoManager(self.db).listar_x_personal(diccionario['idPersonal'])
+        sanciones = SancionManager(self.db).listar_x_personal(diccionario['idPersonal'])
+
+        for tipo in tipoAusencia:
+            detalle_asistencia = detalle_asistencia + "" \
+                                             "<tr style='font-size: 12px; border: 0px; '>" \
+                                             "<td colspan='5' scope='colgroup'align='left'><font>" + str(tipo.nombre) + "</font></td>" \
+                                             "<td colspan='3' scope='colgroup'align='left'><font>0</font></td>" \
+                                             "<td colspan='3' scope='colgroup'align='left'><font>0</font></td>" \
+                                             "<td colspan='3' scope='colgroup'align='left'><font>0</font></td>" \
+                                             "<td colspan='3' scope='colgroup'align='left'><font>0</font></td>" \
+                                             "<td colspan='3' scope='colgroup'align='left'><font>0</font></td>" \
+                                             "<td colspan='3' scope='colgroup'align='left'><font>0</font></td>" \
+                                             "</tr>"
+
+
+
+        for des in descuentos:
+            monto_descuento = monto_descuento + des.monto
+            detalle_descuento = detalle_descuento + "" \
+                                              "<tr style='font-size: 12px; border: 0px; '>" \
+                                              "<td colspan='4' scope='colgroup'align='left'><font>" + str(des.fecha.strftime('%d/%m/%Y')) + "</font></td>" \
+                                              "<td colspan='4' scope='colgroup'align='left'><font>" + str(des.motivo.nombre) + "</font></td>" \
+                                                "<td colspan='4' scope='colgroup'align='left'><font>" + str(des.material) + "</font></td>" \
+                                                "<td colspan='4' scope='colgroup'align='left'><font>" + str(des.monto) + "</font></td>" \
+                                              "</tr>"
+
+        detalle_descuento = detalle_descuento + "" \
+                                                "<tr style='font-size: 12px; border: 0px; '>" \
+                                                "<td colspan='4' scope='colgroup'align='left'></td>" \
+                                                "<td colspan='4' scope='colgroup'align='left'><strong>Total: </strong></td>" \
+                                                "<td colspan='4' scope='colgroup'align='left'><strong>" + str(monto_descuento) + "</strong></td>" \
+                                              "</tr>"
+
+        for san in sanciones:
+            monto_sancion = monto_sancion + san.monto
+            detalle_sancion = detalle_sancion + "" \
+                                              "<tr style='font-size: 12px; border: 0px; '>" \
+                                              "<td colspan='5' scope='colgroup'align='left'><font>" + str(san.fecha.strftime('%d/%m/%Y')) + "</font></td>" \
+                                              "<td colspan='5' scope='colgroup'align='left'><font>" + str(san.motivo.nombre) + "</font></td>" \
+                                              "<td colspan='5' scope='colgroup'align='left'><font>" + str(san.monto) + "</font></td>" \
+                                              "</tr>"
+
+        detalle_sancion = detalle_sancion + "" \
+                                                "<tr style='font-size: 12px; border: 0px; '>" \
+                                                "<td colspan='4' scope='colgroup'align='left'></td>" \
+                                                "<td colspan='4' scope='colgroup'align='left'><strong>Total: </strong></td>" \
+                                                "<td colspan='4' scope='colgroup'align='left'><strong>" + str(
+            monto_sancion) + "</strong></td>" \
+                               "</tr>"
+
+        logoempresa = "/resources/iconos/logo.png"
+
+        expedido = "---"
+        civil = "---"
+        nacionalidad = "---"
+        fechanacimiento = "---"
+        Nombrecargo = "Postulante"
+        fecha_fin_servicio = "15/07/2021"
+
+        if persona.fkexpedido:
+            expedido = persona.expedido.nombre
+
+        if persona.fkcivil:
+            civil = persona.civil.nombre
+
+        if persona.fknacionalidad:
+            nacionalidad = persona.nacionalidad.nombre
+
+        if persona.fkcargo:
+            Nombrecargo = persona.cargo.nombre
+
+        if persona.fechanacimiento:
+            fechanacimiento = persona.fechanacimiento.strftime('%d/%m/%Y')
+
+        html = "" \
+               "<meta http-equiv='Content-Type' content='text/html'; charset='utf-8' />" \
+               "<style>" \
+               ".border-own { border-left: 0px; border-right: 0px; }" \
+               ".border-own-l { border-right: 0px; }" \
+               ".border-own-r { border-left: 0px; }" \
+               "@page {size: letter portrait; margin: 1cm; @frame footer_frame {-pdf-frame-content: footer_content; left: 50pt; width: 512pt; top: 772pt; height: 20pt; }}" \
+               "</style>" \
+
+        html += "" \
+                        "<table style='padding: 4px; border: 0px solid grey' width='100%'>" \
+                        "<tr style='font-size: 12px; border: 0px; '>" \
+                        "<td colspan='5' style='border-right: 0px solid grey ' scope='colgroup'align='left'><img src='servidor/common" + logoempresa + "' width='auto' height='75'></td>" \
+                                                                                                                                                       "<td colspan='12' scope='colgroup'align='left'><font></font></td>" \
+                                                                                                                                                       "<td colspan='5' style='border-left: 0px solid grey ' scope='colgroup'align='center'><img src='servidor/common" + str(
+                    persona.foto) + "' width='auto' height='75'></td>" \
+                                    "</tr>" \
+                                    "</table>" \
+                                    "<table style='padding: 4px; border: 1px solid grey' width='100%'>" \
+                                    "<tr color='#ffffff' >" \
+                                    "<th colspan='22' scope='colgroup' align='left' style='background-color: #DC3131; font-size=4; color: white; margin-top: 4px'>REPORTE PERSONAL</th>" \
+                                    "</tr>" \
+                                    "<tr style='font-size: 12px; border: 0px; '>" \
+                                    "<td colspan='5' style='border-right: 1px solid grey ' scope='colgroup'align='left'><strong>Nombres y Apellidos: </strong></td>" \
+                                    "<td colspan='12' scope='colgroup'align='left'><font>" + str(
+                    persona.fullname) + "</font></td>" \
+                                        "</tr>" \
+                                        "<tr style='font-size: 12px; border: 0px; '>" \
+                                        "<td colspan='5' style='border-right: 1px solid grey ' scope='colgroup'align='left'><strong>DNI: </strong></td>" \
+                                        "<td colspan='12' scope='colgroup'align='left'><font>" + str(
+                    persona.ci) + " " + expedido + "</font></td>" \
+                                   "</tr>" \
+                                   "<tr style='font-size: 12px; border: 0px; '>" \
+                                   "<td colspan='5' style='border-right: 1px solid grey ' scope='colgroup'align='left'><strong>Nacionalidad: </strong></td>" \
+                                   "<td colspan='12' scope='colgroup'align='left'><font>" + nacionalidad + "</font></td>" \
+                                   "</tr>" \
+                                   "<tr style='font-size: 12px; border: 0px; '>" \
+                                   "<td colspan='5' style='border-right: 1px solid grey ' scope='colgroup'align='left'><strong>Fecha Nacimiento: </strong></td>" \
+                                   "<td colspan='12' scope='colgroup'align='left'><font>" + fechanacimiento + "</font></td>" \
+                                  "</tr>" \
+                                  "<tr style='font-size: 12px; border: 0px; '>" \
+                                  "<td colspan='5' style='border-right: 1px solid grey ' scope='colgroup'align='left'><strong>Domicilio: </strong></td>" \
+                                  "<td colspan='12' scope='colgroup'align='left'><font>" + str(persona.domicilio) + "</font></td>" \
+                                     "</tr>" \
+                                     "<tr style='font-size: 12px; border: 0px; '>" \
+                                     "<td colspan='5' style='border-right: 1px solid grey ' scope='colgroup'align='left'><strong>Nro. Celular: </strong></td>" \
+                                     "<td colspan='12' scope='colgroup'align='left'><font>" + str(persona.telefono) + "</font></td>" \
+                                    "</tr>" \
+                                     "<tr style='font-size: 12px; border: 0px; '>" \
+                                     "<td colspan='5' style='border-right: 1px solid grey ' scope='colgroup'align='left'><strong>Cargo: </strong></td>" \
+                                     "<td colspan='12' scope='colgroup'align='left'><font>" + str(Nombrecargo) + "</font></td>" \
+                                   "</tr>" \
+                                    "</table>" \
+                                    "<table style='padding: 4px; border: 1px solid grey' width='100%'>" \
+                                     "<tr style='font-size: 12px; border: 0px; '>" \
+                                     "<td colspan='5' style='border-right: 0px solid grey ' scope='colgroup'align='left'><strong>Tiempo de Servicio</strong></td>" \
+                                     "<td colspan='12' scope='colgroup'align='left'></td>" \
+                                     "</tr>" \
+                                     "<tr style='font-size: 12px; border: 0px; '>" \
+                                     "<td colspan='7' style='border-right: 0px solid grey ' scope='colgroup'align='left'><strong>Fin de Servicio: </strong>" + str(fecha_fin_servicio) + "</td>" \
+                                    "<td colspan='7' style='border-right: 0px solid grey ' scope='colgroup'align='left'><strong>Fecha de Inicio : </strong>" + str(persona.fechar.strftime('%d/%m/%Y')) + "</td>" \
+                                   "</tr>" \
+                                   "<tr style='font-size: 12px; border: 0px; '>" \
+                                    "<td colspan='5' style='border-right: 0px solid grey ' scope='colgroup'align='left'><strong>Asistencia</strong></td>" \
+                                    "<td colspan='3' style='border-right: 0px solid grey ' scope='colgroup'align='left'><strong>Julio</strong></td>" \
+                                      "<td colspan='3' style='border-right: 0px solid grey ' scope='colgroup'align='left'><strong>Junio</strong></td>" \
+                                      "<td colspan='3' style='border-right: 0px solid grey ' scope='colgroup'align='left'><strong>Mayo</strong></td>" \
+                                      "<td colspan='3' style='border-right: 0px solid grey ' scope='colgroup'align='left'><strong>Abril</strong></td>" \
+                                      "<td colspan='3' style='border-right: 0px solid grey ' scope='colgroup'align='left'><strong>Marzo</strong></td>" \
+                                      "<td colspan='3' style='border-right: 0px solid grey ' scope='colgroup'align='left'><strong>Febrero</strong></td>" \
+                                      "</tr>" \
+                                    "" + detalle_asistencia + "" \
+                                    "</table>" \
+                                    "<table style='padding: 4px; border: 1px solid grey' width='100%'>" \
+                                    "<tr style='font-size: 12px; border: 0px; '>" \
+                                    "<td colspan='5' style='border-right: 0px solid grey ' scope='colgroup'align='left'><strong>Descuentos: </strong></td>" \
+                                    "<td colspan='12' scope='colgroup'align='left'><font></font></td>" \
+                                    "</tr>" \
+                                    "<tr style='font-size: 12px; border: 0px; '>" \
+                                    "<td colspan='4' style='border-right: 0px solid grey ' scope='colgroup'align='left'><strong>Fecha</strong></td>" \
+                                    "<td colspan='4' style='border-right: 0px solid grey ' scope='colgroup'align='left'><strong>Motivo</strong></td>" \
+                                      "<td colspan='4' style='border-right: 0px solid grey ' scope='colgroup'align='left'><strong>Item</strong></td>" \
+                                      "<td colspan='4' style='border-right: 0px solid grey ' scope='colgroup'align='left'><strong>Monto</strong></td>" \
+                                   "</tr>" \
+                                   "" + detalle_descuento + "" \
+                                "</table>" \
+                                "<table style='padding: 4px; border: 1px solid grey' width='100%'>" \
+                                "<tr style='font-size: 12px; border: 0px; '>" \
+                                "<td colspan='5' style='border-right: 0px solid grey ' scope='colgroup'align='left'><strong>Sanciones: </strong></td>" \
+                                "<td colspan='12' scope='colgroup'align='left'><font></font></td>" \
+                                "</tr>" \
+                                "<tr style='font-size: 12px; border: 0px; '>" \
+                                "<td colspan='4' style='border-right: 0px solid grey ' scope='colgroup'align='left'><strong>Fecha</strong></td>" \
+                                "<td colspan='4' style='border-right: 0px solid grey ' scope='colgroup'align='left'><strong>Motivo</strong></td>" \
+                                "<td colspan='4' style='border-right: 0px solid grey ' scope='colgroup'align='left'><strong>Monto</strong></td>" \
+                                "</tr>" \
+                                "" + detalle_sancion + "" \
+                              "</table>" \
+                               "</br>"
+
+        return html
+
     def listar_habilitados(self):
-        return self.db.query(self.entity).filter(self.entity.estado).filter(self.entity.enabled).all()
+        return self.db.query(self.entity).filter(self.entity.estado).filter(self.entity.enabled).order_by(
+            self.entity.apellidop.asc()).all()
 
     def listar_todo(self):
-        return self.db.query(self.entity).filter(self.entity.enabled).all()
+        return self.db.query(self.entity).filter(self.entity.enabled).order_by(
+            self.entity.apellidop.asc()).all()
 
     def list_all(self):
         return dict(objects=self.db.query(self.entity).filter(self.entity.enabled))
 
     def get_all(self):
-        items = self.db.query(self.entity).filter(self.entity.estado).filter(self.entity.enabled)
+        items = self.db.query(self.entity).filter(self.entity.estado).filter(self.entity.enabled).order_by(asc(self.entity.apellidop))
         return items
 
     def get_all_solo_foto(self):
@@ -434,7 +703,7 @@ class PersonalManager(SuperManager):
         objeto.fechanacimiento = datetime.strptime(objeto.fechanacimiento, '%d/%m/%Y')
 
         fecha = BitacoraManager(self.db).fecha_actual()
-        objeto.tipo = "Personal"
+        objeto.tipo = "PERSONAL"
         objeto.fechar = fecha
 
         a = super().insert(objeto)
@@ -461,8 +730,6 @@ class PersonalManager(SuperManager):
         objeto = PersonalManager(self.db).entity(**diccionary)
         fecha = BitacoraManager(self.db).fecha_actual()
         objeto.fechanacimiento = datetime.strptime(objeto.fechanacimiento, '%d/%m/%Y')
-
-
 
 
         a = super().update(objeto)

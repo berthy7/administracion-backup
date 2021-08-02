@@ -14,13 +14,13 @@
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             <div class="card">
                 <div class="header">
-                    <span class="text-uppercase">Cliente</span>
+                    <span class="text-uppercase">Control de Asistencia</span>
 
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <ol class="breadcrumb" style="float: right">
                             <li><a href="/">Inicio</a></li>
                             <li><a href="javascript:void(0);">Operador</a></li>
-                            <li class="active"><span class="text-info">Cliente</span></li>
+                            <li class="active"><span class="text-info">Control de Asistencia</span></li>
                         </ol>
                     </div>
                 </div>
@@ -32,7 +32,19 @@
                                 <i class="material-icons">add</i>
                             </button>
                         </div>
+                        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                            <button id="reporte" type="button" class="btn btn-primary waves-effect" data-toggle="modal" data-target="#modal-reporte" title="Reporte">
+                                Reporte
+                            </button>
+                        </div>
+                        <div class="col-sm-2">
+                            <label>Fecha Actual</label>
+                            <div class="form-line success">
+                                <input id="fecha" name="Fecha" type="text" class="form-control date" required>
+                            </div>
+                        </div>
                     </div>
+
                     {% end %}
 
                     <table id="data_table" class="table table-bordered table-striped table-hover"></table>
@@ -45,4 +57,86 @@
 {% block footer %}
     <script src="/resources/static/js/functions.js"></script>
     <script src="/operador/cliente/assets/cliente.action.js"></script>
+    <script>
+    function append_input_personal_dia(id_in) {
+
+    $('#personal_dia_div').append(
+    '<div class="row">\
+        <div class="col-sm-1 hidden">\
+            <div class="input-group">\
+            <input  id="id_dia'+id_in+'" class="form-control personal_dia readonly txta-own">\
+            </div>\
+        </div>\
+        <div class="col-sm-8">\
+             <select id="fkpersonaldia'+id_in+'" class="form-control select_personal personal_dia" >\
+                {% for per in personales %}\
+                    <option value="{{per.id}}">{{per.fullname}}</option>\
+                {% end %}\
+             </select>\
+        </div>\
+        <div class="col-sm-1">\
+            <button type="button" class="btn bg-red waves-effect white-own clear_personal_dia" title="Eliminar">\
+                <i class="material-icons">clear</i>\
+            </button>\
+        </div>\
+    </div>'
+)
+
+    $('.clear_personal_dia').last().click(function () {
+        $(this).parent().parent().remove()
+    })
+
+
+
+    $('.select_personal').selectpicker({
+        size: 10,
+        liveSearch: true,
+        liveSearchPlaceholder: 'Buscar',
+        title: 'Seleccione'
+    })
+
+}
+
+    function append_input_personal_noche(id_in) {
+
+    $('#personal_noche_div').append(
+    '<div class="row">\
+        <div class="col-sm-1 hidden">\
+            <div class="input-group">\
+            <input  id="id_noche'+id_in+'" class="form-control personal_noche readonly txta-own">\
+            </div>\
+        </div>\
+        <div class="col-sm-8">\
+             <select id="fkpersonalnoche'+id_in+'" class="form-control select_personal personal_noche" >\
+                {% for per in personales %}\
+                    <option value="{{per.id}}">{{per.fullname}}</option>\
+                {% end %}\
+             </select>\
+        </div>\
+        <div class="col-sm-2">\
+            <button type="button" class="btn bg-red waves-effect white-own clear_personal_noche" title="Eliminar">\
+                <i class="material-icons">clear</i>\
+            </button>\
+        </div>\
+    </div>'
+)
+
+    $('.clear_personal_noche').last().click(function () {
+        $(this).parent().parent().remove()
+    })
+
+
+
+    $('.select_personal').selectpicker({
+        size: 10,
+        liveSearch: true,
+        liveSearchPlaceholder: 'Buscar',
+        title: 'Seleccione'
+    })
+
+}
+
+    </script>
+
+
 {% end %}

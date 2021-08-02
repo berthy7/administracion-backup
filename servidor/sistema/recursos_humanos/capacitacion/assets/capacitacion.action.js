@@ -15,7 +15,10 @@ function load_table(data_tb) {
         scroller:       true,
         columns: [
             { title: "ID", data: "id" },
-            { title: "Tema", data: "tema" },
+            { title: "Fecha", data: "fecha" },
+            { title: "Titulo", data: "titulo" },
+            { title: "Ubicacion", data: "ubicacion" },
+            { title: "Instructor", data: "instructor" },
             { title: "Estado", data: "estado",
                 render: function(data, type, row) {
                     return '\
@@ -79,6 +82,9 @@ function load_table(data_tb) {
 
 function clean_data() {
     $(class_item).val('')
+    $('#fecha').val('')
+    $('#tema_div').empty()
+    $('#integrante_div').empty()
 }
 
 $('.date').bootstrapMaterialDatePicker({
@@ -91,6 +97,27 @@ $('.date').bootstrapMaterialDatePicker({
     $(this).parent().addClass('focused');
     eraseError(this)
 });
+
+$('#fkcargo').selectpicker({
+    size: 10,
+    liveSearch: true,
+    liveSearchPlaceholder: 'Buscar',
+    title: 'Seleccione'
+})
+
+$('#fktema').selectpicker({
+    size: 10,
+    liveSearch: true,
+    liveSearchPlaceholder: 'Buscar',
+    title: 'Seleccione'
+})
+
+$('#fktitulo').selectpicker({
+    size: 10,
+    liveSearch: true,
+    liveSearchPlaceholder: 'Buscar',
+    title: 'Seleccione'
+})
 
 $(".hr").inputmask("h:s",{ "placeholder": "__/__" });
 
@@ -109,6 +136,8 @@ function reload_table() {
         }
     });
 }
+
+
 $('#fkpersonal').selectpicker({
     size: 10,
     liveSearch: true,
@@ -122,7 +151,7 @@ function append_input_integrante(id_in) {
         '<div class="row">\
             <div class="col-sm-1" hidden>\
                 <div class="input-group">\
-                <input  id="id'+id_in+'" class="form-control integrante txta-own"readonly>\
+                <input  id="idintegrante'+id_in+'" class="form-control integrante txta-own"readonly>\
                 </div>\
             </div>\
             <div class="col-sm-1">\
@@ -134,16 +163,30 @@ function append_input_integrante(id_in) {
             </div>\
             <div class="col-sm-3">\
                 <div class="form-line">\
-                    <input id="nombre'+id_in+'" data-id="'+id_in+'" class="form-control txta-own"readonly>\
+                    <input id="nombrepersonal'+id_in+'" data-id="'+id_in+'" class="form-control txta-own"readonly>\
                 </div>\
             </div>\
-            <div class="col-md-2 ">\
-                <input id="c_'+id_in+'" type="checkbox" class="regular-checkbox big-checkbox  " data-id="1" >\
+            <div class="col-md-1 ">\
+                <input id="c_'+id_in+'" type="checkbox" class="regular-checkbox integrante big-checkbox  " data-id="1" >\
                 <label for="c_'+id_in+'"></label>\
+            </div>\
+            <div class="col-sm-3">\
+                <div class="form-line">\
+                    <input id="observacion'+id_in+'" data-id="'+id_in+'" class="form-control integrante txta-own">\
+                </div>\
+            </div>\
+            <div class="col-sm-1">\
+                <button type="button" class="btn bg-red waves-effect white-own clear_personal" title="Eliminar">\
+                    <i class="material-icons">clear</i>\
+                </button>\
             </div>\
         </div>\
         </br>'
     )
+
+        $('.clear_personal').last().click(function () {
+        $(this).parent().parent().remove()
+    })
 
 
 }
@@ -152,16 +195,19 @@ function obtener_integrantes() {
         objeto = []
         objeto_inputs = $('.integrante')
 
-        for(i=0;i<objeto_inputs.length;i+=2){
+        for(i=0;i<objeto_inputs.length;i+=4){
             h0 = objeto_inputs[i].value
             h1 = objeto_inputs[i+1].value
+            h2 = objeto_inputs[i+2].checked
+            h3 = objeto_inputs[i+3].value
 
-
-            objeto.push((function add_hours(h0,h1) {
+            objeto.push((function add_hours(h0,h1,h2,h3) {
 
                 if (h0 ==''){
                     return {
                     'fkpersonal': h1,
+                        'resultado': h2,
+                        'observacion': h3
 
                     }
 
@@ -169,12 +215,89 @@ function obtener_integrantes() {
                     return {
                     'id':h0,
                     'fkpersonal': h1,
+                    'resultado': h2,
+                    'observacion': h3
                     }
                 }
 
             })(
                     h0,
-                    h1))
+                    h1,
+                    h2,
+                    h3))
+
+
+        }
+        return objeto
+    }
+
+
+$('#new_tema').click(function () {
+    append_input_tema('')
+})
+
+
+function append_input_tema(id_in) {
+
+    $('#tema_div').append(
+        '<div class="row clearfix">\
+            <div class="col-sm-1" hidden>\
+                <div class="input-group">\
+                <input  id="id'+id_in+'" class="form-control tema txta-own"readonly>\
+                <input  id="fktema'+id_in+'" class="form-control tema txta-own"readonly>\
+                </div>\
+            </div>\
+            <div class="col-sm-6">\
+            <label>Tema</label>\
+                <div class="form-line">\
+                    <input id="nombre'+id_in+'" data-id="'+id_in+'" class="form-control tema txta-own">\
+                </div>\
+            </div>\
+            <div class="col-sm-2">\
+                <button type="button" class="btn bg-red waves-effect white-own clear_tema" title="Eliminar">\
+                    <i class="material-icons">clear</i>\
+                </button>\
+            </div>\
+        </div>'
+
+    )
+
+    $('.clear_tema').last().click(function () {
+        $(this).parent().parent().remove()
+    })
+    
+}
+
+function obtener_tema() {
+        objeto = []
+        objeto_inputs = $('.tema')
+
+        for(i=0;i<objeto_inputs.length;i+=3){
+            h0 = objeto_inputs[i].value
+            h1 = objeto_inputs[i+1].value
+            h2 = objeto_inputs[i+2].value
+
+
+            objeto.push((function add_hours(h0,h1,h2) {
+
+                if (h0 ==''){
+                    return {
+                    'fktema': h1,
+                    'nombre': h2
+
+                    }
+
+                }else{
+                    return {
+                    'id':h0,
+                    'fktema': h1,
+                    'nombre': h2
+                    }
+                }
+
+            })(
+                    h0,
+                    h1,h2))
 
 
         }
@@ -214,11 +337,58 @@ function cargar_subalmacen() {
 
 }
 
+$('#fktema').change(function () {
+
+    append_input_tema(parseInt(JSON.parse($('#fktema').val())))
+    $('#fktema' + parseInt(JSON.parse($('#fktema').val()))).val(parseInt(JSON.parse($('#fktema').val())))
+    $('#nombre' + parseInt(JSON.parse($('#fktema').val()))).val($("#fktema option:selected").text())
+
+    $(fktema).val('')
+    $(fktema).selectpicker('render')
+
+});
+
+
+$('#fkcargo').change(function () {
+    
+    
+    obj = JSON.stringify({
+        'fkcargo': $( "#fkcargo" ).val(),
+        '_xsrf': getCookie("_xsrf")
+    })
+    
+    ruta = "personal_listar_x_cargo";
+    //data.append('object', obj)
+    //data.append('_xsrf',getCookie("_xsrf"))
+
+    $.ajax({
+        method: "POST",
+        url: ruta,
+        data: {_xsrf: getCookie("_xsrf"), object: obj},
+        async: false
+    }).done(function (response) {
+        response = JSON.parse(response)
+
+        $('#fkpersonal').html('');
+        var select = document.getElementById("fkpersonal")
+        for (var i = 0; i < Object.keys(response.response).length; i++) {
+            var option = document.createElement("OPTION");
+            option.innerHTML = response['response'][i]['nombre'] +' '+response['response'][i]['apellidop'] +' '+response['response'][i]['apellidom'];
+            option.value = response['response'][i]['id'];
+            select.appendChild(option);
+        }
+        $('#fkpersonal').selectpicker('refresh');
+
+    })
+
+});
+
+
 $('#fkpersonal').change(function () {
     
     append_input_integrante(parseInt(JSON.parse($('#fkpersonal').val())))
     $('#fkpersonal' + parseInt(JSON.parse($('#fkpersonal').val()))).val(parseInt(JSON.parse($('#fkpersonal').val())))
-    $('#nombre' + parseInt(JSON.parse($('#fkpersonal').val()))).val($("#fkpersonal option:selected").text())
+    $('#nombrepersonal' + parseInt(JSON.parse($('#fkpersonal').val()))).val($("#fkpersonal option:selected").text())
     
     $(fkpersonal).val('')
     $(fkpersonal).selectpicker('render')
@@ -240,11 +410,14 @@ $('#insert').on('click', function() {
 
     if (!notvalid) {
         objeto = JSON.stringify({
-            'tema': $('#tema').val(),
             'fecha': $('#fecha').val(),
+            'fktitulo': $('#fktitulo').val(),
             'hora': $('#hora').val(),
-            'relator': $('#hora').val(),
-            'integrantes': obtener_integrantes()
+            'instructor': $('#instructor').val(),
+            'ubicacion': $('#ubicacion').val(),
+
+            'integrantes': obtener_integrantes(),
+            'temas': obtener_tema()
         })
 
         ajax_call('capacitacion_insert', {
@@ -279,10 +452,23 @@ function edit_item(e) {
         var self = response.response;
 
         $('#id').val(self.id)
-        $('#tema').val(self.tema)
+        $('#fktitulo').val(self.fktitulo)
+        $('#fktitulo').selectpicker('refresh')
         $('#fecha').val(self.fecha)
         $('#hora').val(self.hora)
-        $('#relator').val(self.relator)
+        $('#instructor').val(self.instructor)
+        $('#ubicacion').val(self.ubicacion)
+
+        $('#tema_div').empty()
+        $('#integrante_div').empty()
+
+        for (i in self.temas) {
+            append_input_tema(self.temas[i]['id'])
+            $('#id' + self.temas[i]['id']).val(self.temas[i]['id'])
+            $('#fktema' + self.temas[i]['id']).val(self.temas[i]['fktema'])
+            $('#nombre' + self.temas[i]['id']).val(self.temas[i]['tema'].nombre)
+
+        }
 
 
         for (i in self.integrantes) {
@@ -290,7 +476,9 @@ function edit_item(e) {
             append_input_integrante(self.integrantes[i]['id'])
             $('#id' + self.integrantes[i]['id']).val(self.integrantes[i]['id'])
             $('#fkpersonal' + self.integrantes[i]['id']).val(self.integrantes[i]['fkpersonal'])
-            $('#nombre' + self.integrantes[i]['id']).val(self.integrantes[i]['personal']['nombre'] +' '+self.integrantes[i]['personal']['apellidop'] + ' '+ self.integrantes[i]['personal']['apellidom'])
+            $('#nombrepersonal' + self.integrantes[i]['id']).val(self.integrantes[i]['personal']['nombre'] +' '+self.integrantes[i]['personal']['apellidop'] + ' '+ self.integrantes[i]['personal']['apellidom'])
+            $('#c_' + self.integrantes[i]['id']).prop('checked', self.integrantes[i]['resultado'])
+            $('#observacion' + self.integrantes[i]['id']).val(self.integrantes[i]['observacion'])
 
         }
 
@@ -309,11 +497,14 @@ $('#update').click(function() {
     if (!notvalid) {
         objeto = JSON.stringify({
             'id': $('#id').val(),
-            'tema': $('#tema').val(),
             'fecha': $('#fecha').val(),
+            'fktitulo': $('#fktitulo').val(),
             'hora': $('#hora').val(),
-            'relator': $('#hora').val(),
-            'integrantes': obtener_integrantes()
+            'instructor': $('#instructor').val(),
+            'ubicacion': $('#ubicacion').val(),
+
+            'integrantes': obtener_integrantes(),
+            'temas': obtener_tema()
         })
 
         ajax_call('capacitacion_update', {

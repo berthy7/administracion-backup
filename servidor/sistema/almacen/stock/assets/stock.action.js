@@ -172,7 +172,7 @@ function load_table(data_tb) {
             }
         ],
         "order": [ [0, 'desc'] ],
-        columnDefs: [ { width: '10%', targets: [0] }, { width: '30%', targets: [1, 2, 3] } ],
+        columnDefs: [ { width: '5%', targets: [0] }, { width: '20%', targets: [1, 2] } ],
         "initComplete": function() {}
     });
     tabla.draw()
@@ -209,12 +209,12 @@ function append_input_detalle(id_in) {
         '<div class="row">\
             <div class="col-sm-1" hidden>\
                 <div class="input-group">\
-                <input  id="id'+id_in+'" class="form-control subalmacen txta-own"readonly>\
+                <input  id="id'+id_in+'" class="form-control subalmacen detalle txta-own"readonly>\
                 </div>\
             </div>\
             <div class="col-sm-1" hidden>\
                 <div class="input-group">\
-                <input  id="fkdetallematerial'+id_in+'" class="form-control subalmacen  txta-own"readonly>\
+                <input  id="fkdetallematerial'+id_in+'" class="form-control subalmacen detalle txta-own"readonly>\
                 </div>\
             </div>\
             <div class="col-sm-3">\
@@ -234,12 +234,12 @@ function append_input_detalle(id_in) {
             </div>\
             <div class="col-sm-2">\
                 <div class="form-line">\
-                    <input id="cantidadNuevo'+id_in+'" data-id="'+id_in+'" class="form-control txta-own">\
+                    <input id="cantidadNuevo'+id_in+'" data-id="'+id_in+'" class="form-control detalle txta-own">\
                 </div>\
             </div>\
             <div class="col-sm-2">\
                 <div class="form-line">\
-                    <input id="cantidadUsado'+id_in+'" data-id="'+id_in+'" class="form-control txta-own">\
+                    <input id="cantidadUsado'+id_in+'" data-id="'+id_in+'" class="form-control detalle txta-own">\
                 </div>\
             </div>\
             <div class="col-sm-1">\
@@ -285,13 +285,14 @@ function get_detalle() {
 
             if (h0 =='' ){
                 return {
+                    'fkalmacen': $('#fkalmacen').val(),
                     'fkmaterialDetalle': h1,
                     'detallestock': [{
-                        'fkalmacen': 1,
+                        'fksubalmacen': 1,
                         'cantidad': h2
                         },
                         {
-                        'fkalmacen': 2,
+                        'fksubalmacen': 2,
                         'cantidad': h3
                         }]
 
@@ -300,15 +301,16 @@ function get_detalle() {
             }else{
                 return {
                 'id':h0,
-                'fkmaterialDetalle': h1,
-                'detallestock': [{
-                    'fkalmacen': 1,
-                    'cantidad': h2
-                    },
-                    {
-                    'fkalmacen': 2,
-                    'cantidad': h3
-                    }]
+                    'fkalmacen': $('#fkalmacen').val(),
+                    'fkmaterialDetalle': h1,
+                    'detallestock': [{
+                        'fksubalmacen': 1,
+                        'cantidad': h2
+                        },
+                        {
+                        'fksubalmacen': 2,
+                        'cantidad': h3
+                        }]
                 }
             }
 
@@ -394,6 +396,7 @@ $('#insert').on('click', function() {
                 objeto = JSON.stringify({
                     'nroboleta': $('#nroboleta').val(),
                     'observacion': $('#observacion').val(),
+                    'fkalmacen': $('#fkalmacen').val(),
                     'detalle': get_detalle()
                 })
         
@@ -475,6 +478,7 @@ $('#update').click(function() {
             'id': $('#id').val(),
             'nroboleta': $('#nroboleta').val(),
             'observacion': $('#observacion').val(),
+            'fkalmacen': $('#fkalmacen').val(),
             'detalle': get_detalle()
         })
 

@@ -1,8 +1,6 @@
 from servidor.database.connection import transaction
 from servidor.sistema.usuarios.usuario.model import Modulo
 from servidor.sistema.usuarios.rol.model import Rol
-from servidor.sistema.almacen.subalmacen.model import SubAlmacen
-
 
 
 def insertions():
@@ -44,10 +42,5 @@ def insertions():
             rol.modulos.append(insert_subalmacen)
             rol.modulos.append(update_subalmacen)
             rol.modulos.append(delete_subalmacen)
-
-
-        session.add(SubAlmacen(id = 1,nombre='Nuevo'))
-        session.add(SubAlmacen(id = 2,nombre='Usado'))
-        session.add(SubAlmacen(id = 3,nombre='Descarte'))
 
         session.commit()

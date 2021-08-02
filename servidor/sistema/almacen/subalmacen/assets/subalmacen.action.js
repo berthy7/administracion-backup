@@ -70,7 +70,7 @@ function load_table(data_tb) {
                 },
             }
         ],
-        "order": [ [0, 'desc'] ],
+        "order": [ [0, 'asc'] ],
         columnDefs: [ { width: '10%', targets: [0] }, { width: '30%', targets: [1, 2, 3] } ],
         "initComplete": function() {}
     });
@@ -95,6 +95,51 @@ function reload_table() {
             show_message(jqXHR.responseText, 'danger', 'remove');
         }
     });
+}
+
+
+function cargar_detalle(fkmaterial,fkalmacen) {
+
+    obj = JSON.stringify({
+        'idMaterial':fkmaterial,
+        'fkalmacen': fkalmacen,
+        '_xsrf': getCookie("_xsrf")
+    })
+
+    ruta = "material_listar_detalle_saldos";
+
+    $.ajax({
+        method: "POST",
+        url: ruta,
+        data: {_xsrf: getCookie("_xsrf"), object: obj},
+        async: false
+    }).done(function (response) {
+        response = JSON.parse(response)
+        console.log(response)
+        console.log("cargar detalle")
+        console.log(response['response'])
+
+        for (det in response['response'] ) {
+            console.log(det)
+
+            append_input_detalle(response['response'][det]['id'])
+
+            $('#fkdetallematerial' + response['response'][det].id).val(response['response'][det].id)
+            // $('#nombre' + response.response[det].id).val(response.response[det].material.nombre)
+            $('#nombre' + response['response'][det].id).html(response['response'][det].material);
+            $('#color' + response['response'][det].id).html(response['response'][det].color)
+            $('#talla' + response['response'][det].id).html(response['response'][det].talla)
+            $('#nuevo' + response['response'][det].id).html(response['response'][det].nuevo)
+            $('#saldonuevo' + response['response'][det].id).val(response['response'][det].nuevo)
+            $('#usado' + response['response'][det].id).html(response['response'][det].usado)
+            $('#saldousado' + response['response'][det].id).val(response['response'][det].usado)
+
+
+
+        }
+
+    })
+
 }
 
 $('#new').click(function() {

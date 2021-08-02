@@ -1,7 +1,7 @@
 from servidor.database.connection import transaction
 from servidor.sistema.usuarios.usuario.model import Modulo
 from servidor.sistema.usuarios.rol.model import Rol
-from servidor.sistema.operador.asistencia.model import TipoAusencia
+from servidor.sistema.operador.asistencia.model import TipoAusencia,Turno
 
 
 
@@ -44,13 +44,5 @@ def insertions():
             rol.modulos.append(insert_asistencia)
             rol.modulos.append(update_asistencia)
             rol.modulos.append(delete_asistencia)
-
-        session.add(TipoAusencia(nombre='FRANCO',codigo="L"))
-        session.add(TipoAusencia(nombre='FALTA',codigo="F"))
-        session.add(TipoAusencia(nombre='PERMISO',codigo="X"))
-        session.add(TipoAusencia(nombre='BAJA MEDICA',codigo="BJM"))
-        session.add(TipoAusencia(nombre='VACACION',codigo="V"))
-        session.add(TipoAusencia(nombre='RETIRADOS',codigo="R"))
-        session.add(TipoAusencia(nombre='PERMISO SIN GOSE DE HABER', codigo="PSG"))
 
         session.commit()

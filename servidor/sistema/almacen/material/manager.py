@@ -3,7 +3,7 @@ from servidor.sistema.usuarios.bitacora.manager import BitacoraManager
 from servidor.sistema.usuarios.usuario.manager import UsuarioManager
 from servidor.sistema.usuarios.bitacora.model import Bitacora
 from servidor.sistema.almacen.material.model import Material,MaterialDetalle,MaterialTipo,MaterialColor,MaterialTalla,MaterialAlmacenStock
-from servidor.sistema.almacen.stock.model import StockDetalleAlmacen
+from servidor.sistema.almacen.almacen.model import AlmacenSubalmacen
 from servidor.sistema.almacen.asignacion.model import StockAsignacionAlmacen
 
 from datetime import datetime
@@ -22,10 +22,54 @@ class MaterialManager(SuperManager):
     def __init__(self, db):
         super().__init__(Material, db)
 
+    def listar_x_tipo(self, idtipo):
+
+        return self.db.query(Material).filter(Material.fktipo == idtipo).order_by(
+            Material.id.asc()).all()
+
 
     def listar_detalle(self, idMaterial):
 
         return self.db.query(MaterialDetalle).filter(MaterialDetalle.fkmaterial == idMaterial).order_by(MaterialDetalle.id.asc()).all()
+
+
+    def listar_detalle_saldos(self, idMaterial,fkalmacen):
+
+        lista_detalle = []
+        for material_detalle in self.db.query(MaterialDetalle).filter(MaterialDetalle.fkmaterial == idMaterial).order_by(MaterialDetalle.id.asc()).all():
+            almacen_subalmacen_nuevo = self.db.query(AlmacenSubalmacen).filter(AlmacenSubalmacen.fkalmacen == fkalmacen) \
+                .filter(AlmacenSubalmacen.fksubalmacen == 1).first()
+
+            almacen_subalmacen_usado = self.db.query(AlmacenSubalmacen).filter(AlmacenSubalmacen.fkalmacen == fkalmacen) \
+                .filter(AlmacenSubalmacen.fksubalmacen == 2).first()
+
+
+            almacen_material_nuevo = self.db.query(MaterialAlmacenStock).filter(MaterialAlmacenStock.fkdetallematerial == material_detalle.id) \
+                .filter(MaterialAlmacenStock.fksubalmacen == almacen_subalmacen_nuevo.id).first()
+
+            almacen_material_usado = self.db.query(MaterialAlmacenStock).filter(MaterialAlmacenStock.fkdetallematerial == material_detalle.id) \
+                .filter(MaterialAlmacenStock.fksubalmacen == almacen_subalmacen_usado.id).first()
+
+
+            lista_detalle.append(dict(id=material_detalle.id, material=material_detalle.material.nombre,
+                                       color=material_detalle.color.nombre,talla=material_detalle.talla.nombre,nuevo=almacen_material_nuevo.cantidad,usado= almacen_material_usado.cantidad))
+
+        return lista_detalle
+
+
+    def listar_detalle_saldo_subalmacen(self, idMaterial,fksubalmacen):
+
+        lista_detalle = []
+
+        for material_detalle in self.db.query(MaterialDetalle).filter(MaterialDetalle.fkmaterial == idMaterial).order_by(MaterialDetalle.id.asc()).all():
+
+            almacen_material_saldo = self.db.query(MaterialAlmacenStock).filter(MaterialAlmacenStock.fkdetallematerial == material_detalle.id) \
+                .filter(MaterialAlmacenStock.fksubalmacen == fksubalmacen).first()
+
+            lista_detalle.append(dict(id=material_detalle.id, material=material_detalle.material.nombre,
+                                       color=material_detalle.color.nombre,talla=material_detalle.talla.nombre,cantidad=almacen_material_saldo.cantidad))
+
+        return lista_detalle
 
     def listar_habilitados(self):
         return self.db.query(self.entity).filter(self.entity.estado).filter(self.entity.enabled).all()
@@ -53,19 +97,37 @@ class MaterialManager(SuperManager):
             check = 'checked' if is_active else ''
             delete = 'material_delete' in privilegios
 
+            lista_detalle = []
             for _detalle in item.detalle:
+                lista_detalle.append(dict(color=_detalle.color.nombre,talla=_detalle.talla.nombre))
 
-                diccionario = item.get_dict()
-                diccionario['estado'] = estado
-                diccionario['check'] = check
-                diccionario['disable'] = disable
-                diccionario['delete'] = delete
-                diccionario['tipo'] = item.tipo.nombre
-                diccionario['nombre'] = item.nombre
-                diccionario['color'] = _detalle.color.nombre
-                diccionario['talla'] = _detalle.talla.nombre
 
-                list.append(diccionario)
+            diccionario = item.get_dict()
+            diccionario['estado'] = estado
+            diccionario['check'] = check
+            diccionario['disable'] = disable
+            diccionario['delete'] = delete
+            diccionario['tipo'] = item.tipo.nombre
+            diccionario['nombre'] = item.nombre
+            diccionario['detalle'] = lista_detalle
+            diccionario['cantUsado'] = 0
+
+            list.append(diccionario)
+
+            # for _detalle in item.detalle:
+            #
+            #     diccionario = item.get_dict()
+            #     diccionario['estado'] = estado
+            #     diccionario['check'] = check
+            #     diccionario['disable'] = disable
+            #     diccionario['delete'] = delete
+            #     diccionario['tipo'] = item.tipo.nombre
+            #     diccionario['nombre'] = item.nombre
+            #     diccionario['color'] = _detalle.color.nombre
+            #     diccionario['talla'] = _detalle.talla.nombre
+            #     diccionario['cantUsado'] = 0
+            #
+            #     list.append(diccionario)
 
         return list
 
@@ -74,11 +136,11 @@ class MaterialManager(SuperManager):
 
         a = super().insert(objeto)
 
-        # for det in a.detalle:
-        #     for almacen in self.db.query(MaterialAlmacen).filter(MaterialAlmacen.estado).filter(MaterialAlmacen.enabled).all():
-        #         self.db.add(MaterialAlmacenStock(fkdetallematerial=det.id, fkalmacen=almacen.id, cantidad=0))
-        #
-        # self.db.commit()
+        for det in a.detalle:
+            for almacen in self.db.query(AlmacenSubalmacen).filter(AlmacenSubalmacen.estado).filter(AlmacenSubalmacen.enabled).all():
+                self.db.add(MaterialAlmacenStock(fkdetallematerial=det.id, fksubalmacen=almacen.id))
+
+        self.db.commit()
 
         b = Bitacora(fkusuario=objeto.user, ip=objeto.ip, accion="Registró material.", fecha=fecha, tabla="almacen_material", identificador=a.id)
         super().insert(b)
@@ -88,77 +150,95 @@ class MaterialManager(SuperManager):
         fecha = BitacoraManager(self.db).fecha_actual()
 
         a = super().update(objeto)
+        x = self.db.query(self.entity).filter(self.entity.id == a.id).first()
+        for det in x.detalle:
+            for almacen in self.db.query(AlmacenSubalmacen).filter(AlmacenSubalmacen.estado).filter(AlmacenSubalmacen.enabled).all():
+                if self.db.query(MaterialAlmacenStock).filter(MaterialAlmacenStock.fkdetallematerial ==det.id).filter(MaterialAlmacenStock.fksubalmacen ==almacen.id).first() == None:
+                    self.db.add(MaterialAlmacenStock(fkdetallematerial=det.id, fksubalmacen=almacen.id))
+
+        self.db.commit()
         b = Bitacora(fkusuario=objeto.user, ip=objeto.ip, accion="Modificó material.", fecha=fecha, tabla="almacen_material", identificador=a.id)
         super().insert(b)
         return a
 
 
-    def update_x_stock(self, stock):
-        materialActual = self.db.query(self.entity).filter(self.entity.id == stock.fkmaterial).first()
+    def update_x_stock(self, stockdetalle,user,ip):
 
-        materialActual.cantidad = int(materialActual.cantidad) + int(stock.cantidad)
-        materialActual.talla = stock.talla.nombre
-        fecha = BitacoraManager(self.db).fecha_actual()
+        for stock in stockdetalle:
 
-        a = super().update(materialActual)
-        b = Bitacora(fkusuario=stock.user, ip=stock.ip, accion="Modificó cantidad material.", fecha=fecha,
-                     tabla="almacen_material", identificador=a.id)
-        
-        super().insert(b)
-        return a
+            for stockdet in stock.detallestock:
 
-    # def update_detalle(self, stockDetalle):
-    #
-    #     for det in stockDetalle:
-    #
-    #
-    #
-    #         almacen = self.db.query(MaterialAlmacen).all()
-    #
-    #         for alma in almacen:
-    #
-    #             stockDetalleAlmacen = self.db.query(StockDetalleAlmacen) \
-    #                 .filter(StockDetalleAlmacen.fkstockdetalle == det.id)\
-    #                 .filter(StockDetalleAlmacen.fkalmacen == alma.id).first()
-    #
-    #             if stockDetalleAlmacen:
-    #                 materialAlmacen = self.db.query(MaterialAlmacenStock) \
-    #                     .filter(MaterialAlmacenStock.fkdetallematerial == det.fkmaterialDetalle) \
-    #                     .filter(MaterialAlmacenStock.fkalmacen == alma.id).first()
-    #
-    #                 materialAlmacen.cantidad = int(materialAlmacen.cantidad) + int(stockDetalleAlmacen.cantidad)
-    #
-    #                 self.db.merge(materialAlmacen)
-    #                 self.db.commit()
-    #
-    #         # if materialDetalle:
-    #         #     materialDetalle.cantidad = int(materialDetalle.cantidad) + int(det.cantidad)
-    #         #     super().update(materialDetalle)
-    #
-    #     self.db.commit()
-    #
-    #
-    # def update_detalle_asignacion(self, asignacionDetalle):
-    #
-    #     for det in asignacionDetalle:
-    #
-    #         almacen = self.db.query(MaterialAlmacen).all()
-    #         for alma in almacen:
-    #
-    #             stockAsignacionAlmacen = self.db.query(StockAsignacionAlmacen) \
-    #                 .filter(StockAsignacionAlmacen.fkasignaciondetalle == det.id)\
-    #                 .filter(StockAsignacionAlmacen.fkalmacen == alma.id).first()
-    #
-    #             if stockAsignacionAlmacen:
-    #                 materialAlmacen = self.db.query(MaterialAlmacenStock) \
-    #                     .filter(MaterialAlmacenStock.fkdetallematerial == det.fkmaterialDetalle) \
-    #                     .filter(MaterialAlmacenStock.fkalmacen == alma.id).first()
-    #
-    #                 materialAlmacen.cantidad = int(materialAlmacen.cantidad) - int(stockAsignacionAlmacen.cantidad)
-    #                 self.db.merge(materialAlmacen)
-    #                 self.db.commit()
-    #
-    #     self.db.commit()
+                almacenSubalmacen = self.db.query(AlmacenSubalmacen)\
+                    .filter(AlmacenSubalmacen.fkalmacen == stock.fkalmacen)\
+                    .filter(AlmacenSubalmacen.fksubalmacen == stockdet.fksubalmacen).first()
+
+                materialActual = self.db.query(MaterialAlmacenStock) \
+                    .filter(MaterialAlmacenStock.fkdetallematerial == stock.fkmaterialDetalle) \
+                    .filter(MaterialAlmacenStock.fksubalmacen == almacenSubalmacen.id).first()
+
+                materialActual.cantidad = int(materialActual.cantidad) + int(stockdet.cantidad)
+
+                fecha = BitacoraManager(self.db).fecha_actual()
+
+                a = super().update(materialActual)
+                b = Bitacora(fkusuario=user, ip=ip, accion="Modificó cantidad material ingreso de stock.", fecha=fecha,
+                             tabla="almacen_almacen_subalmacen", identificador=materialActual.id)
+
+                super().insert(b)
+
+    def update_detalle_asignacion(self, asignacionDetalle,user,ip):
+
+        for det in asignacionDetalle:
+
+            for stockdet in det.asignacionstock:
+
+                almacenSubalmacen = self.db.query(AlmacenSubalmacen)\
+                    .filter(AlmacenSubalmacen.fkalmacen == det.fkalmacen)\
+                    .filter(AlmacenSubalmacen.fksubalmacen == stockdet.fksubalmacen).first()
+
+                materialActual = self.db.query(MaterialAlmacenStock) \
+                    .filter(MaterialAlmacenStock.fkdetallematerial == det.fkmaterialDetalle) \
+                    .filter(MaterialAlmacenStock.fksubalmacen == almacenSubalmacen.id).first()
+
+                materialActual.cantidad = int(materialActual.cantidad) - int(stockdet.cantidad)
+
+                fecha = BitacoraManager(self.db).fecha_actual()
+
+                a = super().update(materialActual)
+                b = Bitacora(fkusuario=user, ip=ip, accion="Modificó cantidad material entrega de material.", fecha=fecha,
+                             tabla="almacen_almacen_subalmacen", identificador=materialActual.id)
+
+                super().insert(b)
+
+        self.db.commit()
+
+    def update_traspaso(self, traspaso,user,ip):
+
+        for det in traspaso.detalle:
+
+            materialActualAlmacenOrigen = self.db.query(MaterialAlmacenStock) \
+                .filter(MaterialAlmacenStock.fkdetallematerial == det.fkmaterialDetalle) \
+                .filter(MaterialAlmacenStock.fksubalmacen == traspaso.fksubalmacenorigen).first()
+
+
+            materialActualAlmacenDestino = self.db.query(MaterialAlmacenStock) \
+                .filter(MaterialAlmacenStock.fkdetallematerial == det.fkmaterialDetalle) \
+                .filter(MaterialAlmacenStock.fksubalmacen == traspaso.fksubalmacendestino).first()
+
+            materialActualAlmacenOrigen.cantidad = int(materialActualAlmacenOrigen.cantidad) - int(det.cantidad)
+
+            materialActualAlmacenDestino.cantidad = int(materialActualAlmacenDestino.cantidad) + int(det.cantidad)
+
+            fecha = BitacoraManager(self.db).fecha_actual()
+
+            a = super().update(materialActualAlmacenOrigen)
+            d = super().update(materialActualAlmacenDestino)
+            b = Bitacora(fkusuario=user, ip=ip, accion="Modificó cantidad material entrega de material.", fecha=fecha,
+                         tabla="almacen_almacen_subalmacen", identificador=materialActualAlmacenOrigen.id)
+
+            super().insert(b)
+
+        self.db.commit()
 
 
     def state(self, id, estado, user, ip):

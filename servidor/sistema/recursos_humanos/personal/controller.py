@@ -42,8 +42,10 @@ class PersonalController(CrudController):
         '/personal_delete': {'POST': 'delete'},
         '/personal_list': {'POST': 'data_list'},
         '/personal_report': {'POST': 'report'},
+        '/personal_report_pago': {'POST': 'report_pago'},
         '/personal_edad': {'POST': 'obtener_edad'},
         '/personal_buscar': {'PUT': 'buscar'},
+        '/personal_listar_x_cargo': {'POST': 'listar_x_cargo'},
     }
 
     def get_extra_data(self):
@@ -76,6 +78,17 @@ class PersonalController(CrudController):
         except Exception as e:
             print(e)
             self.respond(response=[], success=False, message=str(e))
+        self.db.close()
+
+
+    def listar_x_cargo(self):
+        self.set_session()
+        us = self.get_user()
+
+        data = json.loads(self.get_argument("object"))
+        arraT = self.manager(self.db).get_page(1, 10, None, None, True)
+        arraT['objeto'] = PersonalManager(self.db).listar_x_cargo(data['fkcargo'])
+        self.respond([item.get_dict() for item in arraT['objeto']])
         self.db.close()
 
     def insert(self):
@@ -377,7 +390,6 @@ class PersonalController(CrudController):
         diccionary = json.loads(self.get_argument("object"))
 
         id = diccionary['id']
-        state = diccionary['enabled']
         respuesta = PersonalManager(self.db).delete(id, self.get_user_id(), self.request.remote_ip)
 
         self.respond(success=True, message=respuesta)
@@ -396,6 +408,19 @@ class PersonalController(CrudController):
         report.html_to_pdf(html, nombre)
         self.respond('/resources/downloads/' + nombre)
 
+
+    def report_pago(self):
+        self.set_session()
+        diccionary = json.loads(self.get_argument("object"))
+
+        pdf_codigo = PersonalManager(self.db).generar_codigo()
+
+        html = PersonalManager(self.db).crear_pdf_pago(diccionary)
+
+        nombre = "Reporte_Pago_Personal_"+str(pdf_codigo)+".pdf"
+
+        report.html_to_pdf(html, nombre)
+        self.respond('/resources/downloads/' + nombre)
     def obtener_edad(self):
         self.set_session()
         diccionary = json.loads(self.get_argument("object"))

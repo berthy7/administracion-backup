@@ -6,21 +6,38 @@ from sqlalchemy.orm import relationship
 
 
 class Capacitacion(Serializable, Base):
-    way = {'integrantes': {'personal': {}}}
+    way = {'integrantes': {'personal': {}},'temas': {'tema': {}},'titulo': {}}
 
     __tablename__ = 'rrhh_capacitacion'
 
     id = Column(BigInteger, primary_key=True)
-    tema = Column(String(255), nullable=False)
     fecha = Column(DateTime, nullable=True)
-    relator = Column(String(255), nullable=False)
+    instructor = Column(String(255), nullable=False)
+    ubicacion = Column(String(255), nullable=False)
+    fktitulo = Column(BigInteger, ForeignKey("rrhh_capacitacion_titulo.id"))
 
     estado = Column(Boolean, default=True)
     enabled = Column(Boolean, default=True)
 
     integrantes = relationship('Integrantes', cascade="save-update, merge, delete, delete-orphan")
+    temas = relationship('CapacitacionTema', cascade="save-update, merge, delete, delete-orphan")
+    titulo = relationship("Titulo")
+
+    def get_dict(self, way=None):
+        aux = super().get_dict(way)
+
+        if aux['fecha'] == 'None':
+            aux['fecha'] = None
+        else:
+            aux['fecha'] = self.fecha.strftime('%d/%m/%Y')
 
 
+        if aux['fecha'] == 'None':
+            aux['hora'] = None
+        else:
+            aux['hora'] = self.fecha.strftime('%H:%M')
+
+        return aux
 
 
 class Integrantes(Serializable, Base):
@@ -32,8 +49,46 @@ class Integrantes(Serializable, Base):
     fkcapacitacion = Column(BigInteger, ForeignKey("rrhh_capacitacion.id"))
     fkpersonal = Column(BigInteger, ForeignKey("rrhh_personal.id"))
 
-    participo = Column(Boolean, nullable=True)
-    observacion = Column(String(255), nullable=True,)
+    resultado = Column(Boolean, nullable=True)
+    observacion = Column(String(255), nullable=True)
 
     personal = relationship("Personal")
     capacitacion = relationship("Capacitacion")
+
+
+class Titulo(Serializable, Base):
+    way = {}
+
+    __tablename__ = 'rrhh_capacitacion_titulo'
+
+    id = Column(BigInteger,  primary_key=True)
+    nombre = Column(String(255), nullable=True)
+
+    estado = Column(Boolean, default=True)
+    enabled = Column(Boolean, default=True)
+
+
+
+class CapacitacionTema(Serializable, Base):
+    way = {'tema': {},'capacitacion': {}}
+
+    __tablename__ = 'rrhh_capacitaciontema'
+
+    id = Column(BigInteger,  primary_key=True)
+    fkcapacitacion = Column(BigInteger, ForeignKey("rrhh_capacitacion.id"))
+    fktema = Column(BigInteger, ForeignKey("rrhh_capacitacion_tema.id"))
+
+    tema = relationship("Tema")
+    capacitacion = relationship("Capacitacion")
+
+class Tema(Serializable, Base):
+    way = {}
+
+    __tablename__ = 'rrhh_capacitacion_tema'
+
+    id = Column(BigInteger,  primary_key=True)
+    nombre = Column(String(255), nullable=True)
+
+    estado = Column(Boolean, default=True)
+    enabled = Column(Boolean, default=True)
+

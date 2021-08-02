@@ -38,13 +38,15 @@ window.onload = function() {
 function load_table(data_tb) {
     var tabla = $(id_table).DataTable({
         destroy: true,
+        responsive: true,
+        autoWidth: false,
         data: data_tb,
         deferRender:    true,
         scrollCollapse: true,
         scroller:       true,
         columns: [
             { title: "ID", data: "id" },
-            { title: "Fecha Ingreso", data: "fechar" },
+            { title: "Fecha Registro", data: "fechar" },
             { title: "Cargo", data: "cargo" },
             { title: "Nombre", data: "fullname" },
             { title: "Estado", data: "estado",
@@ -77,6 +79,14 @@ function load_table(data_tb) {
                                 <i class="material-icons">picture_as_pdf</i>\
                             </button>'
                     }
+                    if (row.delete) {
+                        a += '\
+                        <button data-json="' + data + '"  type="button" class="btn btn-primary waves-effect" title="Reporte pago" onclick="reporte_pago_item(this)">\
+                            <i class="material-icons">picture_as_pdf</i>\
+                        </button>'
+                    }
+
+
                     if (a === '') a = 'Sin permisos';
                     return a
                 }
@@ -108,10 +118,21 @@ function load_table(data_tb) {
             }
         ],
         "order": [ [3, 'asc'] ],
-        columnDefs: [ { width: '10%', targets: [0] }, { width: '30%', targets: [1, 2, 3] } ],
+        columnDefs: [ { width: '5%', targets: [0] }, { width: '20%', targets: [1, 2] }, { width: '35%', targets: [3] } ],
+        "createdRow": function(row, data, dataIndex) {
+
+            console.log(data.cargo)
+
+            if(data.cargo == 'POSTULANTE'){
+                let class_rw =  'bg-pro-wrn'
+
+                $(row).addClass(class_rw)
+            }
+
+        },
         "initComplete": function() {}
     });
-    tabla.draw()
+    tabla.columns.adjust().draw();
 }
 
 function clean_data() {
@@ -119,6 +140,7 @@ function clean_data() {
     $('#laboral_div').empty()
     $('#estudio_div').empty()
     $('#complemento_div').empty()
+    $('#contrato_div').empty()
     $(class_item).val('')
 }
 
@@ -139,6 +161,13 @@ function reload_table() {
 }
 
 $('#fkcargo').selectpicker({
+    size: 10,
+    liveSearch: true,
+    liveSearchPlaceholder: 'Buscar',
+    title: 'Seleccione'
+})
+
+$('#fkparentesco').selectpicker({
     size: 10,
     liveSearch: true,
     liveSearchPlaceholder: 'Buscar',
@@ -1334,6 +1363,27 @@ function reporte_item(elemento){
     $.ajax({
         method: "POST",
         url: '/personal_report',
+        data: {object: obj, _xsrf: getCookie("_xsrf")}
+    }).done(function(response){
+        dictionary = JSON.parse(response)
+        dictionary = dictionary.response
+        servidor = ((location.href.split('/'))[0])+'//'+(location.href.split('/'))[2];
+        url = servidor + dictionary;
+
+        window.open(url)
+    })
+}
+
+
+function reporte_pago_item(elemento){
+    obj = JSON.stringify({
+        'idPersonal': parseInt(JSON.parse($(elemento).attr('data-json'))),
+        '_xsrf': getCookie("_xsrf")
+    })
+
+    $.ajax({
+        method: "POST",
+        url: '/personal_report_pago',
         data: {object: obj, _xsrf: getCookie("_xsrf")}
     }).done(function(response){
         dictionary = JSON.parse(response)

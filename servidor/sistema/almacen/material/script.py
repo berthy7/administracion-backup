@@ -47,6 +47,7 @@ def insertions():
 
         session.add(MaterialTipo(nombre='Uniforme'))
 
+        session.add(MaterialTalla(nombre='---'))
         session.add(MaterialTalla(nombre='P'))
         session.add(MaterialTalla(nombre='M'))
         session.add(MaterialTalla(nombre='L'))
@@ -77,6 +78,7 @@ def insertions():
         session.add(MaterialTalla(nombre='49'))
         session.add(MaterialTalla(nombre='50'))
 
+        session.add(MaterialColor(nombre='---'))
         session.add(MaterialColor(nombre='AMARILLO'))
         session.add(MaterialColor(nombre='AZUL'))
         session.add(MaterialColor(nombre='BLANCO'))

@@ -12,7 +12,7 @@ class Almacen(Serializable, Base):
 
     id = Column(BigInteger, primary_key=True)
     nombre = Column(String(100), nullable=False)
-    direccion = Column(String(100), nullable=False)
+    descripcion = Column(String(100), nullable=True)
     estado = Column(Boolean, default=True)
     enabled = Column(Boolean, default=True)
 

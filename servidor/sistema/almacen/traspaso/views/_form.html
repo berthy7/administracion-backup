@@ -1,0 +1,128 @@
+<div class="modal fade" id="modal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="largeModalLabel">Traspaso de Materiales</h4>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group form-float">
+                        <div class="form-line">
+                            {% module xsrf_form_html() %}
+                            <input type="hidden" id="id" name="id" class="item-form">
+
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-sm-12">
+                            <div class="form-group form-float">
+                                <div class="form-line">
+                                    <input type="text" id="descripcion" name="Descripcion" class="form-control item-form" >
+                                    <label class="form-label">Descripcion</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label  class="form-label">Almacen Origen</label>
+                                <select id="fkalmacen_origen" name="fkalmacen_origen" class="form-control show-tick item-form" required>
+                                    {% for e in almacenes %}
+                                        <option value="{{ e.id }}">{{ e.nombre }}</option>
+                                    {% end %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label  class="form-label">Almacen Destino</label>
+                                <select id="fkalmacen_destino" name="fkalmacen_destino" class="form-control show-tick item-form" required>
+                                    {% for e in almacenes %}
+                                        <option value="{{ e.id }}">{{ e.nombre }}</option>
+                                    {% end %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label  class="form-label">Sub Almacen Origen</label>
+                                <select id="fksubalmacen_origen" name="fksubalmacen_origen" class="form-control show-tick item-form" required>
+
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label  class="form-label">Sub Almacen Destino</label>
+                                <select id="fksubalmacen_destino" name="fksubalmacen_destino" class="form-control show-tick item-form" required>
+
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label  class="form-label">Tipo de Material</label>
+                                <select id="fktipo" name="fktipo" class="form-control show-tick item-form" required>
+                                    {% for e in tipomateriales_detalle %}
+                                        <option value="{{ e.id }}">{{ e.nombre }}</option>
+                                    {% end %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label  class="form-label">Material</label>
+                                <select id="fkmaterial" name="fkmaterial" class="form-control show-tick item-form">
+                                    {% for e in materiales_detalle %}
+                                        <option value="{{ e.id }}">{{ e.nombre }}</option>
+                                    {% end %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-sm-2">
+                            <label class="form-label">Material</label>
+                        </div>
+                        <div class="col-sm-2">
+                            <label class="form-label">Color</label>
+                        </div>
+                        <div class="col-sm-1">
+                            <label class="form-label">Talla</label>
+                        </div>
+                        <div class="col-sm-3">
+                            <label class="form-label">Stock</label>
+                        </div>
+
+                    </div>
+                    <div class="row clearfix">
+                        <div class="col-sm-12">
+                            <div id="detalle" class="box-body">
+                                <div id="detalle_div" class="clearfix">
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                    </br>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button id="insert" type="button" class="btn btn-primary waves-effect">Guardar</button>
+                <button id="update" type="button" class="btn btn-primary waves-effect">Guardar</button>
+                <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>

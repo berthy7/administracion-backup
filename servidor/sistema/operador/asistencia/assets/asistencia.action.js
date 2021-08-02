@@ -16,20 +16,9 @@ function load_table(data_tb) {
         scroller:       true,
         columns: [
             { title: "ID", data: "id" },
-            { title: "Fecha", data: "fechar" },
             { title: "Nombre", data: "nombre" },
-            { title: "Codigo", data: "codigo" },
-            { title: "Cliente", data: "cliente" },
-            { title: "Ausencia", data: "ausencia" },
-            { title: "Estado", data: "estado",
-                render: function(data, type, row) {
-                    return '\
-                    <div title="' + row.estado + '">\
-                        <input id="enabled' + row.id + '" type="checkbox" class="chk-col-indigo enabled" onclick="set_enable(this)" data-id="' + row.id + '" ' + row.check + ' ' + row.disable + '>\
-                        <label for="enabled' + row.id + '"></label>\
-                    </div>'
-                }
-            },
+            { title: "Turno Diurno", data: "cant_dia" },
+            { title: "Turno Nocturno", data: "cant_noche" },
             { title: "Acciones", data: "id",
                 render: function(data, type, row) {
                     a = ''
@@ -75,7 +64,7 @@ function load_table(data_tb) {
                 },
             }
         ],
-        "order": [ [0, 'desc'] ],
+        "order": [ [0, 'asc'] ],
         columnDefs: [ { width: '10%', targets: [0] }, { width: '30%', targets: [1, 2, 3] } ],
         "initComplete": function() {}
     });
@@ -112,20 +101,22 @@ function get_detalle() {
     cant_ = 0
     console.log(objeto_inputs)
 
-    for (i = 0; i < objeto_inputs.length; i += 7) {
+    for (i = 0; i < objeto_inputs.length; i += 9) {
         h0 = objeto_inputs[i].value
         h1 = objeto_inputs[i + 2].value
         h2 = objeto_inputs[i + 4].value
         h3 = objeto_inputs[i + 6].value
+        h4 = objeto_inputs[i + 8].value
 
 
-        objeto.push((function add_(h0, h1, h2,h3) {
+        objeto.push((function add_(h0, h1, h2,h3,h4) {
 
             if (h0 ==''){
                 return {
                     'fkpersonal': h1,
                     'fkcliente': h2,
-                    'fktipoausencia': h3
+                    'turno': h3,
+                    'fktipoausencia': h4
 
                 }
 
@@ -134,7 +125,8 @@ function get_detalle() {
                 'id':h0,
                 'fkpersonal': h1,
                 'fkcliente': h2,
-                'fktipoausencia': h3
+                'turno': h3,
+                'fktipoausencia': h4
                 }
             }
 
@@ -143,7 +135,8 @@ function get_detalle() {
             h0,
             h1,
             h2,
-            h3))
+            h3,
+            h4))
     }
 
     return objeto
